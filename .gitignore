@@ -1,0 +1,4 @@
+/build
+/dist
+/modelspec.egg-info
+*.pyc
