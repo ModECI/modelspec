@@ -2,3 +2,7 @@
 /dist
 /modelspec.egg-info
 *.pyc
+/modelspec/test/netid.json
+/modelspec/test/netid.yaml
+/modelspec/test/temp/Sim0.json
+/modelspec/test/temp/net0.json
