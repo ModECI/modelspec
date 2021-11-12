@@ -9,47 +9,6 @@ except ImportError:
     import unittest
 
 
-def get_example_network():
-
-    net = Network(id="net0", parameters={})
-    net.notes = "...."
-
-    net.parameters = {
-        "int": 3,
-        "float": 3.3,
-        "str": "str",
-        "bool": True,
-        "list": [1, 2, 3],
-        "dict": {"a": 1, "f": False, "d": {"a": 2}},
-        "dict2": {"a": 1, "l": [33, 22]},
-    }
-
-    p0 = Population(id="pop0", size=5, component="iaf", properties={"color": "0 .8 0"})
-    p1 = Population(id="pop1", size=10, component="iaf", properties={"color": "0 0 .8"})
-    net.populations.append(p0)
-    net.populations.append(p1)
-
-    net.projections.append(
-        Projection(id="proj0", presynaptic=p0.id, postsynaptic=p1.id, synapse="ampa")
-    )
-
-    net.projections[0].random_connectivity = RandomConnectivity(probability=0.5)
-
-    return net
-
-
-def get_example_simulation():
-
-    id = "Sim0"
-    sim = Simulation(
-        id=id,
-        network="%s.json" % "net0",
-        duration="1000",
-        dt="0.01",
-        recordTraces={"all": "*"},
-    )
-    return sim
-
 
 class TestCustomSaveLoad(unittest.TestCase):
     def test_save_load_json(self):
@@ -227,65 +186,8 @@ class TestCustomSaveLoad(unittest.TestCase):
             assert eval("net.ee%i" % i) == eval("nety.ee%i" % i)
 
 
-class TestBaseSaveLoad(unittest.TestCase):
-    def test_save_load_json(self):
-
-        for o in [get_example_simulation(), get_example_network()]:
-
-            str0 = str(o)
-            json0 = o.to_json()
-
-            print(str0)
-
-            new_file = o.to_json_file("temp/%s.json" % o.id)
-
-            if "net" in o.id:
-                o1 = load_network_json(new_file)
-            else:
-                o1 = load_simulation_json(new_file)
-
-            str1 = str(o1)
-            json1 = o1.to_json()
-
-            print(str1)
-
-            print("Loaded from %s" % new_file)
-
-            if sys.version_info[0] == 2:  # Order not preserved in py2, just test len
-                self.assertEqual(len(str0), len(str1))
-                self.assertEqual(len(json0), len(json1))
-            else:
-                self.assertEqual(str0, str1)
-                self.assertEqual(json0, json1)
-
-    def test_save_load_pickle(self):
-
-        for o in [get_example_simulation(), get_example_network()]:
-
-            str0 = str(o)
-            json0 = o.to_json()
-
-            print(str0)
-
-            pstr0 = pickle.dumps(o)
-
-            o1 = pickle.loads(pstr0)
-
-            str1 = str(o1)
-            json1 = o1.to_json()
-
-            print(str1)
-
-            self.assertEqual(str0, str1)
-            self.assertEqual(json0, json1)
-
-
 if __name__ == "__main__":
 
     # Some tests
     tc = TestCustomSaveLoad()
     tc.test_save_load_json()
-
-    tb = TestBaseSaveLoad()
-    tb.test_save_load_pickle()
-    tb.test_save_load_json()

@@ -5,7 +5,6 @@ from modelspec.utils import _val_info
 
 import numpy as np
 
-from test_base import get_example_network, get_example_simulation
 
 try:
     import unittest2 as unittest
@@ -44,67 +43,6 @@ class TestUtils(unittest.TestCase):
 
         assert evaluate("a+b", params, verbose=True)[2] == 3
 
-    def test_pops_vs_cell_indices(self):
-
-        from modelspec.utils import get_pops_vs_cell_indices_seg_ids
-
-        network = get_example_network()
-        sim = get_example_simulation()
-        sim.recordTraces = {}
-        sim.recordSpikes = {}
-        sim.recordRates = {}
-
-        for recordSpec in [sim.recordTraces, sim.recordSpikes, sim.recordRates]:
-
-            print("Testing...")
-            recordSpec["all"] = "*"
-            pvi = get_pops_vs_cell_indices_seg_ids(recordSpec, network)
-            print("Record spec: %s evaluates as %s" % (recordSpec, pvi))
-
-            for pop in network.populations:
-                assert pop.size == len(pvi[pop.id])
-
-            recordSpec = {"pop1": "*"}
-            pvi = get_pops_vs_cell_indices_seg_ids(recordSpec, network)
-            print("Record spec: %s evaluates as %s" % (recordSpec, pvi))
-
-            for pop in network.populations:
-                if pop.id in pvi:
-                    assert len(pvi[pop.id]) == (pop.size if pop.id == "pop1" else 0)
-
-            recordSpec = {"pop1": 0, "pop0": 3}
-            pvi = get_pops_vs_cell_indices_seg_ids(recordSpec, network)
-            print("Record spec: %s evaluates as %s" % (recordSpec, pvi))
-
-            for pop in network.populations:
-                if pop.id in pvi:
-                    assert (
-                        len(pvi[pop.id]) == 1
-                        and recordSpec[pop.id] == list(pvi[pop.id].keys())[0]
-                    )
-
-            recordSpec = {"pop1": "0:3", "pop0": "0:[3]"}
-            pvi = get_pops_vs_cell_indices_seg_ids(recordSpec, network)
-            print("Record spec: %s evaluates as %s" % (recordSpec, pvi))
-
-            for pop in network.populations:
-                if pop.id in pvi:
-                    print(pvi[pop.id].values())
-                    assert (
-                        len(pvi[pop.id]) == 1
-                        and list(pvi[pop.id].keys())[0] == 0
-                        and list(pvi[pop.id].values())[0][0] == 3
-                    )
-
-            recordSpec = {"pop1": [0, 2], "pop0": list(range(4))}
-            pvi = get_pops_vs_cell_indices_seg_ids(recordSpec, network)
-
-            print("Record spec: %s evaluates as %s" % (recordSpec, pvi))
-            for pop in network.populations:
-                if pop.id in pvi:
-                    assert len(pvi[pop.id]) == len(recordSpec[pop.id])
-
-        return True
 
     def test_val_info_tuple(self):
         print(_val_info((1, 2)))
