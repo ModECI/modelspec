@@ -47,6 +47,8 @@ jobs:
           cd NeuroMLlite
           git checkout modelspec # specific branch...
           pip install .
+          cd examples
+          python Example1.py
 
 
     - name: Install GPy (py3.9)
