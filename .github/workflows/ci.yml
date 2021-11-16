@@ -47,6 +47,7 @@ jobs:
           cd NeuroMLlite
           git checkout modelspec # specific branch...
           pip install .
+          pip install pyneuroml>=0.5.18
           cd examples
           python Example1.py
 
