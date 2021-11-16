@@ -9,7 +9,6 @@ except ImportError:
     import unittest
 
 
-
 class TestCustomSaveLoad(unittest.TestCase):
     def test_save_load_json(self):
         class NewNetwork(BaseWithId):

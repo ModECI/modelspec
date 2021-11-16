@@ -15,8 +15,7 @@ setup(
     description="A common JSON/YAML based format for compact model specification",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    install_requires=["pyyaml",
-                      "numpy"],
+    install_requires=["pyyaml", "numpy"],
     classifiers=[
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",

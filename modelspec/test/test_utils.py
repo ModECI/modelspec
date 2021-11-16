@@ -43,7 +43,6 @@ class TestUtils(unittest.TestCase):
 
         assert evaluate("a+b", params, verbose=True)[2] == 3
 
-
     def test_val_info_tuple(self):
         print(_val_info((1, 2)))
         print(_val_info((("test", 1), 2)))

@@ -13,7 +13,6 @@ class EvaluableExpression(str):
         self.expr = expr
 
 
-
 if __name__ == "__main__":
 
     net = Network(id="net")
