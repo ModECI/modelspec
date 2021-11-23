@@ -9,6 +9,12 @@ MARKDOWN_FORMAT = "markdown"
 DICT_FORMAT = "dict"
 
 
+class EvaluableExpression(str):
+    def __init__(self, expr):
+        self.expr = expr
+
+
+
 def print_(text, print_it=False):
     """
     Print a message preceded by modelspec, only if print_it=True

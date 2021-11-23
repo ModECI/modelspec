@@ -1,4 +1,4 @@
-from modelspec import *
+from modelspec.BaseTypes import *
 from modelspec.utils import *
 
 from modelspec.utils import _val_info

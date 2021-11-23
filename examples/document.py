@@ -1,4 +1,4 @@
-from modelspec import *
+from modelspec.BaseTypes import *
 from modelspec.utils import *
 
 # Example showing how to create a model of a document and use it to create/serialise instances

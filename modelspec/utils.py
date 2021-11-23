@@ -7,7 +7,7 @@ import math
 import numpy as np
 
 from modelspec.BaseTypes import print_v, print_
-from modelspec import EvaluableExpression
+from modelspec.BaseTypes import EvaluableExpression
 
 verbose = False
 
