@@ -35,6 +35,11 @@ jobs:
       run: |
         pip list
 
+    - name: Run some examples
+      run: |
+        cd examples
+        python document.py
+
     - name: Run pytest
       run: |
         pip install pytest
@@ -62,7 +67,12 @@ jobs:
 
           python -m pip install git+https://github.com/PrincetonUniversity/PsyNeuLink.git@mdf
 
-          python -m pip install git+https://github.com/ModECI/MDF.git@modelspec  # specific branch...
+          git clone https://github.com/ModECI/MDF.git
+          cd MDF
+          git checkout modelspec  # specific branch...
+          pip install .
+          cd examples/MDF
+          python arrays.py -run   # test one example
 
     - name: Final version info
       run: |
