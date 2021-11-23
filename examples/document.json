@@ -1,0 +1,9 @@
+{
+    "MyBook": {
+        "title": "My life in Python",
+        "pages": {
+            "1": {},
+            "2": {}
+        }
+    }
+}
