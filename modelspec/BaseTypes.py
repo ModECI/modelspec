@@ -69,12 +69,28 @@ class Base(object):
     def get_type(self):
         return self.__class__.__name__
 
+
+    def add_allowed_child(self, name, description, type_):
+
+        if self.allowed_children is None:
+            self.allowed_children = collections.OrderedDict([])
+
+        self.allowed_children[name] = (description, type_)
+
+
+    def add_allowed_field(self, name, description, type_):
+        if self.allowed_fields is None:
+            self.allowed_fields = collections.OrderedDict([])
+
+        self.allowed_fields[name] = (description, type_)
+
     def __getattr__(self, name):
 
-        # if verbose: print_v(" > Checking the value of attribute %s in: %s..."%(name,self.get_id()))
 
         if name == "id" and not "id" in self.allowed_fields:
             return None
+
+        if verbose: print_v(" > Checking the value of attribute %s in: %s..."%(name,'?'))
 
         if name in self.__dict__:
             return self.__dict__[name]
@@ -86,6 +102,12 @@ class Base(object):
         if name == "allowed_children":
             self.__dict__["allowed_children"] = collections.OrderedDict()
             return self.__dict__["allowed_children"]
+
+        if name == "add_allowed_child":
+            return self.add_allowed_child
+
+        if name == "add_allowed_field":
+            return self.add_allowed_field
 
         if name in self.allowed_fields:
             if not name in self.fields:
@@ -100,6 +122,7 @@ class Base(object):
             return self.children[name]
 
         return None
+
 
     @classmethod
     def _is_evaluable_expression(cls, value):
@@ -485,6 +508,7 @@ class BaseWithId(Base):
         )
 
         super(BaseWithId, self).__init__(**kwargs)
+
 
     def get_id(self):
         if len(self.fields) == 0:
