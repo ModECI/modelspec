@@ -12,9 +12,12 @@ class Document(BaseWithId):
 
         self.allowed_children = collections.OrderedDict(
             [
-                ("pages", ("The pages", Page)),
+                ("sections", ("The Sections", Section)),
             ]
         )
+
+        #self.add_allowed_child("sections", "The sections of the document", Section)
+
 
         self.allowed_fields = collections.OrderedDict(
             [
@@ -32,39 +35,43 @@ class Document(BaseWithId):
         super(Document, self).__init__(**kwargs)
 
 
-class Page(BaseWithId):
+class Section(BaseWithId):
 
-    _definition = "A model of a page"
+    _definition = "A model of a section of the document"
 
     def __init__(self, **kwargs):
 
         self.allowed_children = collections.OrderedDict(
             [
-                ("lines", ("The pages", Line)),
+                ("paragraphs", ("The paragraphs", Paragraph)),
             ]
         )
 
-        super(Page, self).__init__(**kwargs)
+        super(Section, self).__init__(**kwargs)
 
 
-class Line(Base):
+class Paragraph(Base):
 
-    _definition = "A model of a line"
+    _definition = "A model of a paragraph"
 
     def __init__(self, **kwargs):
 
         self.allowed_fields = collections.OrderedDict(
             [
-                ("title", ("Document title", str)),
+                ("contents", ("Paragraph contents", str)),
             ]
         )
 
+        super(Paragraph, self).__init__(**kwargs)
 
 doc = Document(id="MyBook")
 doc.title = "My life in Python"
 
-doc.pages.append(Page(id=1))
-doc.pages.append(Page(id=2))
+a = Section(id="Abstract")
+p = Paragraph(contents='Blah blah blah')
+a.paragraphs.append(p)
+doc.sections.append(a)
+doc.sections.append(Section(id="Chapter 1"))
 
 print(doc)
 

@@ -1,5 +1,7 @@
 MyBook:
     title: My life in Python
-    pages:
-        '1': {}
-        '2': {}
+    sections:
+        Abstract:
+            paragraphs:
+                contents: Blah blah blah
+        Chapter 1: {}
