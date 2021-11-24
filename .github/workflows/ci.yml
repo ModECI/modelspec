@@ -64,7 +64,8 @@ jobs:
 
     - name: Install MDF
       run: |
-
+      
+          # Install psyneulink - mdf branch
           python -m pip install git+https://github.com/PrincetonUniversity/PsyNeuLink.git@mdf
 
           git clone https://github.com/ModECI/MDF.git
@@ -76,5 +77,5 @@ jobs:
 
     - name: Final version info
       run: |
-
           pip list
+          env
