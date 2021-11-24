@@ -14,7 +14,6 @@ class EvaluableExpression(str):
         self.expr = expr
 
 
-
 def print_(text, print_it=False):
     """
     Print a message preceded by modelspec, only if print_it=True
@@ -69,14 +68,12 @@ class Base(object):
     def get_type(self):
         return self.__class__.__name__
 
-
     def add_allowed_child(self, name, description, type_):
 
         if self.allowed_children is None:
             self.allowed_children = collections.OrderedDict([])
 
         self.allowed_children[name] = (description, type_)
-
 
     def add_allowed_field(self, name, description, type_):
         if self.allowed_fields is None:
@@ -86,11 +83,11 @@ class Base(object):
 
     def __getattr__(self, name):
 
-
         if name == "id" and not "id" in self.allowed_fields:
             return None
 
-        if verbose: print_v(" > Checking the value of attribute %s in: %s..."%(name,'?'))
+        if verbose:
+            print_v(" > Checking the value of attribute %s in: %s..." % (name, "?"))
 
         if name in self.__dict__:
             return self.__dict__[name]
@@ -122,7 +119,6 @@ class Base(object):
             return self.children[name]
 
         return None
-
 
     @classmethod
     def _is_evaluable_expression(cls, value):
@@ -508,7 +504,6 @@ class BaseWithId(Base):
         )
 
         super(BaseWithId, self).__init__(**kwargs)
-
 
     def get_id(self):
         if len(self.fields) == 0:

@@ -17,7 +17,7 @@ class Document(BaseWithId):
 
         super(Document, self).__init__(**kwargs)
 
-        print('Created:: %s'%(self))
+        print("Created:: %s" % (self))
 
 
 class Section(BaseWithId):
@@ -46,7 +46,7 @@ doc = Document(id="MyBook")
 doc.title = "My life in Python"
 
 a = Section(id="Abstract")
-p = Paragraph(contents='Blah blah blah')
+p = Paragraph(contents="Blah blah blah")
 a.paragraphs.append(p)
 doc.sections.append(a)
 doc.sections.append(Section(id="Chapter 1"))
@@ -55,3 +55,8 @@ print(doc)
 
 doc.to_json_file("document.json")
 doc.to_yaml_file("document.yaml")
+
+doc_md = doc.generate_documentation(format="markdown")
+
+with open("document.md", "w") as d:
+    d.write(doc_md)
