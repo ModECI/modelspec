@@ -179,7 +179,7 @@ def _params_info(parameters):
     Short info on names, values and types in parameter list
     """
     pi = "["
-    if parameters is not None:
+    if parameters is not None and len(parameters)>0:
         for p in parameters:
             if not p == "__builtins__":
                 param_val = parameters[p]
