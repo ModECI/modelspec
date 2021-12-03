@@ -65,6 +65,10 @@ class Base(object):
     def get_id(self):
         return None
 
+    def validate(self):
+        # TODO...
+        return True
+
     def get_type(self):
         return self.__class__.__name__
 

@@ -174,7 +174,7 @@ def _val_info(param_val):
     return pp
 
 
-def _params_info(parameters):
+def _params_info(parameters, multiline=False):
     """
     Short info on names, values and types in parameter list
     """
@@ -185,7 +185,7 @@ def _params_info(parameters):
                 param_val = parameters[p]
                 pp = _val_info(param_val)
 
-                pi += "%s=%s, " % (p, pp)
+                pi += "%s=%s, %s" % (p, pp, '\n' if multiline else '')
         pi = pi[:-2]
     pi += "]"
     return pi
@@ -246,7 +246,7 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
             if array_format == FORMAT_TENSORFLOW:
                 return tf.convert_to_tensor(expr, dtype=tf.float64)
             else:
-                return expr
+                return np.array(expr)
 
         if "Tensor" in type(expr).__name__:
             print_(
