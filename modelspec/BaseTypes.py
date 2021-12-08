@@ -379,7 +379,9 @@ class Base(object):
 
         print(" - %s (%s)" % (self.__class__.__name__, self._definition))
 
-        def insert_links(text):
+        rst_url_format = '`%s <%s>`_'
+
+        def insert_links(text, format=MARKDOWN_FORMAT):
             if not "_" in text:
                 return text
             if '"' in text:
@@ -389,7 +391,10 @@ class Base(object):
             for i in range(int(len(split) / 2.0)):
                 pre = split[i * 2]
                 type = split[i * 2 + 1]
-                text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
+                if format==MARKDOWN_FORMAT:
+                    text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
+                elif format==RST_FORMAT:
+                    text2 += ('%s'+rst_url_format) % (pre, type, type.lower())
             if int(len(split) / 2.0) != len(split) / 2.0:
                 text2 += split[-1]
             return text2
@@ -403,7 +408,7 @@ class Base(object):
         elif format == RST_FORMAT:
             doc_string += "%s\n%s\n%s\n" % ("="*len(name),name,"="*len(name))
             if self._definition is not None:
-                doc_string += "%s\n\n" % insert_links(self._definition)
+                doc_string += "%s\n\n" % insert_links(self._definition, format = RST_FORMAT)
 
         elif format == DICT_FORMAT:
             doc_dict[name] = {}
@@ -449,12 +454,12 @@ class Base(object):
             if format == RST_FORMAT:
                 n = "**%s**" % f
                 t = "%s" % (
-                    '<a href="#%s">%s</a>' % (type_.lower(), type_)
+                    rst_url_format % (type_, type_.lower())
                     if referencable
                     else type_,
                 )
                 d = "*%s*" % (
-                    insert_links(self.allowed_fields[f][0])
+                    insert_links(self.allowed_fields[f][0], format = RST_FORMAT)
                 )
                 table_info.append([n,t,d])
 
@@ -509,12 +514,12 @@ class Base(object):
             if format == RST_FORMAT:
                 n = "**%s**" % c
                 t = "%s" % (
-                    '<a href="#%s">%s</a>' % (type_.lower(), type_)
+                    rst_url_format % (type_.lower(), type_)
                     if referencable
                     else type_,
                 )
                 d = "*%s*" % (
-                    insert_links(self.allowed_children[c][0])
+                    insert_links(self.allowed_children[c][0], format = RST_FORMAT)
                 )
                 table_info.append([n,t,d])
 
