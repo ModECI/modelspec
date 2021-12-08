@@ -474,7 +474,8 @@ class Base(object):
                 doc_string += "#### Allowed children\n\n<table>\n"
             if format == RST_FORMAT:
                 ap = "Allowed children"
-                doc_string += "%s\n%s\n\n<table>\n" % (ap,"="*len(ap))
+                doc_string += "%s\n%s\n\n" % (ap,"="*len(ap))
+                table_info = []
             if format == DICT_FORMAT:
                 doc_dict[name]["allowed_children"] = {}
 
@@ -505,6 +506,19 @@ class Base(object):
                     insert_links(self.allowed_children[c][0])
                 )
 
+            if format == RST_FORMAT:
+                n = "**%s**" % c
+                t = "%s" % (
+                    '<a href="#%s">%s</a>' % (type_.lower(), type_)
+                    if referencable
+                    else type_,
+                )
+                d = "*%s*" % (
+                    insert_links(self.allowed_children[c][0])
+                )
+                table_info.append([n,t,d])
+
+
             inst = self.allowed_children[c][1]()
             inst.id = ""
             referenced.append(inst)
@@ -515,10 +529,10 @@ class Base(object):
 
         if len(self.allowed_children) > 0:
             if format == RST_FORMAT:
-                doc_string += "</table>\n\n"
+                doc_string += "%s\n\n"%(tabulate(table_info, ['Allowed child','Data Type','Description'], tablefmt="rst"))
 
         for r in referenced:
-            if format == MARKDOWN_FORMAT:
+            if format == MARKDOWN_FORMAT or format== RST_FORMAT:
                 doc_string += r.generate_documentation(format=format)
             if format == DICT_FORMAT:
                 pass

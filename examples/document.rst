@@ -18,6 +18,47 @@ Allowed field    Data Type    Description
 Allowed children
 ================
 
-<table>
-</table>
+===============  ==============================  ==============================
+Allowed child    Data Type                       Description
+===============  ==============================  ==============================
+**sections**     <a href="#section">Section</a>  *The sections of the document*
+===============  ==============================  ==============================
+
+=======
+Section
+=======
+A model of a section of the document
+
+Allowed parameters
+==================
+
+===============  ===========  ======================
+Allowed field    Data Type    Description
+===============  ===========  ======================
+**id**           str          *Unique ID of element*
+**notes**        str          *Human readable notes*
+===============  ===========  ======================
+
+Allowed children
+================
+
+===============  ==================================  ================
+Allowed child    Data Type                           Description
+===============  ==================================  ================
+**paragraphs**   <a href="#paragraph">Paragraph</a>  *The paragraphs*
+===============  ==================================  ================
+
+=========
+Paragraph
+=========
+A model of a paragraph
+
+Allowed parameters
+==================
+
+===============  ===========  ====================
+Allowed field    Data Type    Description
+===============  ===========  ====================
+**contents**     str          *Paragraph contents*
+===============  ===========  ====================
 
