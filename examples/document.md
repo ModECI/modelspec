@@ -43,7 +43,7 @@ A model for documents
 
 ## Section
 
-A model of a section of the document
+A model of a section of the document. Will contain a <a href="#paragraph">Paragraph</a> or two
 
 ### Allowed parameters
 <table>
@@ -81,7 +81,7 @@ A model of a paragraph
   <tr>
     <td><b>contents</b></td>
     <td>str</td>
-    <td><i>Paragraph contents</i></td>
+    <td><i>Paragraph contents, which make up the <a href="#section">Section</a>s.</i></td>
   </tr>
 
 </table>

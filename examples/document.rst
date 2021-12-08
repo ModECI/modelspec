@@ -27,7 +27,7 @@ Allowed child    Data Type              Description
 =======
 Section
 =======
-A model of a section of the document
+A model of a section of the document. Will contain a Paragraph or two
 
 Allowed parameters
 ==================
@@ -56,9 +56,9 @@ A model of a paragraph
 Allowed parameters
 ==================
 
-===============  ===========  ====================
+===============  ===========  =================================================
 Allowed field    Data Type    Description
-===============  ===========  ====================
-**contents**     str          *Paragraph contents*
-===============  ===========  ====================
+===============  ===========  =================================================
+**contents**     str          *Paragraph contents, which make up the Sections.*
+===============  ===========  =================================================
 

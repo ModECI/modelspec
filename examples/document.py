@@ -22,7 +22,7 @@ class Document(BaseWithId):
 
 class Section(BaseWithId):
 
-    _definition = "A model of a section of the document"
+    _definition = "A model of a section of the document. Will contain a _Paragraph_ or two"
 
     def __init__(self, **kwargs):
 
@@ -37,7 +37,7 @@ class Paragraph(Base):
 
     def __init__(self, **kwargs):
 
-        self.add_allowed_field("contents", "Paragraph contents", str)
+        self.add_allowed_field("contents", "Paragraph contents, which make up the _Section_s.", str)
 
         super(Paragraph, self).__init__(**kwargs)
 

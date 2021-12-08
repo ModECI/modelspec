@@ -382,6 +382,7 @@ class Base(object):
         rst_url_format = '`%s <%s>`_'
 
         def insert_links(text, format=MARKDOWN_FORMAT):
+
             if not "_" in text:
                 return text
             if '"' in text:
@@ -394,7 +395,9 @@ class Base(object):
                 if format==MARKDOWN_FORMAT:
                     text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
                 elif format==RST_FORMAT:
-                    text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower())
+                    #text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower # problem with handling links ending with s e.g. _Graph_s
+
+                    text2 += ('%s%s') % (pre, type) # temp hack... problem with handling links ending with s e.g. _Graph_s
             if int(len(split) / 2.0) != len(split) / 2.0:
                 text2 += split[-1]
             return text2
