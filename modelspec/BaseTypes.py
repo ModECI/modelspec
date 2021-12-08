@@ -2,6 +2,7 @@ import collections
 import json
 import sys
 from collections import OrderedDict
+from tabulate import tabulate
 
 verbose = False
 
@@ -415,6 +416,7 @@ class Base(object):
             if format == RST_FORMAT:
                 ap = "Allowed parameters"
                 doc_string += "%s\n%s\n\n" % (ap,"="*len(ap))
+                table_info = []
         if format == DICT_FORMAT:
             doc_dict[name]["allowed_parameters"] = {}
 
@@ -445,19 +447,16 @@ class Base(object):
                     insert_links(self.allowed_fields[f][0])
                 )
             if format == RST_FORMAT:
-                n = "<b>%s</b>" % f
+                n = "**%s**" % f
                 t = "%s" % (
                     '<a href="#%s">%s</a>' % (type_.lower(), type_)
                     if referencable
                     else type_,
                 )
-                d = "<i>%s</i>" % (
+                d = "*%s*" % (
                     insert_links(self.allowed_fields[f][0])
                 )
-
-                doc_string += "%s %s %s\n"%("="*len(n),"="*len(t),"="*len(d))
-                doc_string += "%s %s %s\n"%(n,t,d)
-                doc_string += "%s %s %s\n"%("="*len(n),"="*len(t),"="*len(d))
+                table_info.append([n,t,d])
 
             if referencable:
                 inst = self.allowed_fields[f][1]()
@@ -468,7 +467,7 @@ class Base(object):
             if format == MARKDOWN_FORMAT:
                 doc_string += "</table>\n\n"
             if format == RST_FORMAT:
-                doc_string += "</table>\n\n"
+                doc_string += "%s\n\n"%(tabulate(table_info, ['Allowed field','Data Type','Description'], tablefmt="rst"))
 
         if len(self.allowed_children) > 0:
             if format == MARKDOWN_FORMAT:

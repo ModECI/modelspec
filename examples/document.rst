@@ -6,19 +6,14 @@ A model for documents
 Allowed parameters
 ==================
 
-============ === =====================
-<b>title</b> str <i>Document title</i>
-============ === =====================
-=========== === =========================================
-<b>ISBN</b> int <i>International Standard Book Number</i>
-=========== === =========================================
-========= === ===========================
-<b>id</b> str <i>Unique ID of element</i>
-========= === ===========================
-============ === ===========================
-<b>notes</b> str <i>Human readable notes</i>
-============ === ===========================
-</table>
+===============  ===========  ====================================
+Allowed field    Data Type    Description
+===============  ===========  ====================================
+**title**        str          *Document title*
+**ISBN**         int          *International Standard Book Number*
+**id**           str          *Unique ID of element*
+**notes**        str          *Human readable notes*
+===============  ===========  ====================================
 
 Allowed children
 ================
