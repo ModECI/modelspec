@@ -18,11 +18,11 @@ Allowed field    Data Type    Description
 Allowed children
 ================
 
-===============  ====================  ==============================
-Allowed child    Data Type             Description
-===============  ====================  ==============================
-**sections**     `section <Section>`_  *The sections of the document*
-===============  ====================  ==============================
+===============  =====================  ==============================
+Allowed child    Data Type              Description
+===============  =====================  ==============================
+**sections**     `Section <#section>`_  *The sections of the document*
+===============  =====================  ==============================
 
 =======
 Section
@@ -42,11 +42,11 @@ Allowed field    Data Type    Description
 Allowed children
 ================
 
-===============  ========================  ================
-Allowed child    Data Type                 Description
-===============  ========================  ================
-**paragraphs**   `paragraph <Paragraph>`_  *The paragraphs*
-===============  ========================  ================
+===============  =========================  ================
+Allowed child    Data Type                  Description
+===============  =========================  ================
+**paragraphs**   `Paragraph <#paragraph>`_  *The paragraphs*
+===============  =========================  ================
 
 =========
 Paragraph

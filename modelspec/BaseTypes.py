@@ -394,7 +394,7 @@ class Base(object):
                 if format==MARKDOWN_FORMAT:
                     text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
                 elif format==RST_FORMAT:
-                    text2 += ('%s'+rst_url_format) % (pre, type, type.lower())
+                    text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower())
             if int(len(split) / 2.0) != len(split) / 2.0:
                 text2 += split[-1]
             return text2
@@ -454,7 +454,7 @@ class Base(object):
             if format == RST_FORMAT:
                 n = "**%s**" % f
                 t = "%s" % (
-                    rst_url_format % (type_, type_.lower())
+                    rst_url_format % (type_, '#'+type_.lower())
                     if referencable
                     else type_,
                 )
@@ -514,7 +514,7 @@ class Base(object):
             if format == RST_FORMAT:
                 n = "**%s**" % c
                 t = "%s" % (
-                    rst_url_format % (type_.lower(), type_)
+                    rst_url_format % (type_, '#'+type_.lower())
                     if referencable
                     else type_,
                 )
