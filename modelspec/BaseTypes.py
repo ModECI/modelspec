@@ -6,6 +6,8 @@ from collections import OrderedDict
 verbose = False
 
 MARKDOWN_FORMAT = "markdown"
+RST_FORMAT = "rst"
+
 DICT_FORMAT = "dict"
 
 
@@ -369,7 +371,7 @@ class Base(object):
         Work in progress...
         """
 
-        if format == MARKDOWN_FORMAT:
+        if format == MARKDOWN_FORMAT or format == RST_FORMAT:
             doc_string = ""
         if format == DICT_FORMAT:
             doc_dict = {}
@@ -392,18 +394,27 @@ class Base(object):
             return text2
 
         name = self.__class__.__name__
+
         if format == MARKDOWN_FORMAT:
-            doc_string += "## %s\n" % name
+            doc_string += "## %s\n\n" % name
             if self._definition is not None:
-                doc_string += "%s\n" % insert_links(self._definition)
-        if format == DICT_FORMAT:
+                doc_string += "%s\n\n" % insert_links(self._definition)
+        elif format == RST_FORMAT:
+            doc_string += "%s\n%s\n%s\n" % ("="*len(name),name,"="*len(name))
+            if self._definition is not None:
+                doc_string += "%s\n\n" % insert_links(self._definition)
+
+        elif format == DICT_FORMAT:
             doc_dict[name] = {}
             if self._definition is not None:
                 doc_dict[name]["definition"] = self._definition
 
         if len(self.allowed_fields) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "#### Allowed parameters\n<table>"
+                doc_string += "### Allowed parameters\n<table>\n"
+            if format == RST_FORMAT:
+                ap = "Allowed parameters"
+                doc_string += "%s\n%s\n\n" % (ap,"="*len(ap))
         if format == DICT_FORMAT:
             doc_dict[name]["allowed_parameters"] = {}
 
@@ -424,15 +435,29 @@ class Base(object):
                 ] = self.allowed_fields[f][0]
 
             if format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
+                doc_string += "  <tr>\n    <td><b>%s</b></td>\n    <td>%s</td>" % (
                     f,
                     '<a href="#%s">%s</a>' % (type_.lower(), type_)
                     if referencable
                     else type_,
                 )
-                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
                     insert_links(self.allowed_fields[f][0])
                 )
+            if format == RST_FORMAT:
+                n = "<b>%s</b>" % f
+                t = "%s" % (
+                    '<a href="#%s">%s</a>' % (type_.lower(), type_)
+                    if referencable
+                    else type_,
+                )
+                d = "<i>%s</i>" % (
+                    insert_links(self.allowed_fields[f][0])
+                )
+
+                doc_string += "%s %s %s\n"%("="*len(n),"="*len(t),"="*len(d))
+                doc_string += "%s %s %s\n"%(n,t,d)
+                doc_string += "%s %s %s\n"%("="*len(n),"="*len(t),"="*len(d))
 
             if referencable:
                 inst = self.allowed_fields[f][1]()
@@ -441,11 +466,16 @@ class Base(object):
 
         if len(self.allowed_fields) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "\n</table>\n\n"
+                doc_string += "</table>\n\n"
+            if format == RST_FORMAT:
+                doc_string += "</table>\n\n"
 
         if len(self.allowed_children) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "#### Allowed children\n<table>"
+                doc_string += "#### Allowed children\n\n<table>\n"
+            if format == RST_FORMAT:
+                ap = "Allowed children"
+                doc_string += "%s\n%s\n\n<table>\n" % (ap,"="*len(ap))
             if format == DICT_FORMAT:
                 doc_dict[name]["allowed_children"] = {}
 
@@ -466,13 +496,13 @@ class Base(object):
                 ] = self.allowed_children[c][0]
 
             if format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
+                doc_string += "  <tr>\n    <td><b>%s</b></td>\n    <td>%s</td>" % (
                     c,
                     '<a href="#%s">%s</a>' % (type_.lower(), type_)
                     if referencable
                     else type_,
                 )
-                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
                     insert_links(self.allowed_children[c][0])
                 )
 
@@ -482,7 +512,11 @@ class Base(object):
 
         if len(self.allowed_children) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "\n</table>\n\n"
+                doc_string += "</table>\n\n"
+
+        if len(self.allowed_children) > 0:
+            if format == RST_FORMAT:
+                doc_string += "</table>\n\n"
 
         for r in referenced:
             if format == MARKDOWN_FORMAT:
@@ -491,7 +525,7 @@ class Base(object):
                 pass
                 doc_dict.update(r.generate_documentation(format=format))
 
-        if format == MARKDOWN_FORMAT:
+        if format == MARKDOWN_FORMAT or format== RST_FORMAT:
             return doc_string
         if format == DICT_FORMAT:
             return doc_dict

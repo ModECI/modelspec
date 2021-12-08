@@ -60,3 +60,8 @@ doc_md = doc.generate_documentation(format="markdown")
 
 with open("document.md", "w") as d:
     d.write(doc_md)
+
+doc_rst = doc.generate_documentation(format="rst")
+
+with open("document.rst", "w") as d:
+    d.write(doc_rst)
