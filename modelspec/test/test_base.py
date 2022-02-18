@@ -1,4 +1,4 @@
-from modelspec.BaseTypes import *
+from modelspec.base_types import *
 from modelspec.utils import *
 
 import pickle
