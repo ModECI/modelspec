@@ -3,8 +3,7 @@ Document
 ========
 A model for documents
 
-Allowed parameters
-==================
+**Allowed parameters**
 
 ===============  ===========  ====================================
 Allowed field    Data Type    Description
@@ -15,8 +14,7 @@ Allowed field    Data Type    Description
 **notes**        str          *Human readable notes*
 ===============  ===========  ====================================
 
-Allowed children
-================
+**Allowed children**
 
 ===============  =====================  ==============================
 Allowed child    Data Type              Description
@@ -29,8 +27,7 @@ Section
 =======
 A model of a section of the document. Will contain a Paragraph or two
 
-Allowed parameters
-==================
+**Allowed parameters**
 
 ===============  ===========  ======================
 Allowed field    Data Type    Description
@@ -39,8 +36,7 @@ Allowed field    Data Type    Description
 **notes**        str          *Human readable notes*
 ===============  ===========  ======================
 
-Allowed children
-================
+**Allowed children**
 
 ===============  =========================  ================
 Allowed child    Data Type                  Description
@@ -53,8 +49,7 @@ Paragraph
 =========
 A model of a paragraph
 
-Allowed parameters
-==================
+**Allowed parameters**
 
 ===============  ===========  =================================================
 Allowed field    Data Type    Description

@@ -422,8 +422,8 @@ class Base(object):
             if format == MARKDOWN_FORMAT:
                 doc_string += "### Allowed parameters\n<table>\n"
             if format == RST_FORMAT:
-                ap = "Allowed parameters"
-                doc_string += "%s\n%s\n\n" % (ap,"="*len(ap))
+                ap = "**Allowed parameters**"
+                doc_string += "%s\n\n" % (ap)
                 table_info = []
         if format == DICT_FORMAT:
             doc_dict[name]["allowed_parameters"] = {}
@@ -481,8 +481,8 @@ class Base(object):
             if format == MARKDOWN_FORMAT:
                 doc_string += "#### Allowed children\n\n<table>\n"
             if format == RST_FORMAT:
-                ap = "Allowed children"
-                doc_string += "%s\n%s\n\n" % (ap,"="*len(ap))
+                ap = "**Allowed children**"
+                doc_string += "%s\n\n" % (ap)
                 table_info = []
             if format == DICT_FORMAT:
                 doc_dict[name]["allowed_children"] = {}
