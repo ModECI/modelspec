@@ -1,4 +1,3 @@
-import collections
 import json
 import yaml
 import sys
@@ -7,7 +6,20 @@ import numpy as np
 import attr
 import cattr
 
-from typing import Optional, List, Dict, Any, Union, Tuple, Type, TypeVar, Callable, Iterable
+from typing import (
+    Optional,
+    List,
+    Dict,
+    Any,
+    Union,
+    Tuple,
+    Type,
+    TypeVar,
+    Callable,
+    Iterable,
+)
+
+from docstring_parser import parse
 
 # If we running python version 3.7 or lower, we need to using typing_compat
 if sys.version_info < (3, 8):
@@ -36,6 +48,10 @@ DICT_FORMAT = "dict"
 
 
 class EvaluableExpression(str):
+    """
+    EvaluableExpression is a string that can be evaluated to a value during MDF execution. This class inherits from
+    str, so it can be used as a string.
+    """
     def __init__(self, expr):
         self.expr = expr
 
@@ -45,7 +61,7 @@ ValueExprType = Union[EvaluableExpression, List, Dict, np.ndarray, int, float, s
 value_expr_types = (EvaluableExpression, list, dict, np.ndarray, int, float, str)
 
 
-def print_(text, print_it=False):
+def print_(text: str, print_it: bool = False):
     """
     Print a message preceded by modelspec, only if print_it=True
     """
@@ -56,7 +72,7 @@ def print_(text, print_it=False):
         print("%s%s" % (prefix, text.replace("\n", "\n" + prefix)))
 
 
-def print_v(text):
+def print_v(text: str):
     """
     Print a message preceded by modelspec always
     """
@@ -79,11 +95,13 @@ class Base:
     """
     Base class for all object in a model specification. Any object should inherit from this class.
 
-        Args:
-            notes: Human readable notes.
+    Args:
+        notes: Human readable notes.
     """
 
-    notes: Optional[str] = attr.ib(kw_only=True, default=None, validator=optional(instance_of(str)))
+    notes: Optional[str] = attr.ib(
+        kw_only=True, default=None, validator=optional(instance_of(str))
+    )
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert the Base object to a nested dict structure."""
@@ -92,13 +110,12 @@ class Base:
 
         # If this object has an id attribute, by default lets serialize it within a dict with the id as the key, even if
         # it is a single object.
-        if 'id' in [f.name for f in attr.fields(self.__class__)] and 'id' in d.keys():
+        if "id" in [f.name for f in attr.fields(self.__class__)] and "id" in d.keys():
             # Drop the id field
             del d["id"]
             return {self.id: d}
         else:
             return d
-
 
     def to_json(self) -> str:
         """
@@ -112,11 +129,13 @@ class Base:
 
         # If this object has an id attribute, it may have been serialized within a dict with the id as the key, even if
         # it is a single object.
-        if 'id' in [f.name for f in attr.fields(cls)] and 'id' not in d.keys():
+        if "id" in [f.name for f in attr.fields(cls)] and "id" not in d.keys():
 
             keys = list(d.keys())
             if len(keys) == 0:
-                raise ValueError(f"Cannot deserialize Base modelspec object ({cls}) because it is empty.")
+                raise ValueError(
+                    f"Cannot deserialize Base modelspec object ({cls}) because it is empty."
+                )
 
             # Get the first key, this should be the id
             id_val = keys[0]
@@ -136,10 +155,11 @@ class Base:
         """Convert the MDF model to JSON format and save to a file.
 
          .. note::
-            JSON is standard file format uses human-readable text to store and transmit data objects consisting of attribute–value pairs and arrays
+            JSON is standard file format uses human-readable text to store and transmit data objects consisting of
+                attribute–value pairs and arrays
 
         Args:
-            filename: The name of the file to save. If None, use the  (.json extension)
+            filename: The name of the file to save. If None, use :code:`f"{self.id}.json"`
             include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,
                               benchmark results, and environments in which the specified model was originally implemented
         Returns:
@@ -171,7 +191,9 @@ class Base:
         with open(filename, "w") as outfile:
 
             # We need to setup another
-            yaml.dump(yaml_converter.unstructure(self.to_dict()), outfile, sort_keys=False)
+            yaml.dump(
+                yaml_converter.unstructure(self.to_dict()), outfile, sort_keys=False
+            )
 
         return filename
 
@@ -255,18 +277,373 @@ class Base:
         # We didn't find the child object.
         return None
 
+    @property
+    def definition(self) -> str:
+        """
+        The definition of the model.
 
-class NetworkReader:
-    pop_locations = {}
+        Returns:
+            The definition of the model.
+        """
+        return self.__class__._parse_definition()
 
-    def parse(self, handler):
-        raise Exception("This needs to be implemented...")
+    @property
+    def allowed_fields(self) -> Dict[str, Tuple[str, Any]]:
+        """
+        Get the list of allowed fields for this model.
 
-    def get_locations(self):
-        return self.pop_locations
+        Returns:
+            The allowed fields are returned as dict keyed by field name
+                and with values of tuple with (field_description, field_type).
+        """
+        return self.__class__._parse_allowed_fields()
+
+    @property
+    def allowed_children(self) -> Dict[str, Tuple[str, Any]]:
+        """
+        Get the list of allowed children for this model. Children are defined as
+        any attribute of this object that is a collection of objects that inherits from :class:`Base`.
+
+        Returns:
+            The allowed children are returned as dict keyed attribute name of the collection
+                and with values of tuple with (description, type).
+        """
+        return self.__class__._parse_allowed_children()
+
+    @classmethod
+    def _parse_definition(cls) -> str:
+        """
+        Parse the definition of the model from its doc string.
+
+        Returns:
+            The definition of the model.
+        """
+        # Parse the docstring
+        p = parse(cls.__doc__)
+
+        # Extract the description, use the long description if available.
+        return p.long_description if p.long_description else p.short_description
+
+    @classmethod
+    def _parse_allowed_fields(cls) -> Dict[str, Tuple[str, Any]]:
+        """
+        Get the list of allowed fields for this model.
+
+        Returns:
+            The allowed fields are returned as dict keyed by field name
+                and with values of tuple with (field_description, field_type).
+        """
+        # Parse the docstring
+        p = parse(cls.__doc__)
+
+        # Extract the description for each parameter from the docstring if available.
+        field_descriptions = {p.arg_name: p.description for p in p.params}
+
+        # Build up the old-style dict format for allowed_fields
+        allowed_fields = {
+            f.name: (field_descriptions.get(f.name, ""), f.type)
+            for f in attr.fields(cls)
+            if not cls._is_child_field(f.name)
+        }
+
+        # If this class has a parent class, add the parent's allowed fields to this class's allowed fields.
+        for base_class in cls.__bases__:
+            if hasattr(base_class, "allowed_fields"):
+                allowed_fields.update(base_class._parse_allowed_fields())
+
+        return allowed_fields
+
+    @classmethod
+    def _is_child_field(cls, field_name: str) -> bool:
+        """
+        Check if a field is a child field. A child field is an attribute that is a collection of objects
+        that inherits from :class:`Base`.
+
+        Args:
+            field_name: The name of the field to check.
+
+        Returns:
+            True if the field is a child field, False otherwise.
+        """
+        try:
+            f = attr.fields_dict(cls)[field_name]
+        except KeyError:
+            raise ValueError(f"Field '{field_name}' not found in modelspec class '{cls.__name__}'")
+
+        # Check if the type of the field is a list or dict
+        collection_arg = None
+        if get_origin(f.type) == list and len(get_args(f.type)) > 0:
+            collection_arg = get_args(f.type)[0]
+        elif get_origin(f.type) == dict and len(get_args(f.type)) > 0:
+            collection_arg = get_args(f.type)[1]
+
+        try:
+            is_child = issubclass(collection_arg, Base)
+        except TypeError:
+            is_child = False
+
+        return is_child
+
+    @classmethod
+    def _parse_allowed_children(cls) -> Dict[str, Tuple[str, Any]]:
+        """
+        Get the list of allowed children for this model. Children are defined as
+        any attribute of this object that is a collection of objects that inherits from :class:`Base`.
+
+        Returns:
+            The allowed children are returned as dict keyed attribute name of the collection
+                and with values of tuple with (description, type).
+        """
+        # Parse the docstring
+        p = parse(cls.__doc__)
+
+        # Extract the description for each parameter from the docstring if available.
+        field_descriptions = {p.arg_name: p.description for p in p.params}
+
+        # Build up the old-style dict format for allowed_children
+        allowed_children = {
+            f.name: (field_descriptions.get(f.name, ""), f.type)
+            for f in attr.fields(cls)
+            if cls._is_child_field(f.name)
+        }
+
+        # If this class has a parent class, add the parent's allowed fields to this class's allowed fields.
+        for base_class in cls.__bases__:
+            if hasattr(base_class, "allowed_children"):
+                allowed_children.update(base_class._parse_allowed_children())
+
+        return allowed_children
+
+    @staticmethod
+    def _is_evaluable_expression(value: Any) -> bool:
+        """Helper method to check if a value is of type EvaluableExpressions"""
+        if not hasattr(value, "__name__"):
+            return False
+        return (
+            value.__name__ == "EvaluableExpression"
+            or value.__name__ == "modelspec.EvaluableExpression"
+        )
+
+    @classmethod
+    def _is_base_type(
+            cls,
+            value,
+            can_be_list=False,
+            can_be_dict=False,
+            can_be_ndarray=False,
+            can_be_none=False,
+            can_be_eval_expr=False,
+    ):
+
+        import numpy
+
+        if verbose:
+            print_v(
+                " > Checking type of %s, ee: %s"
+                % (value, cls._is_evaluable_expression(value))
+            )
+
+        # If this is a generic type, get the actual type
+        if get_origin(value):
+            value = get_origin(value)
+
+        return (
+                value == int
+                or value == str
+                or value == bool
+                or value == float
+                or (can_be_list and value == list)
+                or (can_be_dict and value == dict)
+                or (can_be_ndarray and value == numpy.ndarray)
+                or (can_be_none and value is type(None))
+                or (can_be_eval_expr and cls._is_evaluable_expression(value))
+                or value == Union
+        )
+
+    @staticmethod
+    def _type_to_str(type_: Any) -> str:
+        """
+        Convert a Python type (or type annotation) (from :code:`typing`) to a prettier format. Also handles normal types as well.
+
+        Args:
+            type_: The type or type annotation to convert.
+
+        Returns:
+            A string with a prettier format of the type annotation.
+        """
+
+        # If the type as a __name__ attribute, use that
+        if hasattr(type_, "__name__"):
+            return type_.__name__
+
+        # If its a Generic type
+        elif get_origin(type_) is not None:
+            collection_arg = None
+            if get_origin(type_) == list and len(get_args(type_)) > 0:
+                return Base._type_to_str(get_args(type_)[0])
+            elif get_origin(type_) == dict and len(get_args(type_)) > 0:
+                return Base._type_to_str(get_args(type_)[1])
+            elif get_origin(type_) == Union and len(get_args(type_)) > 0:
+                return "Union[" + ", ".join([Base._type_to_str(arg) for arg in get_args(type_)]) + "]"
+
+        # Fallback to returning just the string representation. Drop any occurrence of typing
+        return str(type_).replace("typing.", "")
+
+    def generate_documentation(self, format: str = MARKDOWN_FORMAT) -> str:
+        """
+        Generate documentation for the modelspec object.
+
+        Args:
+            format: The format to generate the documentation in. Currently supported formats are: ['markdown', 'dict']
+        """
+        return self.__class__._cls_generate_documentation(format=format)
+
+    @classmethod
+    def _cls_generate_documentation(cls, format: str = MARKDOWN_FORMAT):
+        """
+        Generate documentation for the modelspec object.
+
+        Args:
+            format: The format to generate the documentation in. Currently supported formats are: ['markdown', 'dict']
+        """
+
+        if format == MARKDOWN_FORMAT:
+            doc_string = ""
+        if format == DICT_FORMAT:
+            doc_dict = {}
+
+        definition = cls._parse_definition()
+        allowed_fields = cls._parse_allowed_fields()
+        allowed_children = cls._parse_allowed_children()
+
+        print(" - %s (%s)" % (cls.__name__, definition))
+
+        def insert_links(text):
+            if not "_" in text:
+                return text
+            if '"' in text:
+                return text  # Assume it's a quoted string containing an underscore...
+            split = text.split("_")
+            text2 = ""
+            for i in range(int(len(split) / 2.0)):
+                pre = split[i * 2]
+                type = split[i * 2 + 1]
+                text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
+            if int(len(split) / 2.0) != len(split) / 2.0:
+                text2 += split[-1]
+            return text2
+
+        name = cls.__name__
+        if format == MARKDOWN_FORMAT:
+            doc_string += "## %s\n" % name
+            if definition is not None:
+                doc_string += "%s\n\n" % insert_links(definition)
+        if format == DICT_FORMAT:
+            doc_dict[name] = {}
+            if definition is not None:
+                doc_dict[name]["definition"] = definition
+
+        if len(allowed_fields) > 0:
+            if format == MARKDOWN_FORMAT:
+                doc_string += "#### Allowed parameters\n<table>"
+        if format == DICT_FORMAT:
+            doc_dict[name]["allowed_parameters"] = {}
+
+        referenced = []
+
+        for f, (description, type_) in allowed_fields.items():
+            referencable = not Base._is_base_type(
+                type_, can_be_eval_expr=True, can_be_dict=True
+            )
+            type_str = Base._type_to_str(type_)
+            print("    Allowed parameter: %s %s" % (f, (description, type_str)))
+
+            if format == DICT_FORMAT:
+                doc_dict[name]["allowed_parameters"][f] = {}
+                doc_dict[name]["allowed_parameters"][f]["type"] = type_str
+                doc_dict[name]["allowed_parameters"][f][
+                    "description"
+                ] = description
+
+            if format == MARKDOWN_FORMAT:
+                doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
+                    f,
+                    '<a href="#%s">%s</a>' % (type_str.lower(), type_str)
+                    if referencable
+                    else type_str,
+                )
+                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                    insert_links(description)
+                )
+
+            if referencable:
+                referenced.append(type_)
+
+        if len(allowed_fields) > 0:
+            if format == MARKDOWN_FORMAT:
+                doc_string += "\n</table>\n\n"
+
+        if len(allowed_children) > 0:
+            if format == MARKDOWN_FORMAT:
+                doc_string += "#### Allowed children\n<table>"
+            if format == DICT_FORMAT:
+                doc_dict[name]["allowed_children"] = {}
+
+        for c, (description, type_) in allowed_children.items():
+            type_str = Base._type_to_str(type_)
+            print("    Allowed child: %s %s" % (c, (description, type_str)))
+
+            referencable = not Base._is_base_type(
+                type_, can_be_dict=True
+            )
+
+            if format == DICT_FORMAT:
+                doc_dict[name]["allowed_children"][c] = {}
+                doc_dict[name]["allowed_children"][c]["type"] = type_str
+                doc_dict[name]["allowed_children"][c][
+                    "description"
+                ] = allowed_children[c][0]
+
+            if format == MARKDOWN_FORMAT:
+                doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
+                    c,
+                    '<a href="#%s">%s</a>' % (type_str.lower(), type_str)
+                    if referencable
+                    else type_str,
+                )
+                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                    insert_links(description)
+                )
+
+            # Get the contained type
+            if get_origin(type_) == list and len(get_args(type_)) > 0:
+                referenced.append(get_args(type_)[0])
+            elif get_origin(type_) == dict and len(get_args(type_)) > 1:
+                referenced.append(get_args(type_)[1])
+            else:
+                referenced.append(type_)
+
+
+        if len(allowed_children) > 0:
+            if format == MARKDOWN_FORMAT:
+                doc_string += "\n</table>\n\n"
+
+        for r in referenced:
+            if format == MARKDOWN_FORMAT:
+                doc_string += r._cls_generate_documentation(format=format)
+            if format == DICT_FORMAT:
+                pass
+                doc_dict.update(r._cls_generate_documentation(format=format))
+
+        if format == MARKDOWN_FORMAT:
+            return doc_string
+        if format == DICT_FORMAT:
+            return doc_dict
+
 
 # Below are a set of structure and unstructure hooks needed to help cattr serialize and deserialize from JSON the
 # non-standard things.
+
 
 def _unstructure_value_expr(o):
     """Handle unstructuring of value expressions from JSON"""
@@ -280,17 +657,10 @@ def _unstructure_value_expr(o):
 def _structure_value_expr(o, t):
     """Handle re-structuring of value expressions from JSON"""
 
-    # Don't convert scalars to arrays
-    if np.isscalar(o):
-        return o
-
-    # # Try to turn it into a numpy array
-    # arr = np.array(o)
-    #
-    # # Make sure the dtype is not object or string, we want to keep these as lists
-    # if arr.dtype.type not in [np.object_, np.str_]:
-    #     return arr
-
+    # This is a pass through right now. In the future we may want to convert nested lists to np.ndarrays.
+    # but for now we just pass through. We need to add the hook to cattr or it will complain it doesn't
+    # know how to structure the Union with EvaluableExpression and np.ndarray. Right now, these are just
+    # serialized as strings and lists respectively
     return o
 
 
@@ -409,7 +779,8 @@ def _is_list_base(cl):
 
 converter.register_unstructure_hook_factory(_is_list_base, _unstructure_list_base)
 converter.register_unstructure_hook_factory(
-    lambda cl: issubclass(cl, Base), _base_unstruct_hook_factory,
+    lambda cl: issubclass(cl, Base),
+    _base_unstruct_hook_factory,
 )
 
 converter.register_structure_hook_factory(_is_list_base, _structure_list_mdfbase)
@@ -417,4 +788,3 @@ converter.register_structure_hook_factory(
     lambda cl: issubclass(cl, Base) and "id" in [a.name for a in fields(cl)],
     _base_struct_hook_factory,
 )
-

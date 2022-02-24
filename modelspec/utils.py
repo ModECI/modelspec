@@ -18,7 +18,6 @@ def load_json(filename):
     """
 
     with open(filename, "r") as f:
-
         data = json.load(f, object_hook=ascii_encode_dict)
 
     return data
@@ -29,7 +28,6 @@ def load_yaml(filename):
     Load a generic YAML file
     """
     with open(filename, "r") as f:
-
         data = yaml.load(f, Loader=yaml.SafeLoader)
 
     return data
