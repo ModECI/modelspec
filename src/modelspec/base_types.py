@@ -836,3 +836,12 @@ converter.register_structure_hook_factory(
     lambda cl: issubclass(cl, Base) and "id" in [a.name for a in fields(cl)],
     _base_struct_hook_factory,
 )
+
+# Define some aliases for attr.define and other attrs stuff. This should hid attrs from the user a bit.
+define = attr.define
+has = attr.has
+field = attr.field
+fields = attr.fields
+optional = attr.validators.optional
+instance_of = attr.validators.instance_of
+in_ = attr.validators.in_
