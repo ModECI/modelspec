@@ -510,7 +510,9 @@ class Base:
 
         print(" - %s (%s)" % (cls.__name__, definition))
 
-        def insert_links(text):
+        rst_url_format = '`%s <%s>`_'
+
+        def insert_links(text, format=MARKDOWN_FORMAT):
             if not "_" in text:
                 return text
             if '"' in text:
@@ -520,17 +522,27 @@ class Base:
             for i in range(int(len(split) / 2.0)):
                 pre = split[i * 2]
                 type = split[i * 2 + 1]
-                text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
+                if format==MARKDOWN_FORMAT:
+                    text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
+                elif format==RST_FORMAT:
+                    #text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower # problem with handling links ending with s e.g. _Graph_s
+
+                    text2 += ('%s%s') % (pre, type) # temp hack... problem with handling links ending with s e.g. _Graph_s
             if int(len(split) / 2.0) != len(split) / 2.0:
                 text2 += split[-1]
             return text2
 
         name = cls.__name__
+
         if format == MARKDOWN_FORMAT:
             doc_string += "## %s\n" % name
             if definition is not None:
                 doc_string += "%s\n\n" % insert_links(definition)
-        if format == DICT_FORMAT:
+        elif format == RST_FORMAT:
+            doc_string += "%s\n%s\n%s\n" % ("="*len(name), name, "="*len(name))
+            if definition is not None:
+                doc_string += "%s\n\n" % insert_links(definition, format=RST_FORMAT)
+        elif format == DICT_FORMAT:
             doc_dict[name] = {}
             if definition is not None:
                 doc_dict[name]["definition"] = definition
@@ -538,6 +550,10 @@ class Base:
         if len(allowed_fields) > 0:
             if format == MARKDOWN_FORMAT:
                 doc_string += "#### Allowed parameters\n<table>"
+            if format == RST_FORMAT:
+                ap = "**Allowed parameters**"
+                doc_string += "%s\n\n" % (ap)
+                table_info = []
         if format == DICT_FORMAT:
             doc_dict[name]["allowed_parameters"] = {}
 
@@ -557,7 +573,7 @@ class Base:
                     "description"
                 ] = description
 
-            if format == MARKDOWN_FORMAT:
+            elif format == MARKDOWN_FORMAT:
                 doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
                     f,
                     '<a href="#%s">%s</a>' % (type_str.lower(), type_str)
@@ -568,17 +584,35 @@ class Base:
                     insert_links(description)
                 )
 
+            elif format == RST_FORMAT:
+                n = "**%s**" % f
+                t = "%s" % (
+                    rst_url_format % (type_, '#'+type_str.lower())
+                    if referencable
+                    else type_str,
+                )
+                d = "*%s*" % (
+                    insert_links(description, format=RST_FORMAT)
+                )
+                table_info.append([n, t, d])
+
             if referencable:
                 referenced.append(type_)
 
         if len(allowed_fields) > 0:
             if format == MARKDOWN_FORMAT:
                 doc_string += "\n</table>\n\n"
+            elif format == RST_FORMAT:
+                doc_string += "%s\n\n" % (tabulate(table_info, ['Allowed field', 'Data Type', 'Description'], tablefmt="rst"))
 
         if len(allowed_children) > 0:
             if format == MARKDOWN_FORMAT:
                 doc_string += "#### Allowed children\n<table>"
-            if format == DICT_FORMAT:
+            elif format == RST_FORMAT:
+                ap = "**Allowed children**"
+                doc_string += "%s\n\n" % (ap)
+                table_info = []
+            elif format == DICT_FORMAT:
                 doc_dict[name]["allowed_children"] = {}
 
         for c, (description, type_) in allowed_children.items():
@@ -596,7 +630,7 @@ class Base:
                     "description"
                 ] = allowed_children[c][0]
 
-            if format == MARKDOWN_FORMAT:
+            elif format == MARKDOWN_FORMAT:
                 doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
                     c,
                     '<a href="#%s">%s</a>' % (type_str.lower(), type_str)
@@ -607,6 +641,18 @@ class Base:
                     insert_links(description)
                 )
 
+            elif format == RST_FORMAT:
+                n = "**%s**" % c
+                t = "%s" % (
+                    rst_url_format % (type_str, '#'+type_str.lower())
+                    if referencable
+                    else type_str,
+                )
+                d = "*%s*" % (
+                    insert_links(description, format=RST_FORMAT)
+                )
+                table_info.append([n, t, d])
+
             # Get the contained type
             if get_origin(type_) == list and len(get_args(type_)) > 0:
                 referenced.append(get_args(type_)[0])
@@ -615,17 +661,15 @@ class Base:
             else:
                 referenced.append(type_)
 
-
         if len(allowed_children) > 0:
             if format == MARKDOWN_FORMAT:
                 doc_string += "\n</table>\n\n"
+            elif format == RST_FORMAT:
+                doc_string += "%s\n\n"%(tabulate(table_info, ['Allowed child','Data Type','Description'], tablefmt="rst"))
 
         for r in referenced:
-            if format == MARKDOWN_FORMAT:
+            if format in (MARKDOWN_FORMAT, RST_FORMAT):
                 doc_string += r._cls_generate_documentation(format=format)
-            if format == DICT_FORMAT:
-                pass
-                doc_dict.update(r._cls_generate_documentation(format=format))
 
         if format in (MARKDOWN_FORMAT, RST_FORMAT):
             return doc_string

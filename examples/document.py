@@ -24,6 +24,7 @@ class Section(Base):
     A model of a section of the document. Will contain a _Paragraph_ or two
 
     Args:
+        id: The id of the section
         paragraphs: The paragraphs
     """
     id: str = field(validator=instance_of(str))

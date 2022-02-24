@@ -21,7 +21,7 @@ A model for documents
 A model of a section of the document. Will contain a <a href="#paragraph">Paragraph</a> or two
 
 #### Allowed parameters
-<table><tr><td><b>id</b></td><td>str</td><td><i></i></td></tr>
+<table><tr><td><b>id</b></td><td>str</td><td><i>The id of the section</i></td></tr>
 
 
 </table>
