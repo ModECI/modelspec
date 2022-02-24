@@ -94,14 +94,7 @@ value_expr_converter = cattr.Converter()
 class Base:
     """
     Base class for all object in a model specification. Any object should inherit from this class.
-
-    Args:
-        notes: Human readable notes.
     """
-
-    notes: Optional[str] = attr.ib(
-        kw_only=True, default=None, validator=optional(instance_of(str))
-    )
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert the Base object to a nested dict structure."""
