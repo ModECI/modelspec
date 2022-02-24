@@ -166,6 +166,18 @@ class Base:
 
         return filename
 
+    def to_yaml(self, include_metadata: bool = True) -> str:
+        """
+        Convert the Base object to a YAML dictionary representation.
+
+        Args:
+            include_metadata: Should metadata be included in the YAML output?
+
+        Returns:
+            A YAML string representation of the object.
+        """
+        return yaml.dump(yaml_converter.unstructure(self.to_dict()), sort_keys=False)
+
     def to_yaml_file(self, filename: str, include_metadata: bool = True) -> str:
         """Convert file in MDF format to yaml format
 

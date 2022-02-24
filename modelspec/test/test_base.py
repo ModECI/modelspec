@@ -266,20 +266,10 @@ class TestCustomSaveLoad(unittest.TestCase):
         doc.sections.append(a)
         doc.sections.append(Section(id="Chapter 1"))
 
-        print(doc)
-
-        doc.to_json_file("document.json")
-        doc.to_yaml_file("document.yaml")
-
+        json_str = doc.to_json()
+        yaml_str = doc.to_yaml()
         doc_md = doc.generate_documentation(format="markdown")
-
-        with open("document.md", "w") as d:
-            d.write(doc_md)
-
         doc_rst = doc.generate_documentation(format="rst")
-
-        with open("document.rst", "w") as d:
-            d.write(doc_rst)
 
 
 if __name__ == "__main__":
