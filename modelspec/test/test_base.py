@@ -1,11 +1,9 @@
 from modelspec.base_types import *
 from modelspec.utils import *
 
-import attr
-from attr import has, field, fields
-from attr.validators import optional, instance_of, in_
+import modelspec
+from modelspec import field, optional, instance_of
 
-import pickle
 
 try:
     import unittest2 as unittest
@@ -14,7 +12,8 @@ except ImportError:
 
 # Some test modelspec classes to use in the tests
 
-@attr.define
+
+@modelspec.define
 class NewCell(Base):
     """
     A new cell definition
@@ -26,7 +25,8 @@ class NewCell(Base):
     id: str = field(validator=instance_of(str))
     neuroml2_source_file: str = field(default=None, validator=optional(instance_of(str)))
 
-@attr.define
+
+@modelspec.define
 class NewSynapse(Base):
     """
     A new synapse definition
@@ -40,7 +40,8 @@ class NewSynapse(Base):
     neuroml2_source_file: str = field(default=None, validator=optional(instance_of(str)))
     tested: bool = field(default=None, validator=optional(instance_of(bool)))
 
-@attr.define
+
+@modelspec.define
 class NewRandomConnectivity(Base):
     """
     A new random connectivity definition
@@ -49,9 +50,10 @@ class NewRandomConnectivity(Base):
         probability: Random probability of connection
 
     """
-    probability: ValueExprType = attr.ib(default=None, validator=optional(instance_of(value_expr_types)))
+    probability: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
 
-@attr.define
+
+@modelspec.define
 class NewNetwork(Base):
     """
     A new network definition
