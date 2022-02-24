@@ -15,6 +15,7 @@ setup(
     description="A common JSON/YAML based format for compact model specification",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
+    setup_requires=["attrs"],
     install_requires=["pyyaml", "numpy", "tabulate", 'attrs', 'cattrs', 'docstring-parser'],
     classifiers=[
         "Intended Audience :: Science/Research",
