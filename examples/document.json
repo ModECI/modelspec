@@ -1,11 +1,13 @@
-{
+    {
     "MyBook": {
         "title": "My life in Python",
         "sections": {
             "Abstract": {
-                "paragraphs": {
-                    "contents": "Blah blah blah"
-                }
+                "paragraphs": [
+                    {
+                        "contents": "Blah blah blah"
+                    }
+                ]
             },
             "Chapter 1": {}
         }

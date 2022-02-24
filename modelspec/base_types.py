@@ -43,7 +43,6 @@ verbose = False
 
 MARKDOWN_FORMAT = "markdown"
 RST_FORMAT = "rst"
-
 DICT_FORMAT = "dict"
 
 
@@ -500,7 +499,7 @@ class Base:
             format: The format to generate the documentation in. Currently supported formats are: ['markdown', 'dict']
         """
 
-        if format == MARKDOWN_FORMAT:
+        if format == MARKDOWN_FORMAT or format == RST_FORMAT:
             doc_string = ""
         if format == DICT_FORMAT:
             doc_dict = {}
@@ -628,7 +627,7 @@ class Base:
                 pass
                 doc_dict.update(r._cls_generate_documentation(format=format))
 
-        if format == MARKDOWN_FORMAT:
+        if format in (MARKDOWN_FORMAT, RST_FORMAT):
             return doc_string
         if format == DICT_FORMAT:
             return doc_dict
@@ -737,7 +736,7 @@ def _unstructure_list_base(cl):
             return d
 
         except AttributeError:
-            return obj_list
+            return converter.unstructure(obj_list)
 
     return f
 
