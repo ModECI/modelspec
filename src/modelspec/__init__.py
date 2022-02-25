@@ -1,24 +1,5 @@
 __version__ = "0.1.5"
 
-from .base_types import (
-    Base,
-    define,
-    has,
-    field,
-    fields,
-    optional,
-    instance_of,
-    in_
-)
+from .base_types import Base, define, has, field, fields, optional, instance_of, in_
 
-__all__ = [
-    "Base",
-    "define",
-    "has",
-    "field",
-    "fields",
-    "optional",
-    "instance_of",
-    "in_"
-]
-
+__all__ = ["Base", "define", "has", "field", "fields", "optional", "instance_of", "in_"]

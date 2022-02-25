@@ -17,7 +17,7 @@ def load_json(filename):
     Load a generic JSON file
     """
 
-    with open(filename, "r") as f:
+    with open(filename) as f:
         data = json.load(f, object_hook=ascii_encode_dict)
 
     return data
@@ -27,11 +27,10 @@ def load_yaml(filename):
     """
     Load a generic YAML file
     """
-    with open(filename, "r") as f:
+    with open(filename) as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
 
     return data
-
 
 
 def save_to_json_file(info_dict, filename, indent=4):
@@ -66,7 +65,9 @@ def _parse_element(dict_format, to_build):
         print("Parse for element: [%s]" % dict_format)
     for k in dict_format.keys():
         if verbose:
-            print("  Setting id: %s in %s (%s)" % (k, type.__name__, type(to_build)))
+            print(
+                "  Setting id: {} in {} ({})".format(k, type.__name__, type(to_build))
+            )
         to_build.id = k
         to_build = _parse_attributes(dict_format[k], to_build)
 
@@ -79,7 +80,9 @@ def _parse_attributes(dict_format, to_build):
         value = dict_format[key]
         new_format = True
         if verbose:
-            print("  Setting %s=%s (%s) in %s" % (key, value, type(value), to_build))
+            print(
+                "  Setting {}={} ({}) in {}".format(key, value, type(value), to_build)
+            )
 
         if new_format:
             if type(to_build) == dict:
@@ -90,7 +93,7 @@ def _parse_attributes(dict_format, to_build):
                 for v in value:
                     ff = type_to_use()
                     if verbose:
-                        print("    Type for %s: %s (%s)" % (key, type_to_use, ff))
+                        print(f"    Type for {key}: {type_to_use} ({ff})")
                     ff = _parse_element({v: value[v]}, ff)
                     exec("to_build.%s.append(ff)" % key)
             else:
@@ -106,8 +109,12 @@ def _parse_attributes(dict_format, to_build):
                 else:
                     type_to_use = to_build.allowed_fields[key][1]
                     if verbose:
-                        print("type_to_use: %s (%s)" % (type_to_use, type(type_to_use)))
-                        print("- %s = %s" % (key, value))
+                        print(
+                            "type_to_use: {} ({})".format(
+                                type_to_use, type(type_to_use)
+                            )
+                        )
+                        print(f"- {key} = {value}")
 
                     if type_to_use == EvaluableExpression:
                         vv = {}
@@ -155,7 +162,7 @@ def _val_info(param_val):
     if type(param_val) == np.ndarray:
         pp = "%s" % (np.array2string(param_val, threshold=4, edgeitems=1))
         pp = pp.replace("\n", "")
-        pp += " (NP %s %s)" % (param_val.shape, param_val.dtype)
+        pp += f" (NP {param_val.shape} {param_val.dtype})"
     elif type(param_val).__name__ == "EagerTensor":
         pp = "%s" % param_val
         pp = pp.replace("\n", "")
@@ -177,13 +184,13 @@ def _params_info(parameters, multiline=False):
     Short info on names, values and types in parameter list
     """
     pi = "["
-    if parameters is not None and len(parameters)>0:
+    if parameters is not None and len(parameters) > 0:
         for p in parameters:
             if not p == "__builtins__":
                 param_val = parameters[p]
                 pp = _val_info(param_val)
 
-                pi += "%s=%s, %s" % (p, pp, '\n' if multiline else '')
+                pi += "{}={}, {}".format(p, pp, "\n" if multiline else "")
         pi = pi[:-2]
     pi += "]"
     return pi
@@ -279,7 +286,7 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
             )
 
             v = eval(expr, parameters)
-            print_("Evaluated with Python: %s = %s" % (expr, _val_info(v)), verbose)
+            print_("Evaluated with Python: {} = {}".format(expr, _val_info(v)), verbose)
             if (type(v) == float or type(v) == str) and int(v) == v:
                 print_("Returning int: %s" % int(v), verbose)
 
@@ -289,13 +296,15 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
                     return int(v)
             return v
         except Exception as e:
-            print_("Returning without altering: %s (error: %s)" % (expr, e), verbose)
+            print_(f"Returning without altering: {expr} (error: {e})", verbose)
             return expr
 
 
 """
     Translates a string like '3', '[0,2]' to a list
 """
+
+
 def parse_list_like(list_str):
 
     if isinstance(list_str, int):

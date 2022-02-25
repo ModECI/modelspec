@@ -1,4 +1,3 @@
-
 import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
@@ -15,6 +14,7 @@ class Paragraph(Base):
     Args:
         contents: Paragraph contents, which make up the _Section_s.
     """
+
     contents: str = field(validator=instance_of(str))
 
 
@@ -27,6 +27,7 @@ class Section(Base):
         id: The id of the section
         paragraphs: The paragraphs
     """
+
     id: str = field(validator=instance_of(str))
     paragraphs: List[Paragraph] = field(factory=list)
 
@@ -42,6 +43,7 @@ class Document(Base):
         ISBN: International Standard Book Number
         sections: The sections of the document
     """
+
     id: str = field(validator=instance_of(str))
     title: str = field(default=None, validator=optional(instance_of(str)))
     ISBN: int = field(default=None, validator=optional(instance_of(int)))

@@ -51,6 +51,7 @@ class EvaluableExpression(str):
     EvaluableExpression is a string that can be evaluated to a value during MDF execution. This class inherits from
     str, so it can be used as a string.
     """
+
     def __init__(self, expr):
         self.expr = expr
 
@@ -68,7 +69,7 @@ def print_(text: str, print_it: bool = False):
     if not isinstance(text, str):
         text = ("%s" % text).decode("ascii")
     if print_it:
-        print("%s%s" % (prefix, text.replace("\n", "\n" + prefix)))
+        print("{}{}".format(prefix, text.replace("\n", "\n" + prefix)))
 
 
 def print_v(text: str):
@@ -372,7 +373,9 @@ class Base:
         try:
             f = attr.fields_dict(cls)[field_name]
         except KeyError:
-            raise ValueError(f"Field '{field_name}' not found in modelspec class '{cls.__name__}'")
+            raise ValueError(
+                f"Field '{field_name}' not found in modelspec class '{cls.__name__}'"
+            )
 
         # Check if the type of the field is a list or dict
         collection_arg = None
@@ -430,13 +433,13 @@ class Base:
 
     @classmethod
     def _is_base_type(
-            cls,
-            value,
-            can_be_list=False,
-            can_be_dict=False,
-            can_be_ndarray=False,
-            can_be_none=False,
-            can_be_eval_expr=False,
+        cls,
+        value,
+        can_be_list=False,
+        can_be_dict=False,
+        can_be_ndarray=False,
+        can_be_none=False,
+        can_be_eval_expr=False,
     ):
 
         import numpy
@@ -452,16 +455,16 @@ class Base:
             value = get_origin(value)
 
         return (
-                value == int
-                or value == str
-                or value == bool
-                or value == float
-                or (can_be_list and value == list)
-                or (can_be_dict and value == dict)
-                or (can_be_ndarray and value == numpy.ndarray)
-                or (can_be_none and value is type(None))
-                or (can_be_eval_expr and cls._is_evaluable_expression(value))
-                or value == Union
+            value == int
+            or value == str
+            or value == bool
+            or value == float
+            or (can_be_list and value == list)
+            or (can_be_dict and value == dict)
+            or (can_be_ndarray and value == numpy.ndarray)
+            or (can_be_none and value is type(None))
+            or (can_be_eval_expr and cls._is_evaluable_expression(value))
+            or value == Union
         )
 
     @staticmethod
@@ -488,7 +491,11 @@ class Base:
             elif get_origin(type_) == dict and len(get_args(type_)) > 0:
                 return Base._type_to_str(get_args(type_)[1])
             elif get_origin(type_) == Union and len(get_args(type_)) > 0:
-                return "Union[" + ", ".join([Base._type_to_str(arg) for arg in get_args(type_)]) + "]"
+                return (
+                    "Union["
+                    + ", ".join([Base._type_to_str(arg) for arg in get_args(type_)])
+                    + "]"
+                )
 
         # Fallback to returning just the string representation. Drop any occurrence of typing
         return str(type_).replace("typing.", "")
@@ -520,9 +527,9 @@ class Base:
         allowed_fields = cls._parse_allowed_fields()
         allowed_children = cls._parse_allowed_children()
 
-        print(" - %s (%s)" % (cls.__name__, definition))
+        print(f" - {cls.__name__} ({definition})")
 
-        rst_url_format = '`%s <%s>`_'
+        rst_url_format = "`%s <%s>`_"
 
         def insert_links(text, format=MARKDOWN_FORMAT):
             if not "_" in text:
@@ -534,12 +541,15 @@ class Base:
             for i in range(int(len(split) / 2.0)):
                 pre = split[i * 2]
                 type = split[i * 2 + 1]
-                if format==MARKDOWN_FORMAT:
-                    text2 += '%s<a href="#%s">%s</a>' % (pre, type.lower(), type)
-                elif format==RST_FORMAT:
-                    #text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower # problem with handling links ending with s e.g. _Graph_s
+                if format == MARKDOWN_FORMAT:
+                    text2 += f'{pre}<a href="#{type.lower()}">{type}</a>'
+                elif format == RST_FORMAT:
+                    # text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower # problem with handling links ending with s e.g. _Graph_s
 
-                    text2 += ('%s%s') % (pre, type) # temp hack... problem with handling links ending with s e.g. _Graph_s
+                    text2 += ("%s%s") % (
+                        pre,
+                        type,
+                    )  # temp hack... problem with handling links ending with s e.g. _Graph_s
             if int(len(split) / 2.0) != len(split) / 2.0:
                 text2 += split[-1]
             return text2
@@ -551,7 +561,7 @@ class Base:
             if definition is not None:
                 doc_string += "%s\n\n" % insert_links(definition)
         elif format == RST_FORMAT:
-            doc_string += "%s\n%s\n%s\n" % ("="*len(name), name, "="*len(name))
+            doc_string += "{}\n{}\n{}\n".format("=" * len(name), name, "=" * len(name))
             if definition is not None:
                 doc_string += "%s\n\n" % insert_links(definition, format=RST_FORMAT)
         elif format == DICT_FORMAT:
@@ -576,19 +586,17 @@ class Base:
                 type_, can_be_eval_expr=True, can_be_dict=True
             )
             type_str = Base._type_to_str(type_)
-            print("    Allowed parameter: %s %s" % (f, (description, type_str)))
+            print("    Allowed parameter: {} {}".format(f, (description, type_str)))
 
             if format == DICT_FORMAT:
                 doc_dict[name]["allowed_parameters"][f] = {}
                 doc_dict[name]["allowed_parameters"][f]["type"] = type_str
-                doc_dict[name]["allowed_parameters"][f][
-                    "description"
-                ] = description
+                doc_dict[name]["allowed_parameters"][f]["description"] = description
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
+                doc_string += "<tr><td><b>{}</b></td><td>{}</td>".format(
                     f,
-                    '<a href="#%s">%s</a>' % (type_str.lower(), type_str)
+                    f'<a href="#{type_str.lower()}">{type_str}</a>'
                     if referencable
                     else type_str,
                 )
@@ -598,14 +606,12 @@ class Base:
 
             elif format == RST_FORMAT:
                 n = "**%s**" % f
-                t = "%s" % (
-                    rst_url_format % (type_, '#'+type_str.lower())
+                t = "{}".format(
+                    rst_url_format % (type_, "#" + type_str.lower())
                     if referencable
                     else type_str,
                 )
-                d = "*%s*" % (
-                    insert_links(description, format=RST_FORMAT)
-                )
+                d = "*%s*" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
 
             if referencable:
@@ -615,7 +621,13 @@ class Base:
             if format == MARKDOWN_FORMAT:
                 doc_string += "\n</table>\n\n"
             elif format == RST_FORMAT:
-                doc_string += "%s\n\n" % (tabulate(table_info, ['Allowed field', 'Data Type', 'Description'], tablefmt="rst"))
+                doc_string += "%s\n\n" % (
+                    tabulate(
+                        table_info,
+                        ["Allowed field", "Data Type", "Description"],
+                        tablefmt="rst",
+                    )
+                )
 
         if len(allowed_children) > 0:
             if format == MARKDOWN_FORMAT:
@@ -629,23 +641,21 @@ class Base:
 
         for c, (description, type_) in allowed_children.items():
             type_str = Base._type_to_str(type_)
-            print("    Allowed child: %s %s" % (c, (description, type_str)))
+            print("    Allowed child: {} {}".format(c, (description, type_str)))
 
-            referencable = not Base._is_base_type(
-                type_, can_be_dict=True
-            )
+            referencable = not Base._is_base_type(type_, can_be_dict=True)
 
             if format == DICT_FORMAT:
                 doc_dict[name]["allowed_children"][c] = {}
                 doc_dict[name]["allowed_children"][c]["type"] = type_str
-                doc_dict[name]["allowed_children"][c][
-                    "description"
-                ] = allowed_children[c][0]
+                doc_dict[name]["allowed_children"][c]["description"] = allowed_children[
+                    c
+                ][0]
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>%s</b></td><td>%s</td>" % (
+                doc_string += "<tr><td><b>{}</b></td><td>{}</td>".format(
                     c,
-                    '<a href="#%s">%s</a>' % (type_str.lower(), type_str)
+                    f'<a href="#{type_str.lower()}">{type_str}</a>'
                     if referencable
                     else type_str,
                 )
@@ -655,14 +665,12 @@ class Base:
 
             elif format == RST_FORMAT:
                 n = "**%s**" % c
-                t = "%s" % (
-                    rst_url_format % (type_str, '#'+type_str.lower())
+                t = "{}".format(
+                    rst_url_format % (type_str, "#" + type_str.lower())
                     if referencable
                     else type_str,
                 )
-                d = "*%s*" % (
-                    insert_links(description, format=RST_FORMAT)
-                )
+                d = "*%s*" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
 
             # Get the contained type
@@ -677,7 +685,13 @@ class Base:
             if format == MARKDOWN_FORMAT:
                 doc_string += "\n</table>\n\n"
             elif format == RST_FORMAT:
-                doc_string += "%s\n\n"%(tabulate(table_info, ['Allowed child','Data Type','Description'], tablefmt="rst"))
+                doc_string += "%s\n\n" % (
+                    tabulate(
+                        table_info,
+                        ["Allowed child", "Data Type", "Description"],
+                        tablefmt="rst",
+                    )
+                )
 
         for r in referenced:
             if format in (MARKDOWN_FORMAT, RST_FORMAT):

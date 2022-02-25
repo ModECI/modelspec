@@ -20,8 +20,11 @@ class NewCell(Base):
         id: the cell id
         neuroml2_source_file: The path to the source file
     """
+
     id: str = field(validator=instance_of(str))
-    neuroml2_source_file: str = field(default=None, validator=optional(instance_of(str)))
+    neuroml2_source_file: str = field(
+        default=None, validator=optional(instance_of(str))
+    )
 
 
 @modelspec.define
@@ -34,8 +37,11 @@ class NewSynapse(Base):
         neuroml2_source_file: The path to the source file
         tested: A boolean attribute
     """
+
     id: str = field(validator=instance_of(str))
-    neuroml2_source_file: str = field(default=None, validator=optional(instance_of(str)))
+    neuroml2_source_file: str = field(
+        default=None, validator=optional(instance_of(str))
+    )
     tested: bool = field(default=None, validator=optional(instance_of(bool)))
 
 
@@ -48,7 +54,10 @@ class NewRandomConnectivity(Base):
         probability: Random probability of connection
 
     """
-    probability: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
+
+    probability: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
 
 
 @modelspec.define
@@ -66,22 +75,40 @@ class NewNetwork(Base):
         parameters: Dictionary of global parameters for the network
         random_connectivity: Use random connectivity
     """
+
     id: str = field(validator=instance_of(str))
     cells: List[NewCell] = field(factory=list)
     synapses: List[NewSynapse] = field(factory=list)
     version: str = field(default="NeuroMLlite 0.0", validator=instance_of(str))
     seed: int = field(default=None, validator=optional(instance_of(int)))
     stable: bool = field(default=None, validator=optional(instance_of(bool)))
-    parameters: Dict[str, Any] = field(default=None, validator=optional(instance_of(dict)))
-    random_connectivity: NewRandomConnectivity = field(default=None,
-                                                       validator=optional(instance_of(NewRandomConnectivity)))
-    ee0: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
-    ee1: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
-    ee2: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
-    ee3: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
-    ee4: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
-    ee5: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
-    ee6: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
+    parameters: Dict[str, Any] = field(
+        default=None, validator=optional(instance_of(dict))
+    )
+    random_connectivity: NewRandomConnectivity = field(
+        default=None, validator=optional(instance_of(NewRandomConnectivity))
+    )
+    ee0: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
+    ee1: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
+    ee2: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
+    ee3: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
+    ee4: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
+    ee5: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
+    ee6: ValueExprType = field(
+        default=None, validator=optional(instance_of(value_expr_types))
+    )
 
 
 def test_save_load_json(tmp_path):
@@ -126,7 +153,6 @@ def test_save_load_json(tmp_path):
         print("  As expected, an exception: [%s]..." % e)
 
     str_orig = str(net)
-
 
     filenamej = str(tmp_path / f"{net.id}.json")
     net.to_json_file(filenamej)
@@ -177,6 +203,7 @@ def test_save_load_json(tmp_path):
         assert eval("net.ee%i" % i) == eval("netj.ee%i" % i)
         assert eval("net.ee%i" % i) == eval("nety.ee%i" % i)
 
+
 def test_generate_documentation():
     net = NewNetwork(id="netid", parameters={"size": 3, "name": None})
 
@@ -214,6 +241,7 @@ def test_generate_documentation():
     md_str = net.generate_documentation()
     print(md_str)
 
+
 def test_generate_documentation_example():
     """Test the documentation generation in examples/"""
 
@@ -225,6 +253,7 @@ def test_generate_documentation_example():
         Args:
             contents: Paragraph contents, which make up the _Section_s.
         """
+
         contents: str = field(validator=instance_of(str))
 
     @modelspec.define
@@ -236,6 +265,7 @@ def test_generate_documentation_example():
             id: The id of the section
             paragraphs: The paragraphs
         """
+
         id: str = field(validator=instance_of(str))
         paragraphs: List[Paragraph] = field(factory=list)
 
@@ -250,6 +280,7 @@ def test_generate_documentation_example():
             ISBN: International Standard Book Number
             sections: The sections of the document
         """
+
         id: str = field(validator=instance_of(str))
         title: str = field(default=None, validator=optional(instance_of(str)))
         ISBN: int = field(default=None, validator=optional(instance_of(int)))
@@ -268,4 +299,3 @@ def test_generate_documentation_example():
     yaml_str = doc.to_yaml()
     doc_md = doc.generate_documentation(format="markdown")
     doc_rst = doc.generate_documentation(format="rst")
-
