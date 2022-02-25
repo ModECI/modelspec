@@ -1,6 +1,4 @@
-from modelspec.base_types import *
-from modelspec.utils import *
-
+from modelspec.utils import evaluate
 from modelspec.utils import _val_info
 
 import numpy as np

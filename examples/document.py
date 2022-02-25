@@ -1,7 +1,7 @@
 import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
-from typing import List, Optional, Union
+from typing import List
 
 # Example showing how to create a model of a document and use it to create/serialize instances
 

@@ -8,15 +8,7 @@ import cattr
 
 from typing import (
     Optional,
-    List,
-    Dict,
-    Any,
-    Union,
     Tuple,
-    Type,
-    TypeVar,
-    Callable,
-    Iterable,
 )
 
 from docstring_parser import parse
@@ -29,14 +21,9 @@ else:
 
 from typing import Union, List, Dict, Any
 
-from attr import has, field, fields
-from attr.validators import optional, instance_of, in_
-
-from cattr.gen import make_dict_unstructure_fn, make_dict_structure_fn, override
+from cattr.gen import make_dict_unstructure_fn, override
 from cattr.preconf.pyyaml import make_converter as make_yaml_converter
 
-
-from collections import OrderedDict
 from tabulate import tabulate
 
 verbose = False
@@ -48,7 +35,7 @@ DICT_FORMAT = "dict"
 
 class EvaluableExpression(str):
     """
-    EvaluableExpression is a string that can be evaluated to a value during MDF execution. This class inherits from
+    EvaluableExpression is a string that can be evaluated to a value during modelspec execution. This class inherits from
     str, so it can be used as a string.
     """
 
@@ -139,13 +126,13 @@ class Base:
 
     @classmethod
     def from_json(cls, json_str: str) -> "Base":
-        """Instantiate an MDF object from a JSON string"""
+        """Instantiate an modelspec object from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
     ) -> str:
-        """Convert the MDF model to JSON format and save to a file.
+        """Convert the modelspec model to JSON format and save to a file.
 
          .. note::
             JSON is standard file format uses human-readable text to store and transmit data objects consisting of
@@ -180,10 +167,10 @@ class Base:
         return yaml.dump(yaml_converter.unstructure(self.to_dict()), sort_keys=False)
 
     def to_yaml_file(self, filename: str, include_metadata: bool = True) -> str:
-        """Convert file in MDF format to yaml format
+        """Convert modelspec format to yaml format
 
         Args:
-            filename: File in MDF format (Filename extension: .mdf )
+            filename: File in modelspec format (Filename extension: .yaml )
             include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,
                               benchmark results, and environments in which the specified model was originally implemented
         Returns:
@@ -203,16 +190,16 @@ class Base:
         return filename
 
     @classmethod
-    def from_file(cls, filename: str) -> "Model":
+    def from_file(cls, filename: str) -> "Base":
         """
-        Create a :class:`.Model` from its representation stored in a file. Auto-detect the correct deserialization code
+        Create a :class:`.Base` from its representation stored in a file. Auto-detect the correct deserialization code
         based on file extension. Currently supported formats are; JSON(.json) and YAML (.yaml or .yml)
 
         Args:
             filename: The name of the file to load.
 
         Returns:
-            An MDF :class:`.Model` for this file.
+            An modelspec :class:`.Base` for this file.
         """
         if filename.endswith(".yaml") or filename.endswith(".yml"):
             return cls.from_yaml_file(filename)
@@ -220,35 +207,35 @@ class Base:
             return cls.from_json_file(filename)
         else:
             raise ValueError(
-                f"Cannot auto-detect MDF serialization format from filename ({filename}). The filename "
+                f"Cannot auto-detect modelspec serialization format from filename ({filename}). The filename "
                 f"must have one of the following extensions: .json, .yml, or .yaml."
             )
 
     @classmethod
-    def from_json_file(cls, filename: str) -> "Model":
+    def from_json_file(cls, filename: str) -> "Base":
         """
-        Create a :class:`.Model` from its JSON representation stored in a file.
+        Create a :class:`.Base` from its JSON representation stored in a file.
 
         Args:
             filename: The file from which to load the JSON data.
 
         Returns:
-            An MDF :class:`.Model` for this JSON
+            An modelspec :class:`.Base` for this JSON
         """
         with open(filename) as infile:
             d = json.load(infile)
             return cls.from_dict(d)
 
     @classmethod
-    def from_yaml_file(cls, filename: str) -> "Model":
+    def from_yaml_file(cls, filename: str) -> "Base":
         """
-        Create a :class:`.Model` from its YAML representation stored in a file.
+        Create a :class:`.Base` from its YAML representation stored in a file.
 
         Args:
             filename: The file from which to load the YAML data.
 
         Returns:
-            An MDF :class:`.Model` for this YAML
+            An modelspec :class:`.Base` for this YAML
         """
         with open(filename) as infile:
             d = yaml.safe_load(infile)
@@ -269,7 +256,7 @@ class Base:
         """
 
         # We can't find the container for this type of child object.
-        if not type_ in [f.name for f in attr.fields(self.__class__)]:
+        if type_ not in [f.name for f in attr.fields(self.__class__)]:
             return None
 
         children = self.__getattribute__(type_)
@@ -462,7 +449,7 @@ class Base:
             or (can_be_list and value == list)
             or (can_be_dict and value == dict)
             or (can_be_ndarray and value == numpy.ndarray)
-            or (can_be_none and value is type(None))
+            or (can_be_none and value is None)
             or (can_be_eval_expr and cls._is_evaluable_expression(value))
             or value == Union
         )
@@ -485,7 +472,6 @@ class Base:
 
         # If its a Generic type
         elif get_origin(type_) is not None:
-            collection_arg = None
             if get_origin(type_) == list and len(get_args(type_)) > 0:
                 return Base._type_to_str(get_args(type_)[0])
             elif get_origin(type_) == dict and len(get_args(type_)) > 0:
@@ -532,7 +518,7 @@ class Base:
         rst_url_format = "`%s <%s>`_"
 
         def insert_links(text, format=MARKDOWN_FORMAT):
-            if not "_" in text:
+            if "_" not in text:
                 return text
             if '"' in text:
                 return text  # Assume it's a quoted string containing an underscore...
@@ -811,13 +797,13 @@ def _unstructure_list_base(cl):
     return f
 
 
-def _structure_list_mdfbase(cl):
+def _structure_list_base(cl):
     """Deserialize list of dict of Base objects as a list if all of their elements have ids"""
-    mdf_class = get_args(cl)[0]
+    base_class = get_args(cl)[0]
 
     def f(obj_dict, t):
         try:
-            obj_list = [converter.structure(v, mdf_class) for v in obj_dict.values()]
+            obj_list = [converter.structure(v, base_class) for v in obj_dict.values()]
 
             # Give each object the id that is its key in the dict.
             for id, obj in zip(obj_dict.keys(), obj_list):
@@ -845,7 +831,7 @@ converter.register_unstructure_hook_factory(
     _base_unstruct_hook_factory,
 )
 
-converter.register_structure_hook_factory(_is_list_base, _structure_list_mdfbase)
+converter.register_structure_hook_factory(_is_list_base, _structure_list_base)
 converter.register_structure_hook_factory(
     lambda cl: issubclass(cl, Base) and "id" in [a.name for a in fields(cl)],
     _base_struct_hook_factory,

@@ -160,7 +160,7 @@ def test_save_load_json(tmp_path):
     filenamey = str(tmp_path / f"{net.id}.yaml")
     # net.id = net.id+'_yaml'
     net.to_yaml_file(filenamey)
-    from modelspec.utils import load_json, load_yaml, _parse_element
+    from modelspec.utils import load_json, load_yaml
 
     dataj = load_json(filenamej)
     print_v("Loaded network specification from %s" % filenamej)
@@ -174,7 +174,6 @@ def test_save_load_json(tmp_path):
     nety = NewNetwork.from_dict(datay)
     str_nety = str(nety)
 
-    verbose = False
     print("----- Before -----")
     print(str_orig)
     print("----- After via %s -----" % filenamej)
@@ -295,7 +294,7 @@ def test_generate_documentation_example():
     doc.sections.append(a)
     doc.sections.append(Section(id="Chapter 1"))
 
-    json_str = doc.to_json()
-    yaml_str = doc.to_yaml()
-    doc_md = doc.generate_documentation(format="markdown")
-    doc_rst = doc.generate_documentation(format="rst")
+    doc.to_json()
+    doc.to_yaml()
+    doc.generate_documentation(format="markdown")
+    doc.generate_documentation(format="rst")

@@ -1,4 +1,3 @@
-from modelspec import *
 import sys
 import json
 import yaml
@@ -6,7 +5,7 @@ import os
 import math
 import numpy as np
 
-from modelspec.base_types import print_v, print_
+from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
 
 verbose = False
@@ -118,7 +117,6 @@ def _parse_attributes(dict_format, to_build):
 
                     if type_to_use == EvaluableExpression:
                         vv = {}
-                        dd = _parse_attributes(value, vv)
                         to_build.__setattr__(key, vv)
                     else:
                         ff = type_to_use()
@@ -133,9 +131,9 @@ def _parse_attributes(dict_format, to_build):
             elif type(value) == list:
                 type_to_use = to_build.allowed_children[key][1]
 
-                for l in value:
+                for vl in value:
                     ff = type_to_use()
-                    ff = _parse_element(l, ff)
+                    ff = _parse_element(vl, ff)
                     exec("to_build.%s.append(ff)" % key)
             else:
                 type_to_use = to_build.allowed_fields[key][1]
@@ -150,7 +148,7 @@ def locate_file(f, base_dir):
     """
     Utility method for finding full path to a filename as string
     """
-    if base_dir == None:
+    if base_dir is None:
         return f
     file_name = os.path.join(base_dir, f)
     real = os.path.realpath(file_name)
@@ -325,5 +323,4 @@ def parse_list_like(list_str):
         except:
             pass
         if "[" in list_str:
-            l = eval(list_str)
-            return l
+            return eval(list_str)
