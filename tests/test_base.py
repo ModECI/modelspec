@@ -1,14 +1,12 @@
-from modelspec.base_types import *
-from modelspec.utils import *
-
 import modelspec
-from modelspec import field, optional, instance_of
 
 
-try:
-    import unittest2 as unittest
-except ImportError:
-    import unittest
+from modelspec import field, instance_of, optional, Base
+from modelspec.base_types import value_expr_types, ValueExprType, print_v
+
+from typing import List, Dict, Any
+
+import sys
 
 # Some test modelspec classes to use in the tests
 
@@ -86,194 +84,188 @@ class NewNetwork(Base):
     ee6: ValueExprType = field(default=None, validator=optional(instance_of(value_expr_types)))
 
 
-class TestCustomSaveLoad(unittest.TestCase):
-    def test_save_load_json(self):
-        net = NewNetwork(id="netid", parameters={"size": 3, "name": None})
+def test_save_load_json(tmp_path):
+    net = NewNetwork(id="netid", parameters={"size": 3, "name": None})
 
-        # Some tests on what's allowed
-        net.ee0 = "str"
-        net.ee1 = {"a": 2}
-        net.ee2 = 1
-        net.ee3 = 1.1
-        net.ee4 = True
-        net.ee5 = [1, 2]
-        net.ee6 = None
+    # Some tests on what's allowed
+    net.ee0 = "str"
+    net.ee1 = {"a": 2}
+    net.ee2 = 1
+    net.ee3 = 1.1
+    net.ee4 = True
+    net.ee5 = [1, 2]
+    net.ee6 = None
 
-        cell = NewCell(id="cellid1")
-        cell.neuroml2_source_file = "nnn"
-        cell2 = NewCell(id="cellid2")
-        cell2.neuroml2_source_file = "nnn2"
-        # net.cells.append(cell)
+    cell = NewCell(id="cellid1")
+    cell.neuroml2_source_file = "nnn"
+    cell2 = NewCell(id="cellid2")
+    cell2.neuroml2_source_file = "nnn2"
+    # net.cells.append(cell)
 
-        print(net)
-        print(net.cells)
-        print(net)
-        """  """
-        net.cells.append(cell)
-        net.cells.append(cell2)
+    print(net)
+    print(net.cells)
+    print(net)
+    """  """
+    net.cells.append(cell)
+    net.cells.append(cell2)
 
-        syn0 = NewSynapse(id="syn0", neuroml2_source_file=None, tested=True)
-        net.synapses.append(syn0)
-        syn1 = NewSynapse(id="syn1", neuroml2_source_file="xx", tested=None)
-        net.synapses.append(syn1)
+    syn0 = NewSynapse(id="syn0", neuroml2_source_file=None, tested=True)
+    net.synapses.append(syn0)
+    syn1 = NewSynapse(id="syn1", neuroml2_source_file="xx", tested=None)
+    net.synapses.append(syn1)
 
-        rc = NewRandomConnectivity(probability=0.01)
-        net.random_connectivity = rc
-        net.stable = False
-        print(rc)
-        print(net)
+    rc = NewRandomConnectivity(probability=0.01)
+    net.random_connectivity = rc
+    net.stable = False
+    print(rc)
+    print(net)
 
-        try:
-            print(net.notcells)
-        except Exception as e:
-            print("  As expected, an exception: [%s]..." % e)
+    try:
+        print(net.notcells)
+    except Exception as e:
+        print("  As expected, an exception: [%s]..." % e)
 
-        str_orig = str(net)
-
-        filenamej = "%s.json" % net.id
-        net.to_json_file(filenamej)
-
-        filenamey = "%s.yaml" % net.id
-        # net.id = net.id+'_yaml'
-        net.to_yaml_file(filenamey)
-        from modelspec.utils import load_json, load_yaml, _parse_element
-
-        dataj = load_json(filenamej)
-        print_v("Loaded network specification from %s" % filenamej)
-        netj = NewNetwork.from_dict(dataj)
-
-        str_netj = str(netj)
-
-        datay = load_yaml(filenamey)
-        print_v("Loaded network specification from %s" % filenamey)
-
-        nety = NewNetwork.from_dict(datay)
-        str_nety = str(nety)
-
-        verbose = False
-        print("----- Before -----")
-        print(str_orig)
-        print("----- After via %s -----" % filenamej)
-        print(str_netj)
-        print("----- After via %s -----" % filenamey)
-        print(str_nety)
-
-        print("Test JSON..")
-        if sys.version_info[0] == 2:
-            assert len(str_orig) == len(
-                str_netj
-            )  # Order not preserved in py2, just test len
-        else:
-            assert str_orig == str_netj
-
-        print("Test YAML..")
-        if sys.version_info[0] == 2:
-            assert len(str_orig) == len(
-                str_nety
-            )  # Order not preserved in py2, just test len
-        else:
-            assert str_orig == str_nety
-
-        print("Test EvaluableExpressions")
-        for i in range(7):
-            assert eval("net.ee%i" % i) == eval("netj.ee%i" % i)
-            assert eval("net.ee%i" % i) == eval("nety.ee%i" % i)
-
-    def test_generate_documentation(self):
-        net = NewNetwork(id="netid", parameters={"size": 3, "name": None})
-
-        # Some tests on what's allowed
-        net.ee0 = "str"
-        net.ee1 = {"a": 2}
-        net.ee2 = 1
-        net.ee3 = 1.1
-        net.ee4 = True
-        net.ee5 = [1, 2]
-        net.ee6 = None
-
-        cell = NewCell(id="cellid1")
-        cell.neuroml2_source_file = "nnn"
-        cell2 = NewCell(id="cellid2")
-        cell2.neuroml2_source_file = "nnn2"
-        # net.cells.append(cell)
-
-        print(net)
-        print(net.cells)
-        print(net)
-        """  """
-        net.cells.append(cell)
-        net.cells.append(cell2)
-
-        syn0 = NewSynapse(id="syn0", neuroml2_source_file=None, tested=True)
-        net.synapses.append(syn0)
-        syn1 = NewSynapse(id="syn1", neuroml2_source_file="xx", tested=None)
-        net.synapses.append(syn1)
-
-        rc = NewRandomConnectivity(probability=0.01)
-        net.random_connectivity = rc
-        net.stable = False
-
-        md_str = net.generate_documentation()
-        print(md_str)
-
-    def test_generate_documentation_example(self):
-        """Test the documentation generation in examples/"""
-
-        @modelspec.define
-        class Paragraph(Base):
-            """
-            A model of a paragraph
-
-            Args:
-                contents: Paragraph contents, which make up the _Section_s.
-            """
-            contents: str = field(validator=instance_of(str))
-
-        @modelspec.define
-        class Section(Base):
-            """
-            A model of a section of the document. Will contain a _Paragraph_ or two
-
-            Args:
-                id: The id of the section
-                paragraphs: The paragraphs
-            """
-            id: str = field(validator=instance_of(str))
-            paragraphs: List[Paragraph] = field(factory=list)
-
-        @modelspec.define
-        class Document(Base):
-            """
-            A model for documents
-
-            Args:
-                id: The unique id of the document
-                title: Document title
-                ISBN: International Standard Book Number
-                sections: The sections of the document
-            """
-            id: str = field(validator=instance_of(str))
-            title: str = field(default=None, validator=optional(instance_of(str)))
-            ISBN: int = field(default=None, validator=optional(instance_of(int)))
-            sections: List[Section] = field(factory=list)
-
-        doc = Document(id="MyBook")
-        doc.title = "My life in Python"
-
-        a = Section(id="Abstract")
-        p = Paragraph(contents="Blah blah blah")
-        a.paragraphs.append(p)
-        doc.sections.append(a)
-        doc.sections.append(Section(id="Chapter 1"))
-
-        json_str = doc.to_json()
-        yaml_str = doc.to_yaml()
-        doc_md = doc.generate_documentation(format="markdown")
-        doc_rst = doc.generate_documentation(format="rst")
+    str_orig = str(net)
 
 
-if __name__ == "__main__":
+    filenamej = str(tmp_path / f"{net.id}.json")
+    net.to_json_file(filenamej)
 
-    # Some tests
-    tc = TestCustomSaveLoad()
-    tc.test_save_load_json()
+    filenamey = str(tmp_path / f"{net.id}.yaml")
+    # net.id = net.id+'_yaml'
+    net.to_yaml_file(filenamey)
+    from modelspec.utils import load_json, load_yaml, _parse_element
+
+    dataj = load_json(filenamej)
+    print_v("Loaded network specification from %s" % filenamej)
+    netj = NewNetwork.from_dict(dataj)
+
+    str_netj = str(netj)
+
+    datay = load_yaml(filenamey)
+    print_v("Loaded network specification from %s" % filenamey)
+
+    nety = NewNetwork.from_dict(datay)
+    str_nety = str(nety)
+
+    verbose = False
+    print("----- Before -----")
+    print(str_orig)
+    print("----- After via %s -----" % filenamej)
+    print(str_netj)
+    print("----- After via %s -----" % filenamey)
+    print(str_nety)
+
+    print("Test JSON..")
+    if sys.version_info[0] == 2:
+        assert len(str_orig) == len(
+            str_netj
+        )  # Order not preserved in py2, just test len
+    else:
+        assert str_orig == str_netj
+
+    print("Test YAML..")
+    if sys.version_info[0] == 2:
+        assert len(str_orig) == len(
+            str_nety
+        )  # Order not preserved in py2, just test len
+    else:
+        assert str_orig == str_nety
+
+    print("Test EvaluableExpressions")
+    for i in range(7):
+        assert eval("net.ee%i" % i) == eval("netj.ee%i" % i)
+        assert eval("net.ee%i" % i) == eval("nety.ee%i" % i)
+
+def test_generate_documentation():
+    net = NewNetwork(id="netid", parameters={"size": 3, "name": None})
+
+    # Some tests on what's allowed
+    net.ee0 = "str"
+    net.ee1 = {"a": 2}
+    net.ee2 = 1
+    net.ee3 = 1.1
+    net.ee4 = True
+    net.ee5 = [1, 2]
+    net.ee6 = None
+
+    cell = NewCell(id="cellid1")
+    cell.neuroml2_source_file = "nnn"
+    cell2 = NewCell(id="cellid2")
+    cell2.neuroml2_source_file = "nnn2"
+    # net.cells.append(cell)
+
+    print(net)
+    print(net.cells)
+    print(net)
+    """  """
+    net.cells.append(cell)
+    net.cells.append(cell2)
+
+    syn0 = NewSynapse(id="syn0", neuroml2_source_file=None, tested=True)
+    net.synapses.append(syn0)
+    syn1 = NewSynapse(id="syn1", neuroml2_source_file="xx", tested=None)
+    net.synapses.append(syn1)
+
+    rc = NewRandomConnectivity(probability=0.01)
+    net.random_connectivity = rc
+    net.stable = False
+
+    md_str = net.generate_documentation()
+    print(md_str)
+
+def test_generate_documentation_example():
+    """Test the documentation generation in examples/"""
+
+    @modelspec.define
+    class Paragraph(Base):
+        """
+        A model of a paragraph
+
+        Args:
+            contents: Paragraph contents, which make up the _Section_s.
+        """
+        contents: str = field(validator=instance_of(str))
+
+    @modelspec.define
+    class Section(Base):
+        """
+        A model of a section of the document. Will contain a _Paragraph_ or two
+
+        Args:
+            id: The id of the section
+            paragraphs: The paragraphs
+        """
+        id: str = field(validator=instance_of(str))
+        paragraphs: List[Paragraph] = field(factory=list)
+
+    @modelspec.define
+    class Document(Base):
+        """
+        A model for documents
+
+        Args:
+            id: The unique id of the document
+            title: Document title
+            ISBN: International Standard Book Number
+            sections: The sections of the document
+        """
+        id: str = field(validator=instance_of(str))
+        title: str = field(default=None, validator=optional(instance_of(str)))
+        ISBN: int = field(default=None, validator=optional(instance_of(int)))
+        sections: List[Section] = field(factory=list)
+
+    doc = Document(id="MyBook")
+    doc.title = "My life in Python"
+
+    a = Section(id="Abstract")
+    p = Paragraph(contents="Blah blah blah")
+    a.paragraphs.append(p)
+    doc.sections.append(a)
+    doc.sections.append(Section(id="Chapter 1"))
+
+    json_str = doc.to_json()
+    yaml_str = doc.to_yaml()
+    doc_md = doc.generate_documentation(format="markdown")
+    doc_rst = doc.generate_documentation(format="rst")
+
