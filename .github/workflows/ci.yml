@@ -48,7 +48,6 @@ jobs:
       run: |
           git clone --branch attrs2 https://github.com/davidt0x/NeuroMLlite.git
           cd NeuroMLlite
-          git checkout modelspec # specific branch...
           pip install .
           pip install pyneuroml>=0.5.18
           cd examples
@@ -69,7 +68,6 @@ jobs:
 
           git clone --branch attrs https://github.com/ModECI/MDF.git
           cd MDF
-          git checkout modelspec  # specific branch...
           pip install .
           cd examples/MDF
           python arrays.py -run   # test one example
