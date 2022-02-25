@@ -42,11 +42,10 @@ jobs:
 
     - name: Run pytest
       run: |
-        pytest tests/
+        pytest tests
 
     - name: Install & test NeuroMLlite
       run: |
-#          git clone https://github.com/NeuroML/NeuroMLlite.git
           git clone --branch attrs2 https://github.com/davidt0x/NeuroMLlite.git
           cd NeuroMLlite
           git checkout modelspec # specific branch...
