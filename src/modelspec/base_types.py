@@ -837,6 +837,9 @@ converter.register_structure_hook_factory(
     _base_struct_hook_factory,
 )
 
+# Add a general hook for handling ndarray unstructure
+converter.register_unstructure_hook(np.ndarray, _unstructure_value_expr)
+
 # Define some aliases for attr.define and other attrs stuff. This should hid attrs from the user a bit.
 define = attr.define
 has = attr.has

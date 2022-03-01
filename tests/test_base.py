@@ -4,7 +4,7 @@ import modelspec
 from modelspec import field, instance_of, optional, Base
 from modelspec.base_types import value_expr_types, ValueExprType, print_v
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 import sys
 
@@ -298,3 +298,17 @@ def test_generate_documentation_example():
     doc.to_yaml()
     doc.generate_documentation(format="markdown")
     doc.generate_documentation(format="rst")
+
+
+def test_ndarray_json_metadata():
+    import numpy as np
+
+    @modelspec.define(eq=False)
+    class Node(Base):
+        id: str = field(validator=instance_of(str))
+        metadata: Optional[Dict[str, Any]] = field(
+            kw_only=True, default=None, validator=optional(instance_of(dict))
+        )
+
+    model = Node(id="a", metadata={"b": np.array([0])})
+    model.to_json()
