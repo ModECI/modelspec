@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ 2.7, 3.7 , 3.9 ]
+        python-version: [ 3.7 , 3.9 ]
 
     steps:
     - uses: actions/checkout@v2
@@ -25,8 +25,7 @@ jobs:
     - name: Install package
       run: |
         python -m pip install --upgrade pip
-        pip install flake8
-        pip install .
+        pip install .[dev]
 
     - name: Lint with flake8
       run: |
@@ -43,15 +42,12 @@ jobs:
 
     - name: Run pytest
       run: |
-        pip install pytest
-        cd modelspec/test/
-        pytest -v
+        pytest tests
 
     - name: Install & test NeuroMLlite
       run: |
-          git clone https://github.com/NeuroML/NeuroMLlite.git
+          git clone --branch attrs2 https://github.com/davidt0x/NeuroMLlite.git
           cd NeuroMLlite
-          git checkout modelspec # specific branch...
           pip install .
           pip install pyneuroml>=0.5.18
           cd examples
@@ -66,13 +62,12 @@ jobs:
     - name: Install MDF
       if: ${{ matrix.python-version != '2.7' }}
       run: |
-      
+
           # Install psyneulink - mdf branch
           python -m pip install git+https://github.com/PrincetonUniversity/PsyNeuLink.git@mdf
 
-          git clone https://github.com/ModECI/MDF.git
+          git clone --branch attrs https://github.com/ModECI/MDF.git
           cd MDF
-          git checkout modelspec  # specific branch...
           pip install .
           cd examples/MDF
           python arrays.py -run   # test one example
