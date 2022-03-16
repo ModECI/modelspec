@@ -54,10 +54,13 @@ doc = Document(id="MyBook")
 doc.title = "My life in Python"
 
 a = Section(id="Abstract")
-p = Paragraph(contents="Blah blah blah")
-a.paragraphs.append(p)
+a.paragraphs.append(Paragraph(contents="Blah blah blah"))
+a.paragraphs.append(Paragraph(contents="Blah2"))
 doc.sections.append(a)
-doc.sections.append(Section(id="Chapter 1"))
+
+c1 = Section(id="Chapter 1")
+doc.sections.append(c1)
+c1.paragraphs.append(Paragraph(contents="More..."))
 
 print(doc)
 

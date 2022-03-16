@@ -9,3 +9,5 @@ python document.py
 cd ..
 
 pytest tests
+
+pre-commit run --all-files
