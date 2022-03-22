@@ -574,7 +574,7 @@ class BaseWithId(Base):
             file_name = "%s.json" % self.id
         with open(file_name, "w") as f:
             f.write(self.to_json())
-        print_v("Written NeuroMLlite %s to: %s" % (self.__class__.__name__, file_name))
+        print_v("Written %s to: %s" % (self.__class__.__name__, file_name))
         return file_name
 
     def to_yaml_file(self, file_name=None):
@@ -582,7 +582,7 @@ class BaseWithId(Base):
             file_name = "%s.yaml" % self.id
         with open(file_name, "w") as f:
             f.write(self.to_yaml())
-        print_v("Written NeuroMLlite %s to: %s" % (self.__class__.__name__, file_name))
+        print_v("Written %s to: %s" % (self.__class__.__name__, file_name))
         return file_name
 
 
