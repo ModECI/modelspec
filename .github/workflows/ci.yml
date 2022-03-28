@@ -46,7 +46,7 @@ jobs:
 
     - name: Install & test NeuroMLlite
       run: |
-          git clone --branch attrs2 https://github.com/davidt0x/NeuroMLlite.git
+          git clone --branch experimental https://github.com/NeuroML/NeuroMLlite.git
           cd NeuroMLlite
           pip install .
           pip install pyneuroml>=0.5.18
@@ -63,10 +63,10 @@ jobs:
       if: ${{ matrix.python-version != '2.7' }}
       run: |
 
-          # Install psyneulink - mdf branch
-          python -m pip install git+https://github.com/PrincetonUniversity/PsyNeuLink.git@mdf
+          # Install psyneulink
+          python -m pip install git+https://github.com/PrincetonUniversity/PsyNeuLink.git
 
-          git clone --branch attrs https://github.com/ModECI/MDF.git
+          git clone --branch attrs_test https://github.com/ModECI/MDF.git
           cd MDF
           pip install .
           cd examples/MDF
