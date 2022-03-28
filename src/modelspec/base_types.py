@@ -73,6 +73,7 @@ converter = cattr.Converter()
 # This handles things like tuples as lists.
 yaml_converter = make_yaml_converter()
 
+
 # A simple converter that handles only value expressions.
 value_expr_converter = cattr.Converter()
 
@@ -164,7 +165,9 @@ class Base:
         Returns:
             A YAML string representation of the object.
         """
-        return yaml.dump(yaml_converter.unstructure(self.to_dict()), sort_keys=False)
+        return yaml.dump(
+            yaml_converter.unstructure(self.to_dict()), sort_keys=False, indent=4
+        )
 
     def to_yaml_file(self, filename: str, include_metadata: bool = True) -> str:
         """Convert modelspec format to yaml format
@@ -184,7 +187,10 @@ class Base:
 
             # We need to setup another
             yaml.dump(
-                yaml_converter.unstructure(self.to_dict()), outfile, sort_keys=False
+                yaml_converter.unstructure(self.to_dict()),
+                outfile,
+                sort_keys=False,
+                indent=4,
             )
 
         return filename
