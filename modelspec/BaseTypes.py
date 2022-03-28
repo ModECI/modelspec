@@ -297,7 +297,7 @@ class Base(object):
                 d = OrderedDict({var.id: d}) if ordered else {var.id: d}
             return d
 
-    def to_json(self, indent="    "):
+    def to_json(self, indent="    ", sort_keys=False):
 
         d = Base.to_dict_format(self)
         import pprint
@@ -306,13 +306,13 @@ class Base(object):
         if verbose:
             print("Converted to dict:")
             pp.pprint(dict(d))
-        ret = json.dumps(d, indent=len(indent))
+        ret = json.dumps(d, indent=len(indent), sort_keys=sort_keys)
         if verbose:
             print("OD to json: [%s]" % ret)
 
         return ret
 
-    def to_yaml(self, indent="    "):
+    def to_yaml(self, indent="    ", sort_keys=False):
 
         import yaml
 
@@ -327,7 +327,7 @@ class Base(object):
         if sys.version_info[0] == 2:
             ret = yaml.dump(d, indent=len(indent), default_flow_style=False)
         else:
-            ret = yaml.dump(d, indent=len(indent), sort_keys=False)
+            ret = yaml.dump(d, indent=len(indent), sort_keys=sort_keys)
         if verbose:
             print("OD to yaml: [%s]" % ret)
 
