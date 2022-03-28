@@ -1,1 +1,0 @@
-For output of tests

@@ -3,11 +3,22 @@
         "title": "My life in Python",
         "sections": {
             "Abstract": {
-                "paragraphs": {
-                    "contents": "Blah blah blah"
-                }
+                "paragraphs": [
+                    {
+                        "contents": "Blah blah blah"
+                    },
+                    {
+                        "contents": "Blah2"
+                    }
+                ]
             },
-            "Chapter 1": {}
+            "Chapter 1": {
+                "paragraphs": [
+                    {
+                        "contents": "More..."
+                    }
+                ]
+            }
         }
     }
 }

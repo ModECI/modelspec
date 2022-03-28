@@ -1,55 +1,66 @@
-from modelspec.BaseTypes import *
-from modelspec.utils import *
+import modelspec
+from modelspec import field, instance_of, optional
+from modelspec.base_types import Base
+from typing import List
 
-# Example showing how to create a model of a document and use it to create/serialise instances
-
-
-class Document(BaseWithId):
-
-    _definition = "A model for documents"
-
-    def __init__(self, **kwargs):
-
-        self.add_allowed_child("sections", "The sections of the document", Section)
-
-        self.add_allowed_field("title", "Document title", str)
-        self.add_allowed_field("ISBN", "International Standard Book Number", int)
-
-        super(Document, self).__init__(**kwargs)
-
-        print("Created:: %s" % (self))
+# Example showing how to create a model of a document and use it to create/serialize instances
 
 
-class Section(BaseWithId):
-
-    _definition = "A model of a section of the document. Will contain a _Paragraph_ or two"
-
-    def __init__(self, **kwargs):
-
-        self.add_allowed_child("paragraphs", "The paragraphs", Paragraph)
-
-        super(Section, self).__init__(**kwargs)
-
-
+@modelspec.define
 class Paragraph(Base):
+    """
+    A model of a paragraph
 
-    _definition = "A model of a paragraph"
+    Args:
+        contents: Paragraph contents, which make up the _Section_s.
+    """
 
-    def __init__(self, **kwargs):
+    contents: str = field(validator=instance_of(str))
 
-        self.add_allowed_field("contents", "Paragraph contents, which make up the _Section_s.", str)
 
-        super(Paragraph, self).__init__(**kwargs)
+@modelspec.define
+class Section(Base):
+    """
+    A model of a section of the document. Will contain a _Paragraph_ or two
+
+    Args:
+        id: The id of the section
+        paragraphs: The paragraphs
+    """
+
+    id: str = field(validator=instance_of(str))
+    paragraphs: List[Paragraph] = field(factory=list)
+
+
+@modelspec.define
+class Document(Base):
+    """
+    A model for documents
+
+    Args:
+        id: The unique id of the document
+        title: Document title
+        ISBN: International Standard Book Number
+        sections: The sections of the document
+    """
+
+    id: str = field(validator=instance_of(str))
+    title: str = field(default=None, validator=optional(instance_of(str)))
+    ISBN: int = field(default=None, validator=optional(instance_of(int)))
+    sections: List[Section] = field(factory=list)
 
 
 doc = Document(id="MyBook")
 doc.title = "My life in Python"
 
 a = Section(id="Abstract")
-p = Paragraph(contents="Blah blah blah")
-a.paragraphs.append(p)
+a.paragraphs.append(Paragraph(contents="Blah blah blah"))
+a.paragraphs.append(Paragraph(contents="Blah2"))
 doc.sections.append(a)
-doc.sections.append(Section(id="Chapter 1"))
+
+c1 = Section(id="Chapter 1")
+doc.sections.append(c1)
+c1.paragraphs.append(Paragraph(contents="More..."))
 
 print(doc)
 

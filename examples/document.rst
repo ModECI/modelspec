@@ -8,10 +8,9 @@ A model for documents
 ===============  ===========  ====================================
 Allowed field    Data Type    Description
 ===============  ===========  ====================================
+**id**           str          *The unique id of the document*
 **title**        str          *Document title*
 **ISBN**         int          *International Standard Book Number*
-**id**           str          *Unique ID of element*
-**notes**        str          *Human readable notes*
 ===============  ===========  ====================================
 
 **Allowed children**
@@ -29,12 +28,11 @@ A model of a section of the document. Will contain a Paragraph or two
 
 **Allowed parameters**
 
-===============  ===========  ======================
+===============  ===========  =======================
 Allowed field    Data Type    Description
-===============  ===========  ======================
-**id**           str          *Unique ID of element*
-**notes**        str          *Human readable notes*
-===============  ===========  ======================
+===============  ===========  =======================
+**id**           str          *The id of the section*
+===============  ===========  =======================
 
 **Allowed children**
 
@@ -56,4 +54,3 @@ Allowed field    Data Type    Description
 ===============  ===========  =================================================
 **contents**     str          *Paragraph contents, which make up the Sections.*
 ===============  ===========  =================================================
-

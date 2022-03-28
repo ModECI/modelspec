@@ -8,5 +8,6 @@ python document.py
 
 cd ..
 
-cd modelspec/test
-pytest -v
+pytest tests
+
+pre-commit run --all-files
