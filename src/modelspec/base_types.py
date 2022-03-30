@@ -524,6 +524,35 @@ class Base:
         rst_url_format = "`%s <%s>`_"
 
         def insert_links(text, format=MARKDOWN_FORMAT):
+
+            code_ref = ":code:`"
+            # print("    > Converting: %s" % text)
+            text2 = text
+            while code_ref in text2:
+                ind = text2.index(code_ref)
+                ind2 = text2.index("`", ind + len(code_ref) + 1)
+                pre = text2[0:ind]
+                ref = text2[ind + len(code_ref) : ind2]
+                post = text2[ind2 + 1 :]
+                text2 = f"{pre}<b>{ref}</b>{post}"
+            # print("    > Converted to: %s" % text2)
+            text = text2
+
+            class_ref = ":class:`"
+            # print("    > Converting: %s" % text)
+            text2 = text
+            while class_ref in text2:
+                ind = text2.index(class_ref)
+                ind2 = text2.index("`", ind + len(class_ref) + 1)
+                pre = text2[0:ind]
+                ref = text2[ind + len(class_ref) : ind2]
+                if ref[0] == "~":
+                    ref = ref[1:]
+                post = text2[ind2 + 1 :]
+                text2 = f'{pre}<a href="#{ref.lower()}">{ref}</a>{post}'
+            # print("    > Converted to: %s" % text2)
+            text = text2
+
             if "_" not in text:
                 return text
             if '"' in text:
@@ -563,7 +592,7 @@ class Base:
 
         if len(allowed_fields) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "#### Allowed parameters\n<table>"
+                doc_string += "### Allowed parameters\n<table>"
             if format == RST_FORMAT:
                 ap = "**Allowed parameters**"
                 doc_string += "%s\n\n" % (ap)
@@ -586,13 +615,15 @@ class Base:
                 doc_dict[name]["allowed_parameters"][f]["description"] = description
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>{}</b></td><td>{}</td>".format(
-                    f,
-                    f'<a href="#{type_str.lower()}">{type_str}</a>'
-                    if referencable
-                    else type_str,
+                doc_string += (
+                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                        f,
+                        f'<a href="#{type_str.lower()}">{type_str}</a>'
+                        if referencable
+                        else type_str,
+                    )
                 )
-                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                doc_string += "\n    <td><i>%s</i></td>\n </tr>\n\n" % (
                     insert_links(description)
                 )
 
@@ -623,7 +654,7 @@ class Base:
 
         if len(allowed_children) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "#### Allowed children\n<table>"
+                doc_string += "### Allowed children\n<table>"
             elif format == RST_FORMAT:
                 ap = "**Allowed children**"
                 doc_string += "%s\n\n" % (ap)
@@ -645,13 +676,15 @@ class Base:
                 ][0]
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>{}</b></td><td>{}</td>".format(
-                    c,
-                    f'<a href="#{type_str.lower()}">{type_str}</a>'
-                    if referencable
-                    else type_str,
+                doc_string += (
+                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                        c,
+                        f'<a href="#{type_str.lower()}">{type_str}</a>'
+                        if referencable
+                        else type_str,
+                    )
                 )
-                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
                     insert_links(description)
                 )
 
