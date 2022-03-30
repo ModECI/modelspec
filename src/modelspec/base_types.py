@@ -563,7 +563,7 @@ class Base:
 
         if len(allowed_fields) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "#### Allowed parameters\n<table>"
+                doc_string += "### Allowed parameters\n<table>"
             if format == RST_FORMAT:
                 ap = "**Allowed parameters**"
                 doc_string += "%s\n\n" % (ap)
@@ -586,13 +586,15 @@ class Base:
                 doc_dict[name]["allowed_parameters"][f]["description"] = description
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>{}</b></td><td>{}</td>".format(
-                    f,
-                    f'<a href="#{type_str.lower()}">{type_str}</a>'
-                    if referencable
-                    else type_str,
+                doc_string += (
+                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                        f,
+                        f'<a href="#{type_str.lower()}">{type_str}</a>'
+                        if referencable
+                        else type_str,
+                    )
                 )
-                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                doc_string += "\n    <td><i>%s</i></td>\n </tr>\n\n" % (
                     insert_links(description)
                 )
 
@@ -623,7 +625,7 @@ class Base:
 
         if len(allowed_children) > 0:
             if format == MARKDOWN_FORMAT:
-                doc_string += "#### Allowed children\n<table>"
+                doc_string += "### Allowed children\n<table>"
             elif format == RST_FORMAT:
                 ap = "**Allowed children**"
                 doc_string += "%s\n\n" % (ap)
@@ -645,13 +647,15 @@ class Base:
                 ][0]
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "<tr><td><b>{}</b></td><td>{}</td>".format(
-                    c,
-                    f'<a href="#{type_str.lower()}">{type_str}</a>'
-                    if referencable
-                    else type_str,
+                doc_string += (
+                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                        c,
+                        f'<a href="#{type_str.lower()}">{type_str}</a>'
+                        if referencable
+                        else type_str,
+                    )
                 )
-                doc_string += "<td><i>%s</i></td></tr>\n\n" % (
+                doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
                     insert_links(description)
                 )
 
