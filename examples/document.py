@@ -21,7 +21,7 @@ class Paragraph(Base):
 @modelspec.define
 class Section(Base):
     """
-    A model of a section of the document. Will contain a _Paragraph_ or two
+    A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more
 
     Args:
         id: The id of the section
