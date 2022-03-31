@@ -63,10 +63,7 @@ jobs:
       if: ${{ matrix.python-version != '2.7' }}
       run: |
 
-          # Install psyneulink
-          python -m pip install git+https://github.com/PrincetonUniversity/PsyNeuLink.git
-
-          git clone --branch attrs_test https://github.com/ModECI/MDF.git
+          git clone --branch development https://github.com/ModECI/MDF.git
           cd MDF
           pip install .
           cd examples/MDF
