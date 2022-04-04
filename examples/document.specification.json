@@ -1,0 +1,49 @@
+{
+    "Document": {
+        "definition": "A model for documents",
+        "allowed_parameters": {
+            "id": {
+                "type": "str",
+                "description": "The unique id of the document"
+            },
+            "title": {
+                "type": "str",
+                "description": "Document title"
+            },
+            "ISBN": {
+                "type": "int",
+                "description": "International Standard Book Number"
+            }
+        },
+        "allowed_children": {
+            "sections": {
+                "type": "Section",
+                "description": "The sections of the document"
+            }
+        }
+    },
+    "Section": {
+        "definition": "A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more",
+        "allowed_parameters": {
+            "id": {
+                "type": "str",
+                "description": "The id of the section"
+            }
+        },
+        "allowed_children": {
+            "paragraphs": {
+                "type": "Paragraph",
+                "description": "The paragraphs"
+            }
+        }
+    },
+    "Paragraph": {
+        "definition": "A model of a paragraph",
+        "allowed_parameters": {
+            "contents": {
+                "type": "str",
+                "description": "Paragraph contents, which make up the _Section_s."
+            }
+        }
+    }
+}

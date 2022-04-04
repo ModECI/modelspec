@@ -76,3 +76,17 @@ doc_rst = doc.generate_documentation(format="rst")
 
 with open("document.rst", "w") as d:
     d.write(doc_rst)
+
+
+print("\nGenerating specification in dict form")
+doc_dict = doc.generate_documentation(format="dict")
+
+import json
+import yaml
+
+with open("document.specification.json", "w") as d:
+    d.write(json.dumps(doc_dict, indent=4))
+
+print("Generating specification in YAML")
+with open("document.specification.yaml", "w") as d:
+    d.write(yaml.dump(doc_dict, indent=4, sort_keys=False))
