@@ -721,6 +721,8 @@ class Base:
         for r in referenced:
             if format in (MARKDOWN_FORMAT, RST_FORMAT):
                 doc_string += r._cls_generate_documentation(format=format)
+            if format in (DICT_FORMAT):
+                doc_dict.update(r._cls_generate_documentation(format=format))
 
         if format in (MARKDOWN_FORMAT, RST_FORMAT):
             return doc_string
