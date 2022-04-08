@@ -63,6 +63,8 @@ doc.sections.append(c1)
 c1.paragraphs.append(Paragraph(contents="More..."))
 
 print(doc)
+print(doc.sections[0].paragraphs[0].contents)
+print(doc.sections[0].paragraphs[0].__getattribute__("contents"))
 
 doc.to_json_file("document.json")
 doc.to_yaml_file("document.yaml")
