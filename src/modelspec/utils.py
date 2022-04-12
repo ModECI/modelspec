@@ -1,5 +1,6 @@
 import sys
 import json
+import bson
 import yaml
 import os
 import math
@@ -32,6 +33,17 @@ def load_yaml(filename):
     return data
 
 
+def load_bson(filename):
+    """
+    Load a generic BSON file
+    """
+    with open(filename,'rb') as infile:
+        data_encoded = infile.read()
+        data = bson.decode(data_encoded)
+
+    return data
+
+
 def save_to_json_file(info_dict, filename, indent=4):
 
     strj = json.dumps(info_dict, indent=indent)
@@ -47,6 +59,13 @@ def save_to_yaml_file(info_dict, filename, indent=4):
         stry = yaml.dump(info_dict, indent=indent, sort_keys=False)
     with open(filename, "w") as fp:
         fp.write(stry)
+
+
+def save_to_bson_file(info_dict, filename):
+
+    strb = bson.encode(info_dict)
+    with open(filename, "wb") as fp:
+        fp.write(strb)
 
 
 def ascii_encode_dict(data):

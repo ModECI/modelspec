@@ -68,6 +68,7 @@ print(doc.sections[0].paragraphs[0].__getattribute__("contents"))
 
 doc.to_json_file("document.json")
 doc.to_yaml_file("document.yaml")
+doc.to_bson_file("document.bson")
 
 doc_md = doc.generate_documentation(format="markdown")
 
@@ -85,6 +86,7 @@ doc_dict = doc.generate_documentation(format="dict")
 
 import json
 import yaml
+import bson
 
 with open("document.specification.json", "w") as d:
     d.write(json.dumps(doc_dict, indent=4))
@@ -92,3 +94,6 @@ with open("document.specification.json", "w") as d:
 print("Generating specification in YAML")
 with open("document.specification.yaml", "w") as d:
     d.write(yaml.dump(doc_dict, indent=4, sort_keys=False))
+
+with open("document.specification.bson", "wb") as d:
+    d.write(bson.encode(doc_dict))
