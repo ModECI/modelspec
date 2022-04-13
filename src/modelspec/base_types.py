@@ -278,7 +278,7 @@ class Base:
         Returns:
             An modelspec :class:`.Base` for this BSON
         """
-        with open("document.bson", "rb") as infile:
+        with open(filename, "rb") as infile:
             data_encoded = infile.read()
             d = bson.decode(data_encoded)
             return cls.from_dict(d)
