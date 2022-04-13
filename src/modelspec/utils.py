@@ -37,7 +37,7 @@ def load_bson(filename):
     """
     Load a generic BSON file
     """
-    with open(filename,'rb') as infile:
+    with open(filename, "rb") as infile:
         data_encoded = infile.read()
         data = bson.decode(data_encoded)
 
