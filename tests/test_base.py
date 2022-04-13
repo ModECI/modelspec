@@ -312,3 +312,20 @@ def test_ndarray_json_metadata():
 
     model = Node(id="a", metadata={"b": np.array([0])})
     model.to_json()
+
+def test_ndarray_bson_metadata():
+    import numpy as np
+
+    @modelspec.define(eq=False)
+    class Node(Base):
+        id: str = field(validator=instance_of(str))
+        metadata: Optional[Dict[str, Any]] = field(
+            kw_only=True, default=None, validator=optional(instance_of(dict))
+        )
+
+    model = Node(id="a", metadata={"b": np.random.randint(10,10000,1000)}) #creates an array of 1000 integers ranging from 1 to 10000
+    model.to_bson_file("sample.bson")
+    model.to_json_file("sample.json") #to compare the size
+    model.from_bson_file("sample.bson")
+
+test_ndarray_bson_metadata()
