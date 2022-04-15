@@ -60,7 +60,7 @@ jobs:
 
 
     - name: Install MDF
-      if: ${{ matrix.python-version != '2.7' }}
+      if: ${{ matrix.python-version != '3.10' }}
       run: |
 
           git clone --branch development https://github.com/ModECI/MDF.git
