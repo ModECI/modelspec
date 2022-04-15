@@ -61,13 +61,6 @@ def save_to_yaml_file(info_dict, filename, indent=4):
         fp.write(stry)
 
 
-def save_to_bson_file(info_dict, filename):
-
-    strb = bson.encode(info_dict)
-    with open(filename, "wb") as fp:
-        fp.write(strb)
-
-
 def ascii_encode_dict(data):
     ascii_encode = (
         lambda x: x.encode("ascii")

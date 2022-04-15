@@ -314,22 +314,28 @@ def test_ndarray_json_metadata():
     model.to_json()
 
 
-def test_ndarray_bson_metadata():
+def test_bson_array(tmp_path):
     import numpy as np
 
+    test_filename = str(tmp_path / "test_array.bson")
+
     @modelspec.define(eq=False)
-    class Node(Base):
-        id: str = field(validator=instance_of(str))
-        metadata: Optional[Dict[str, Any]] = field(
-            kw_only=True, default=None, validator=optional(instance_of(dict))
-        )
+    class ArrayTestModel(Base):
+        array: Optional[ValueExprType] = field()
+        list_of_lists: List[List[int]] = field(default=None)
+        ragged_list: List[List[int]] = field(default=None)
 
-    model = Node(
-        id="a", metadata={"b": np.random.randint(10, 10000, 1000)}
-    )  # creates an array of 1000 integers ranging from 1 to 10000
-    model.to_bson_file("sample.bson")
-    model.to_json_file("sample.json")  # to compare the size
-    model.from_bson_file("sample.bson")
+    model = ArrayTestModel(
+        array=np.arange(27).reshape((3, 3, 3)),
+        list_of_lists=[[1, 2], [3, 4]],
+        ragged_list=[[1, 2], [1]],
+    )
 
+    model.to_bson_file(test_filename)
 
-test_ndarray_bson_metadata()
+    # Load it back in
+    m2 = model.from_bson_file(test_filename)
+    # Check we get the same values back
+    np.testing.assert_array_equal(model.array, m2.array)
+    assert model.list_of_lists == m2.list_of_lists
+    assert model.ragged_list == m2.ragged_list
