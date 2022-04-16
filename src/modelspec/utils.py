@@ -1,5 +1,6 @@
 import sys
 import json
+import bson
 import yaml
 import os
 import math
@@ -28,6 +29,17 @@ def load_yaml(filename):
     """
     with open(filename) as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
+
+    return data
+
+
+def load_bson(filename):
+    """
+    Load a generic BSON file
+    """
+    with open(filename, "rb") as infile:
+        data_encoded = infile.read()
+        data = bson.decode(data_encoded)
 
     return data
 

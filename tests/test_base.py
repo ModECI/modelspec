@@ -312,3 +312,30 @@ def test_ndarray_json_metadata():
 
     model = Node(id="a", metadata={"b": np.array([0])})
     model.to_json()
+
+
+def test_bson_array(tmp_path):
+    import numpy as np
+
+    test_filename = str(tmp_path / "test_array.bson")
+
+    @modelspec.define(eq=False)
+    class ArrayTestModel(Base):
+        array: Optional[ValueExprType] = field()
+        list_of_lists: List[List[int]] = field(default=None)
+        ragged_list: List[List[int]] = field(default=None)
+
+    model = ArrayTestModel(
+        array=np.arange(27).reshape((3, 3, 3)),
+        list_of_lists=[[1, 2], [3, 4]],
+        ragged_list=[[1, 2], [1]],
+    )
+
+    model.to_bson_file(test_filename)
+
+    # Load it back in
+    m2 = model.from_bson_file(test_filename)
+    # Check we get the same values back
+    np.testing.assert_array_equal(model.array, m2.array)
+    assert model.list_of_lists == m2.list_of_lists
+    assert model.ragged_list == m2.ragged_list

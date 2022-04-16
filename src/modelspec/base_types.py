@@ -1,5 +1,6 @@
 import json
 import yaml
+import bson
 import sys
 
 import numpy as np
@@ -23,6 +24,7 @@ from typing import Union, List, Dict, Any
 
 from cattr.gen import make_dict_unstructure_fn, override
 from cattr.preconf.pyyaml import make_converter as make_yaml_converter
+from cattr.preconf.bson import make_converter as make_bson_converter
 
 from tabulate import tabulate
 
@@ -72,7 +74,7 @@ converter = cattr.Converter()
 # A setup an additional converter to apply when we are serializing using PyYAML.
 # This handles things like tuples as lists.
 yaml_converter = make_yaml_converter()
-
+bson_converter = make_bson_converter()
 
 # A simple converter that handles only value expressions.
 value_expr_converter = cattr.Converter()
@@ -104,6 +106,12 @@ class Base:
         """
         return json.dumps(self.to_dict(), indent=4)
 
+    def to_bson(self) -> str:
+        """
+        Convert the Base object to a BSON string representation.
+        """
+        return bson.encode(self.to_dict())
+
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> "Base":
         """Instantiate an Base object from a dictionary"""
@@ -130,6 +138,11 @@ class Base:
         """Instantiate an modelspec object from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
+    @classmethod
+    def from_bson(cls, bson_str: str) -> "Base":
+        """Instantiate an modelspec object from a BSON string"""
+        return cls.from_dict(bson.decode(bson_str))
+
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
     ) -> str:
@@ -152,6 +165,26 @@ class Base:
 
         with open(filename, "w") as outfile:
             json.dump(self.to_dict(), outfile, indent=4)
+
+        return filename
+
+    def to_bson_file(self, filename: str, include_metadata: bool = True) -> str:
+        """Convert modelspec format to bson format
+
+        Args:
+            filename: File in modelspec format (Filename extension: .bson )
+            include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,
+                              benchmark results, and environments in which the specified model was originally implemented
+        Returns:
+            The name of the generated bson file
+        """
+
+        if filename is None:
+            filename = f"{self.id}.bson"
+
+        with open(filename, "wb") as outfile:
+            bson_data = bson.encode(bson_converter.unstructure(self.to_dict()),)
+            outfile.write(bson_data)
 
         return filename
 
@@ -211,6 +244,8 @@ class Base:
             return cls.from_yaml_file(filename)
         elif filename.endswith(".json"):
             return cls.from_json_file(filename)
+        elif filename.endswith(".bson"):
+            return cls.from_bson_file(filename)
         else:
             raise ValueError(
                 f"Cannot auto-detect modelspec serialization format from filename ({filename}). The filename "
@@ -230,6 +265,22 @@ class Base:
         """
         with open(filename) as infile:
             d = json.load(infile)
+            return cls.from_dict(d)
+
+    @classmethod
+    def from_bson_file(cls, filename: str) -> "Base":
+        """
+        Create a :class:`.Base` from its BSON representation stored in a file.
+
+        Args:
+            filename: The file from which to load the BSON data.
+
+        Returns:
+            An modelspec :class:`.Base` for this BSON
+        """
+        with open(filename, "rb") as infile:
+            data_encoded = infile.read()
+            d = bson.decode(data_encoded)
             return cls.from_dict(d)
 
     @classmethod
@@ -615,13 +666,11 @@ class Base:
                 doc_dict[name]["allowed_parameters"][f]["description"] = description
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += (
-                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
-                        f,
-                        f'<a href="#{type_str.lower()}">{type_str}</a>'
-                        if referencable
-                        else type_str,
-                    )
+                doc_string += "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                    f,
+                    f'<a href="#{type_str.lower()}">{type_str}</a>'
+                    if referencable
+                    else type_str,
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n </tr>\n\n" % (
                     insert_links(description)
@@ -676,13 +725,11 @@ class Base:
                 ][0]
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += (
-                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
-                        c,
-                        f'<a href="#{type_str.lower()}">{type_str}</a>'
-                        if referencable
-                        else type_str,
-                    )
+                doc_string += "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                    c,
+                    f'<a href="#{type_str.lower()}">{type_str}</a>'
+                    if referencable
+                    else type_str,
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
                     insert_links(description)
@@ -868,8 +915,7 @@ def _is_list_base(cl):
 
 converter.register_unstructure_hook_factory(_is_list_base, _unstructure_list_base)
 converter.register_unstructure_hook_factory(
-    lambda cl: issubclass(cl, Base),
-    _base_unstruct_hook_factory,
+    lambda cl: issubclass(cl, Base), _base_unstruct_hook_factory,
 )
 
 converter.register_structure_hook_factory(_is_list_base, _structure_list_base)
