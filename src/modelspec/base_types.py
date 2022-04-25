@@ -183,7 +183,9 @@ class Base:
             filename = f"{self.id}.bson"
 
         with open(filename, "wb") as outfile:
-            bson_data = bson.encode(bson_converter.unstructure(self.to_dict()),)
+            bson_data = bson.encode(
+                bson_converter.unstructure(self.to_dict()),
+            )
             outfile.write(bson_data)
 
         return filename
@@ -666,11 +668,13 @@ class Base:
                 doc_dict[name]["allowed_parameters"][f]["description"] = description
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
-                    f,
-                    f'<a href="#{type_str.lower()}">{type_str}</a>'
-                    if referencable
-                    else type_str,
+                doc_string += (
+                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                        f,
+                        f'<a href="#{type_str.lower()}">{type_str}</a>'
+                        if referencable
+                        else type_str,
+                    )
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n </tr>\n\n" % (
                     insert_links(description)
@@ -725,11 +729,13 @@ class Base:
                 ][0]
 
             elif format == MARKDOWN_FORMAT:
-                doc_string += "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
-                    c,
-                    f'<a href="#{type_str.lower()}">{type_str}</a>'
-                    if referencable
-                    else type_str,
+                doc_string += (
+                    "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
+                        c,
+                        f'<a href="#{type_str.lower()}">{type_str}</a>'
+                        if referencable
+                        else type_str,
+                    )
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
                     insert_links(description)
@@ -915,7 +921,8 @@ def _is_list_base(cl):
 
 converter.register_unstructure_hook_factory(_is_list_base, _unstructure_list_base)
 converter.register_unstructure_hook_factory(
-    lambda cl: issubclass(cl, Base), _base_unstruct_hook_factory,
+    lambda cl: issubclass(cl, Base),
+    _base_unstruct_hook_factory,
 )
 
 converter.register_structure_hook_factory(_is_list_base, _structure_list_base)
