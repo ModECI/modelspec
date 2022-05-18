@@ -24,7 +24,7 @@ Allowed child    Data Type              Description
 =======
 Section
 =======
-A model of a section of the <a href="#document">Document</a>. Will contain one <a href="#paragraph">Paragraph</a> or more
+Will contain one <a href="#paragraph">Paragraph</a> or more.
 
 **Allowed parameters**
 
