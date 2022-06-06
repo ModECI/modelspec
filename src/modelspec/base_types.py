@@ -373,7 +373,11 @@ class Base:
         p = parse(cls.__doc__)
 
         # Extract the description, use the long description if available.
-        return p.long_description if p.long_description else p.short_description
+        if p.long_description:
+            definition = p.short_description + p.long_description
+        else:
+            definition = p.short_description
+        return definition
 
     @classmethod
     def _parse_allowed_fields(cls) -> Dict[str, Tuple[str, Any]]:
