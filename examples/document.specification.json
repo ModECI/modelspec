@@ -1,6 +1,6 @@
 {
     "Document": {
-        "definition": "A model for documents",
+        "definition": "A model for documents.",
         "allowed_parameters": {
             "id": {
                 "type": "str",
@@ -23,7 +23,7 @@
         }
     },
     "Section": {
-        "definition": "A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more",
+        "definition": "A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more.",
         "allowed_parameters": {
             "id": {
                 "type": "str",
@@ -38,7 +38,7 @@
         }
     },
     "Paragraph": {
-        "definition": "A model of a paragraph",
+        "definition": "A model of a paragraph.",
         "allowed_parameters": {
             "contents": {
                 "type": "str",

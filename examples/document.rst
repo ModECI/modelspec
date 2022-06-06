@@ -1,7 +1,7 @@
 ========
 Document
 ========
-A model for documents
+A model for documents.
 
 **Allowed parameters**
 
@@ -24,7 +24,7 @@ Allowed child    Data Type              Description
 =======
 Section
 =======
-A model of a section of the <a href="#document">Document</a>. Will contain one <a href="#paragraph">Paragraph</a> or more
+A model of a section of the <a href="#document">Document</a>. Will contain one <a href="#paragraph">Paragraph</a> or more.
 
 **Allowed parameters**
 
@@ -45,7 +45,7 @@ Allowed child    Data Type                  Description
 =========
 Paragraph
 =========
-A model of a paragraph
+A model of a paragraph.
 
 **Allowed parameters**
 
