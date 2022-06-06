@@ -373,6 +373,9 @@ class Base:
         p = parse(cls.__doc__)
 
         # Extract the description, use the long description if available.
+        # "short_description" only parse the first non-empty line and
+        # "long_description" parse the rest of the docstring i.e.
+        # it skips the first non-empty line and parse the rest of the docstring
         if p.long_description:
             definition = p.short_description + p.long_description
         else:
