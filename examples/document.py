@@ -9,7 +9,7 @@ from typing import List
 @modelspec.define
 class Paragraph(Base):
     """
-    A model of a paragraph
+    A model of a paragraph.
 
     Args:
         contents: Paragraph contents, which make up the _Section_s.
@@ -36,7 +36,7 @@ class Section(Base):
 @modelspec.define
 class Document(Base):
     """
-    A model for documents
+    A model for documents.
 
     Args:
         id: The unique id of the document

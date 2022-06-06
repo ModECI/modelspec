@@ -374,7 +374,7 @@ class Base:
 
         # Extract the description, use the long description if available.
         if p.long_description:
-            definition = p.short_description + p.long_description
+            definition = f"{p.short_description} {p.long_description}"
         else:
             definition = p.short_description
         return definition

@@ -1,5 +1,5 @@
 ## Document
-A model for documents
+A model for documents.
 
 ### Allowed parameters
 <table>
@@ -38,7 +38,7 @@ A model for documents
 </table>
 
 ## Section
-Will contain one <a href="#paragraph">Paragraph</a> or more.
+A model of a section of the <a href="#document">Document</a>. Will contain one <a href="#paragraph">Paragraph</a> or more.
 
 ### Allowed parameters
 <table>
@@ -63,7 +63,7 @@ Will contain one <a href="#paragraph">Paragraph</a> or more.
 </table>
 
 ## Paragraph
-A model of a paragraph
+A model of a paragraph.
 
 ### Allowed parameters
 <table>
