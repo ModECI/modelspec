@@ -602,7 +602,11 @@ class Base:
                 if ref[0] == "~":
                     ref = ref[1:]
                 post = text2[ind2 + 1 :]
-                text2 = f'{pre}<a href="#{ref.lower()}">{ref}</a>{post}'
+                if format == MARKDOWN_FORMAT:
+                    text2 = f'{pre}<a href="#{ref.lower()}">{ref}</a>{post}'
+                elif format == RST_FORMAT:
+                    text2 = f"{pre}`{ref} <#{ref.lower()}>`_ {post}"
+
             # print("    > Converted to: %s" % text2)
             text = text2
 
@@ -610,20 +614,16 @@ class Base:
                 return text
             if '"' in text:
                 return text  # Assume it's a quoted string containing an underscore...
+            if format == RST_FORMAT:
+                return text  # No need to remove underscore for RST format
+
             split = text.split("_")
             text2 = ""
             for i in range(int(len(split) / 2.0)):
                 pre = split[i * 2]
                 type = split[i * 2 + 1]
-                if format == MARKDOWN_FORMAT:
-                    text2 += f'{pre}<a href="#{type.lower()}">{type}</a>'
-                elif format == RST_FORMAT:
-                    # text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower # problem with handling links ending with s e.g. _Graph_s
+                text2 += f'{pre}<a href="#{type.lower()}">{type}</a>'
 
-                    text2 += ("%s%s") % (
-                        pre,
-                        type,
-                    )  # temp hack... problem with handling links ending with s e.g. _Graph_s
             if int(len(split) / 2.0) != len(split) / 2.0:
                 text2 += split[-1]
             return text2
