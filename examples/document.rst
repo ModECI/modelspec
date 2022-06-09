@@ -1,7 +1,7 @@
 ========
 Document
 ========
-A model for documents
+A model for documents.
 
 **Allowed parameters**
 
@@ -26,6 +26,7 @@ Section
 =======
 A model of a section of the `Document <#document>`_ . Will contain one `Paragraph <#paragraph>`_  or more
 
+
 **Allowed parameters**
 
 ===============  ===========  =======================
@@ -45,7 +46,7 @@ Allowed child    Data Type                  Description
 =========
 Paragraph
 =========
-A model of a paragraph
+A model of a paragraph.
 
 **Allowed parameters**
 

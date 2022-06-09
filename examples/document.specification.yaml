@@ -1,5 +1,5 @@
 Document:
-    definition: A model for documents
+    definition: A model for documents.
     allowed_parameters:
         id:
             type: str
@@ -16,7 +16,7 @@ Document:
             description: The sections of the document
 Section:
     definition: A model of a section of the :class:`Document`. Will contain one :class:`Paragraph`
-        or more
+        or more.
     allowed_parameters:
         id:
             type: str
@@ -26,7 +26,7 @@ Section:
             type: Paragraph
             description: The paragraphs
 Paragraph:
-    definition: A model of a paragraph
+    definition: A model of a paragraph.
     allowed_parameters:
         contents:
             type: str
