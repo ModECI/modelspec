@@ -30,4 +30,4 @@ Paragraph:
     allowed_parameters:
         contents:
             type: str
-            description: Paragraph contents, which make up the _Section_s.
+            description: Paragraph contents, which make up the :class:`Section`s.

@@ -12,7 +12,7 @@ class Paragraph(Base):
     A model of a paragraph.
 
     Args:
-        contents: Paragraph contents, which make up the _Section_s.
+        contents: Paragraph contents, which make up the :class:`Section`s.
     """
 
     contents: str = field(validator=instance_of(str))
