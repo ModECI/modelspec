@@ -24,7 +24,8 @@ Allowed child    Data Type              Description
 =======
 Section
 =======
-A model of a section of the <a href="#document">Document</a>. Will contain one <a href="#paragraph">Paragraph</a> or more.
+A model of a section of the `Document <#document>`_ . Will contain one `Paragraph <#paragraph>`_  or more
+
 
 **Allowed parameters**
 
@@ -49,8 +50,8 @@ A model of a paragraph.
 
 **Allowed parameters**
 
-===============  ===========  =================================================
+===============  ===========  ===================================================
 Allowed field    Data Type    Description
-===============  ===========  =================================================
-**contents**     str          *Paragraph contents, which make up the Sections.*
-===============  ===========  =================================================
+===============  ===========  ===================================================
+**contents**     str          *Paragraph contents, which make up the _Section_s.*
+===============  ===========  ===================================================
