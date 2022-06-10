@@ -22,7 +22,7 @@ class Paragraph(Base):
 class Section(Base):
     """
     A model of a section of the :class:`Document`.
-    Will contain one :class:`Paragraph` or more.
+    Will contain one :class:`Paragraph` or more, i.e the :class:`Paragraph`(s) in the section, probably related to the :code:`title` of the `Document <#document>`_.
 
     Args:
         id: The id of the section

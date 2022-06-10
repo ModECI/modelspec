@@ -16,7 +16,8 @@ Document:
             description: The sections of the document
 Section:
     definition: A model of a section of the :class:`Document`. Will contain one :class:`Paragraph`
-        or more.
+        or more, i.e the :class:`Paragraph`(s) in the section, probably related to
+        the :code:`title` of the `Document <#document>`_.
     allowed_parameters:
         id:
             type: str
