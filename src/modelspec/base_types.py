@@ -612,7 +612,7 @@ class Base:
                 if format == MARKDOWN_FORMAT:
                     text2 = f'{pre}<a href="#{ref.lower()}">{ref}</a>{post}'
                 elif format == RST_FORMAT:
-                    text2 = f"{pre}`{ref} <#{ref.lower()}>`_ {post}"
+                    text2 = f"{pre}`{ref} <#{ref.lower()}>`_{post}"
 
             # print("    > Converted to: %s" % text2)
             text = text2

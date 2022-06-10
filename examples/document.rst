@@ -24,8 +24,7 @@ Allowed child    Data Type              Description
 =======
 Section
 =======
-A model of a section of the `Document <#document>`_ . Will contain one `Paragraph <#paragraph>`_  or more
-
+A model of a section of the `Document <#document>`_. Will contain one `Paragraph <#paragraph>`_ or more.
 
 **Allowed parameters**
 
