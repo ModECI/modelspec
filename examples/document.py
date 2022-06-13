@@ -9,10 +9,10 @@ from typing import List
 @modelspec.define
 class Paragraph(Base):
     """
-    A model of a paragraph
+    A model of a paragraph.
 
     Args:
-        contents: Paragraph contents, which make up the _Section_s.
+        contents: Paragraph contents, which make up the :class:`Section`s.
     """
 
     contents: str = field(validator=instance_of(str))
@@ -21,7 +21,8 @@ class Paragraph(Base):
 @modelspec.define
 class Section(Base):
     """
-    A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more
+    A model of a section of the :class:`Document`.
+    Will contain one :class:`Paragraph` or more, i.e the :class:`Paragraph`(s) in the section, probably related to the :code:`title` of the `Document <#document>`_.
 
     Args:
         id: The id of the section
@@ -35,7 +36,7 @@ class Section(Base):
 @modelspec.define
 class Document(Base):
     """
-    A model for documents
+    A model for documents.
 
     Args:
         id: The unique id of the document
