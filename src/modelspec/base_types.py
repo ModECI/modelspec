@@ -581,7 +581,7 @@ class Base:
 
         print(f" - {cls.__name__} ({definition})")
 
-        rst_url_format = "`%s <%s>`_"
+        rst_url_format = "`%s <%s>`__"
 
         def insert_links(text, format=MARKDOWN_FORMAT):
 
@@ -594,12 +594,7 @@ class Base:
                 pre = text2[0:ind]
                 ref = text2[ind + len(code_ref) : ind2]
                 post = text2[ind2 + 1 :]
-
-                if format == MARKDOWN_FORMAT:
-                    text2 = f"{pre}<b>{ref}</b>{post}"
-                elif format == RST_FORMAT:
-                    text2 = f"{pre}**{ref}**{post}"
-
+                text2 = f"{pre}<b>{ref}</b>{post}"
             # print("    > Converted to: %s" % text2)
             text = text2
 
@@ -617,23 +612,7 @@ class Base:
                 if format == MARKDOWN_FORMAT:
                     text2 = f'{pre}<a href="#{ref.lower()}">{ref}</a>{post}'
                 elif format == RST_FORMAT:
-                    rr = ref
-                    pp = post
-
-                    ######################################
-                    # Some hardcoded fixes for plurals...
-                    if pp.startswith("s "):
-                        rr += "s"
-                        pp = pp[1:]
-                    if pp.startswith("s."):
-                        rr += "s"
-                        pp = pp[1:]
-                    if pp.startswith("(s)"):
-                        rr += "(s)"
-                        pp = pp[3:]
-                    ######################################
-
-                    text2 = f"{pre}`{rr} <#{ref.lower()}>`_{pp}"
+                    text2 = f"{pre}`{ref} <#{ref.lower()}>`__ {post}"
 
             # print("    > Converted to: %s" % text2)
             text = text2
@@ -715,7 +694,7 @@ class Base:
                     if referencable
                     else type_str,
                 )
-                d = "%s" % (insert_links(description, format=RST_FORMAT))
+                d = "*%s*" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
 
             if referencable:
@@ -776,7 +755,7 @@ class Base:
                     if referencable
                     else type_str,
                 )
-                d = "%s" % (insert_links(description, format=RST_FORMAT))
+                d = "*%s*" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
 
             # Get the contained type
