@@ -581,7 +581,7 @@ class Base:
 
         print(f" - {cls.__name__} ({definition})")
 
-        rst_url_format = "`%s <%s>`_"
+        rst_url_format = "`%s <%s>`__"
 
         def insert_links(text, format=MARKDOWN_FORMAT):
 
@@ -633,7 +633,7 @@ class Base:
                         pp = pp[3:]
                     ######################################
 
-                    text2 = f"{pre}`{rr} <#{ref.lower()}>`_{pp}"
+                    text2 = f"{pre}`{rr} <#{ref.lower()}>`__{pp}"
 
             # print("    > Converted to: %s" % text2)
             text = text2

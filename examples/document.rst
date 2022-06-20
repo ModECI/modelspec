@@ -15,16 +15,16 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-===============  =====================  ============================
-Allowed child    Data Type              Description
-===============  =====================  ============================
-**sections**     `Section <#section>`_  The sections of the document
-===============  =====================  ============================
+===============  ======================  ============================
+Allowed child    Data Type               Description
+===============  ======================  ============================
+**sections**     `Section <#section>`__  The sections of the document
+===============  ======================  ============================
 
 =======
 Section
 =======
-A model of a section of the `Document <#document>`_. Will contain one `Paragraph <#paragraph>`_ or more, i.e the `Paragraph(s) <#paragraph>`_ in the section, probably related to the **title** of the `Document <#document>`_.
+A model of a section of the `Document <#document>`__. Will contain one `Paragraph <#paragraph>`__ or more, i.e the `Paragraph(s) <#paragraph>`__ in the section, probably related to the **title** of the `Document <#document>`_.
 
 **Allowed parameters**
 
@@ -36,11 +36,11 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-===============  =========================  ==============
-Allowed child    Data Type                  Description
-===============  =========================  ==============
-**paragraphs**   `Paragraph <#paragraph>`_  The paragraphs
-===============  =========================  ==============
+===============  ==========================  ==============
+Allowed child    Data Type                   Description
+===============  ==========================  ==============
+**paragraphs**   `Paragraph <#paragraph>`__  The paragraphs
+===============  ==========================  ==============
 
 =========
 Paragraph
@@ -49,8 +49,8 @@ A model of a paragraph.
 
 **Allowed parameters**
 
-===============  ===========  =============================================================
+===============  ===========  ==============================================================
 Allowed field    Data Type    Description
-===============  ===========  =============================================================
-**contents**     str          Paragraph contents, which make up the `Sections <#section>`_.
-===============  ===========  =============================================================
+===============  ===========  ==============================================================
+**contents**     str          Paragraph contents, which make up the `Sections <#section>`__.
+===============  ===========  ==============================================================
