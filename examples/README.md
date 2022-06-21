@@ -34,7 +34,7 @@ with open("document.specification.yaml", "w") as d:
 
 ### 3) Create an instance of a Document
 
-The actual instance of a document which is built (in [document.py](document.py)) can be saved in [YAML](document.yaml) or [JSON](document.json) format:
+The actual instance of a document which is built (in [document.py](document.py)) can be saved in [YAML](document.yaml) or [JSON](document.json) format or [BSON](document.bson) format:
 ```
 doc = Document(id="MyBook")
 doc.title = "My life in Python"
@@ -46,4 +46,5 @@ doc.sections.append(a)
 
 doc.to_json_file("document.json")
 doc.to_yaml_file("document.yaml")
+doc.to_bson_file("document.bson")
 ```
