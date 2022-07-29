@@ -373,6 +373,9 @@ class Base:
         p = parse(cls.__doc__)
 
         # Extract the description, use the long description if available.
+        # "short_description" only parse the first non-empty line and
+        # "long_description" parse the rest of the docstring i.e.
+        # it skips the first non-empty line and parse the rest of the docstring
         if p.long_description:
             definition = f"{p.short_description} {p.long_description}"
         else:
@@ -578,7 +581,7 @@ class Base:
 
         print(f" - {cls.__name__} ({definition})")
 
-        rst_url_format = "`%s <%s>`_"
+        rst_url_format = "`%s <%s>`__"
 
         def insert_links(text, format=MARKDOWN_FORMAT):
 
@@ -591,7 +594,12 @@ class Base:
                 pre = text2[0:ind]
                 ref = text2[ind + len(code_ref) : ind2]
                 post = text2[ind2 + 1 :]
-                text2 = f"{pre}<b>{ref}</b>{post}"
+
+                if format == MARKDOWN_FORMAT:
+                    text2 = f"{pre}<b>{ref}</b>{post}"
+                elif format == RST_FORMAT:
+                    text2 = f"{pre}**{ref}**{post}"
+
             # print("    > Converted to: %s" % text2)
             text = text2
 
@@ -606,7 +614,27 @@ class Base:
                 if ref[0] == "~":
                     ref = ref[1:]
                 post = text2[ind2 + 1 :]
-                text2 = f'{pre}<a href="#{ref.lower()}">{ref}</a>{post}'
+                if format == MARKDOWN_FORMAT:
+                    text2 = f'{pre}<a href="#{ref.lower()}">{ref}</a>{post}'
+                elif format == RST_FORMAT:
+                    rr = ref
+                    pp = post
+
+                    ######################################
+                    # Some hardcoded fixes for plurals...
+                    if pp.startswith("s "):
+                        rr += "s"
+                        pp = pp[1:]
+                    if pp.startswith("s."):
+                        rr += "s"
+                        pp = pp[1:]
+                    if pp.startswith("(s)"):
+                        rr += "(s)"
+                        pp = pp[3:]
+                    ######################################
+
+                    text2 = f"{pre}`{rr} <#{ref.lower()}>`__{pp}"
+
             # print("    > Converted to: %s" % text2)
             text = text2
 
@@ -614,20 +642,16 @@ class Base:
                 return text
             if '"' in text:
                 return text  # Assume it's a quoted string containing an underscore...
+            if format == RST_FORMAT:
+                return text  # No need to remove underscore for RST format
+
             split = text.split("_")
             text2 = ""
             for i in range(int(len(split) / 2.0)):
                 pre = split[i * 2]
                 type = split[i * 2 + 1]
-                if format == MARKDOWN_FORMAT:
-                    text2 += f'{pre}<a href="#{type.lower()}">{type}</a>'
-                elif format == RST_FORMAT:
-                    # text2 += ('%s'+rst_url_format) % (pre, type, '#'+type.lower # problem with handling links ending with s e.g. _Graph_s
+                text2 += f'{pre}<a href="#{type.lower()}">{type}</a>'
 
-                    text2 += ("%s%s") % (
-                        pre,
-                        type,
-                    )  # temp hack... problem with handling links ending with s e.g. _Graph_s
             if int(len(split) / 2.0) != len(split) / 2.0:
                 text2 += split[-1]
             return text2
@@ -691,7 +715,7 @@ class Base:
                     if referencable
                     else type_str,
                 )
-                d = "*%s*" % (insert_links(description, format=RST_FORMAT))
+                d = "%s" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
 
             if referencable:
@@ -752,7 +776,7 @@ class Base:
                     if referencable
                     else type_str,
                 )
-                d = "*%s*" % (insert_links(description, format=RST_FORMAT))
+                d = "%s" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
 
             # Get the contained type

@@ -38,7 +38,7 @@ A model for documents.
 </table>
 
 ## Section
-A model of a section of the <a href="#document">Document</a>. Will contain one <a href="#paragraph">Paragraph</a> or more.
+A model of a section of the <a href="#document">Document</a>. Will contain one <a href="#paragraph">Paragraph</a> or more, i.e the <a href="#paragraph">Paragraph</a>(s) in the section, probably related to the <b>title</b> of the `Document <#document>`_.
 
 ### Allowed parameters
 <table>
