@@ -7,6 +7,6 @@ TopClass:
         float_like_req:
             type: int
             description: ''
-        float_optional:
+        float_like_optional:
             type: int
             description: ''

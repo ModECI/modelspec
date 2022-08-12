@@ -6,6 +6,18 @@ from typing import List
 # Example testing multiple option...
 
 
+from typing import Any
+
+
+def convert2float(x: Any) -> float:
+    print("Converting {} ({})".format(x, type(x)))
+    """Convert to float if not None"""
+    if x is not None:
+        return float(x)
+    else:
+        return None
+
+
 @modelspec.define
 class TopClass(Base):
     """
@@ -18,13 +30,16 @@ class TopClass(Base):
 
     id: str = field(validator=instance_of(str))
     float_like_req: int = field(
-        default=None, validator=instance_of(float), converter=float
+        default=None, validator=instance_of(float), converter=convert2float
     )
-    float_optional: int = field(default=None, validator=optional(instance_of(float)))
+    float_like_optional: int = field(
+        default=None, validator=optional(instance_of(float)), converter=convert2float
+    )
 
 
 tc = TopClass(id="MyTest", float_like_req="03")
-tc.float_optional = 2.3
+tc.float_like_req = 2.0
+tc.float_like_optional = 4.0
 
 
 print(tc)

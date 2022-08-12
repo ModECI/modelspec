@@ -11,6 +11,6 @@ python test.py
 
 cd ../..
 
-pytest tests
+pytest tests -v
 
 pre-commit run --all-files

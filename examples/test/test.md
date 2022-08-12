@@ -18,7 +18,7 @@ A model....
 
 
   <tr>
-    <td><b>float_optional</b></td>
+    <td><b>float_like_optional</b></td>
     <td>int</td>
     <td><i></i></td>
  </tr>
