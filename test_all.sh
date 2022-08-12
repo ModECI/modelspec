@@ -6,7 +6,10 @@ pip install .
 cd examples
 python document.py
 
-cd ..
+cd test
+python test.py
+
+cd ../..
 
 pytest tests
 

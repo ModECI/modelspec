@@ -33,6 +33,7 @@ verbose = False
 MARKDOWN_FORMAT = "markdown"
 RST_FORMAT = "rst"
 DICT_FORMAT = "dict"
+ALL_FORMATS = [MARKDOWN_FORMAT, RST_FORMAT, DICT_FORMAT]
 
 
 class EvaluableExpression(str):
@@ -572,8 +573,12 @@ class Base:
 
         if format == MARKDOWN_FORMAT or format == RST_FORMAT:
             doc_string = ""
-        if format == DICT_FORMAT:
+        elif format == DICT_FORMAT:
             doc_dict = {}
+        else:
+            raise ValueError(
+                f"Unknown format: '{format}', recognised formats: '{ALL_FORMATS}''"
+            )
 
         definition = cls._parse_definition()
         allowed_fields = cls._parse_allowed_fields()
