@@ -60,16 +60,14 @@ jobs:
 
     - name: Install & test NeuroMLlite
       run: |
-          git clone --branch experimental https://github.com/NeuroML/NeuroMLlite.git
+          git clone --branch development https://github.com/NeuroML/NeuroMLlite.git
           cd NeuroMLlite
           pip install .
-          pip install pyneuroml>=0.5.18
           cd examples
           python Example1.py
 
 
     - name: Install MDF
-      if: ${{ matrix.python-version != '3.10' }}
       run: |
 
           git clone --branch development https://github.com/ModECI/MDF.git
