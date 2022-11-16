@@ -6,7 +6,7 @@ TopClass:
             description: The unique id of the thing
         float_like_req:
             type: int
-            description: ''
+            description: name says it all...
         float_like_optional:
             type: int
-            description: ''
+            description: name also says it all...

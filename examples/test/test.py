@@ -3,8 +3,7 @@ from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from typing import List
 
-# Example testing multiple option...
-
+# Example testing multiple options...
 
 from typing import Any
 
@@ -25,7 +24,8 @@ class TopClass(Base):
 
     Args:
         id: The unique id of the thing
-        float_or_int: name says it all
+        float_like_req: name says it all...
+        float_like_optional: name also says it all...
     """
 
     id: str = field(validator=instance_of(str))
@@ -37,9 +37,12 @@ class TopClass(Base):
     )
 
 
-tc = TopClass(id="MyTest", float_like_req="03")
-tc.float_like_req = 2.0
-tc.float_like_optional = 4.0
+tc = TopClass(
+    id="MyTest", float_like_req="03"
+)  # a string which can be converted to a float...
+
+# tc.float_like_req = 2.01
+tc.float_like_optional = 43
 
 
 print(tc)
