@@ -23,7 +23,7 @@ extras = {
         "pytorch-sphinx-theme==0.0.19",
         "sphinxcontrib-versioning",
     ],
-    "dev": ["flake8"],
+    "dev": ["flake8", "pyneuroml>=0.7.2", "NeuroMLlite>=0.5.3"],
 }
 extras["all"] = sum(extras.values(), [])
 extras["dev"] += extras["test"]

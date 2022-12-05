@@ -60,10 +60,9 @@ jobs:
 
     - name: Install & test NeuroMLlite
       run: |
-          pip install pyneuroml>=0.7.0
-          pip install NeuroMLlite>=0.5.3
+          git clone --branch development https://github.com/NeuroML/NeuroMLlite.git
           cd NeuroMLlite
-          pip install .
+          #pip install . # Use versions of neuroml libs as set in setup.py
           cd examples
           python Example1.py
 
