@@ -1,0 +1,3 @@
+MyTest:
+    float_like_req: 3.0
+    float_like_optional: 43.0

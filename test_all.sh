@@ -6,8 +6,11 @@ pip install .
 cd examples
 python document.py
 
-cd ..
+cd test
+python test.py
 
-pytest tests
+cd ../..
+
+pytest tests -v
 
 pre-commit run --all-files
