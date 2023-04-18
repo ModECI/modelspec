@@ -584,7 +584,7 @@ class Base:
         allowed_fields = cls._parse_allowed_fields()
         allowed_children = cls._parse_allowed_children()
 
-        print(f" - {cls.__name__} ({definition})")
+        # print(f" - {cls.__name__} ({definition})")
 
         rst_url_format = "`%s <%s>`__"
 
@@ -693,7 +693,7 @@ class Base:
                 type_, can_be_eval_expr=True, can_be_dict=True
             )
             type_str = Base._type_to_str(type_)
-            print("    Allowed parameter: {} {}".format(f, (description, type_str)))
+            # print("    Allowed parameter: {} {}".format(f, (description, type_str)))
 
             if format == DICT_FORMAT:
                 doc_dict[name]["allowed_parameters"][f] = {}
@@ -750,7 +750,7 @@ class Base:
 
         for c, (description, type_) in allowed_children.items():
             type_str = Base._type_to_str(type_)
-            print("    Allowed child: {} {}".format(c, (description, type_str)))
+            # print("    Allowed child: {} {}".format(c, (description, type_str)))
 
             referencable = not Base._is_base_type(type_, can_be_dict=True)
 
