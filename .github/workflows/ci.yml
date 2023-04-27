@@ -2,9 +2,9 @@ name: Continuous builds
 
 on:
   push:
-    branches: [ main, development, experimental ]
+    branches: [ main, development, experimental, test* ]
   pull_request:
-    branches: [ main, development, experimental ]
+    branches: [ main, development, experimental, test* ]
 
 jobs:
 
