@@ -205,11 +205,13 @@ class Base:
             yaml_converter.unstructure(self.to_dict()), sort_keys=False, indent=4
         )
 
-    def to_yaml_file(self, filename: str, include_metadata: bool = True) -> str:
+    def to_yaml_file(
+        self, filename: Optional[str] = None, include_metadata: Optional[bool] = True
+    ) -> str:
         """Convert modelspec format to yaml format
 
         Args:
-            filename: File in modelspec format (Filename extension: .yaml )
+            filename: File in modelspec format (Filename extension: .yaml). If None, use :code:`f"{self.id}.yaml"`
             include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,
                               benchmark results, and environments in which the specified model was originally implemented
         Returns:
