@@ -264,12 +264,10 @@ def evaluate(
 
         if type(expr) == str:
             try:
-                print(1)
                 if array_format == FORMAT_TENSORFLOW:
                     expr = tf.constant(int(expr))
                 else:
                     expr = int(expr)
-                    print(2)
             except:
 
                 try:
