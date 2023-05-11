@@ -13,7 +13,7 @@ A model for documents.
   <tr>
     <td><b>title</b></td>
     <td>str</td>
-    <td><i>Document title</i></td>
+    <td><i>The document title</i></td>
  </tr>
 
 

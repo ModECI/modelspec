@@ -9,12 +9,18 @@ import numpy as np
 from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
 
+from random import Random
+from typing import Union
+
 verbose = False
 
 
-def load_json(filename):
+def load_json(filename: str):
     """
     Load a generic JSON file
+
+    Args:
+        filename: The name of the JSON file to load
     """
 
     with open(filename) as f:
@@ -23,9 +29,12 @@ def load_json(filename):
     return data
 
 
-def load_yaml(filename):
+def load_yaml(filename: str):
     """
     Load a generic YAML file
+
+    Args:
+        filename: The name of the YAML file to load
     """
     with open(filename) as f:
         data = yaml.load(f, Loader=yaml.SafeLoader)
@@ -33,9 +42,12 @@ def load_yaml(filename):
     return data
 
 
-def load_bson(filename):
+def load_bson(filename: str):
     """
     Load a generic BSON file
+
+    Args:
+        filename: The name of the BSON file to load
     """
     with open(filename, "rb") as infile:
         data_encoded = infile.read()
@@ -211,11 +223,26 @@ FORMAT_NUMPY = "numpy"
 FORMAT_TENSORFLOW = "tensorflow"
 
 
-def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=False):
+def evaluate(
+    expr: Union[int, float, str, list, dict],
+    parameters: dict = {},
+    rng: Random = None,
+    array_format: str = FORMAT_NUMPY,
+    verbose: bool = False,
+    cast_to_int: bool = False,
+):
     """
     Evaluate a general string like expression (e.g. "2 * weight") using a dict
     of parameters (e.g. {'weight':10}). Returns floats, ints, etc. if that's what's
     given in expr
+
+    Args:
+        expr: The expression to convert
+        parameters: A dict of the parameters which can be substituted in to the expression
+        rng: The random number generator to use
+        array_format: numpy or tensorflow
+        verbose: Print the calculations
+        cast_to_int: return an int for float/string values if castable
     """
 
     if array_format == FORMAT_TENSORFLOW:
@@ -233,7 +260,7 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
                 expr
             ]  # replace with the value in parameters & check whether it's float/int...
             if verbose:
-                print_("Using for that param: %s" % _val_info(expr), verbose)
+                print_("   Using for that param: %s" % _val_info(expr), verbose)
 
         if type(expr) == str:
             try:
@@ -242,18 +269,18 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
                 else:
                     expr = int(expr)
             except:
-                pass
-            try:
-                if array_format == FORMAT_TENSORFLOW:
-                    expr = tf.constant(float(expr))
-                else:
-                    expr = float(expr)
-            except:
-                pass
+
+                try:
+                    if array_format == FORMAT_TENSORFLOW:
+                        expr = tf.constant(float(expr))
+                    else:
+                        expr = float(expr)
+                except:
+                    pass
 
         if type(expr) == list:
             if verbose:
-                print_("Returning a list in format: %s" % array_format, verbose)
+                print_("   Returning a list in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.constant(expr, dtype=tf.float64)
             else:
@@ -261,7 +288,9 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
 
         if type(expr) == np.ndarray:
             if verbose:
-                print_("Returning a numpy array in format: %s" % array_format, verbose)
+                print_(
+                    "   Returning a numpy array in format: %s" % array_format, verbose
+                )
             if array_format == FORMAT_TENSORFLOW:
                 return tf.convert_to_tensor(expr, dtype=tf.float64)
             else:
@@ -270,7 +299,7 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
         if "Tensor" in type(expr).__name__:
             if verbose:
                 print_(
-                    "Returning a tensorflow Tensor in format: %s" % array_format,
+                    "   Returning a tensorflow Tensor in format: %s" % array_format,
                     verbose,
                 )
             if array_format == FORMAT_NUMPY:
@@ -278,14 +307,14 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
             else:
                 return expr
 
-        if int(expr) == expr:
+        if int(expr) == expr and cast_to_int:
             if verbose:
-                print_("Returning int: %s" % int(expr), verbose)
+                print_("   Returning int: %s" % int(expr), verbose)
             return int(expr)
         else:  # will have failed if not number
             if verbose:
-                print_("Returning float: %s" % expr, verbose)
-            return float(expr)
+                print_("   Returning {}: {}".format(type(expr), expr), verbose)
+            return expr
     except:
         try:
             if rng:
@@ -299,7 +328,7 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
 
             if verbose:
                 print_(
-                    "Trying to eval [%s] with Python using %s..."
+                    "   Trying to eval [%s] with Python using %s..."
                     % (expr, parameters.keys()),
                     verbose,
                 )
@@ -308,13 +337,14 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
 
             if verbose:
                 print_(
-                    "Evaluated with Python: {} = {}".format(expr, _val_info(v)), verbose
+                    "   Evaluated with Python: {} = {}".format(expr, _val_info(v)),
+                    verbose,
                 )
 
             if (type(v) == float or type(v) == str) and int(v) == v:
 
                 if verbose:
-                    print_("Returning int: %s" % int(v), verbose)
+                    print_("   Returning int: %s" % int(v), verbose)
 
                 if array_format == FORMAT_TENSORFLOW:
                     return tf.constant(int(v))
@@ -323,7 +353,7 @@ def evaluate(expr, parameters={}, rng=None, array_format=FORMAT_NUMPY, verbose=F
             return v
         except Exception as e:
             if verbose:
-                print_(f"Returning without altering: {expr} (error: {e})", verbose)
+                print_(f"   Returning without altering: {expr} (error: {e})", verbose)
             return expr
 
 

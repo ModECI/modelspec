@@ -8,7 +8,7 @@
             },
             "title": {
                 "type": "str",
-                "description": "Document title"
+                "description": "The document title"
             },
             "ISBN": {
                 "type": "int",
