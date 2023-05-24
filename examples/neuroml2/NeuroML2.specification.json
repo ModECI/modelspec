@@ -1,10 +1,14 @@
 {
     "NeuroML": {
-        "definition": "Some description... ",
+        "definition": "Some description...",
         "allowed_parameters": {
             "id": {
                 "type": "str",
                 "description": "The id of the NeuroML 2 document"
+            },
+            "version": {
+                "type": "str",
+                "description": "NeuroML version used"
             }
         },
         "allowed_children": {
@@ -15,7 +19,7 @@
         }
     },
     "Network": {
-        "definition": "Some description... ",
+        "definition": "Some description...",
         "allowed_parameters": {
             "id": {
                 "type": "str",
@@ -30,7 +34,7 @@
         }
     },
     "Population": {
-        "definition": "Some description... ",
+        "definition": "Some description...",
         "allowed_parameters": {
             "id": {
                 "type": "str",

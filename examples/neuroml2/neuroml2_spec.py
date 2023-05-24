@@ -9,7 +9,7 @@ from typing import List
 @modelspec.define
 class Population(Base):
     """
-    Some description... 
+    Some description...
 
     Args:
         id: The id of the population
@@ -21,10 +21,11 @@ class Population(Base):
     component: str = field(default=None, validator=optional(instance_of(str)))
     size: int = field(default=None, validator=optional(instance_of(int)))
 
+
 @modelspec.define
 class Network(Base):
     """
-    Some description... 
+    Some description...
 
     Args:
         id: The id of the network
@@ -39,21 +40,23 @@ class Network(Base):
 @modelspec.define
 class NeuroML(Base):
     """
-    Some description... 
+    Some description...
 
     Args:
         id: The id of the NeuroML 2 document
+        version: NeuroML version used
         networks: The networks present
     """
 
     id: str = field(validator=instance_of(str))
+    version: str = field(validator=instance_of(str))
 
     networks: List[Network] = field(factory=list)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
-    nml_doc = NeuroML(id="TestNeuroML")
+    nml_doc = NeuroML(id="TestNeuroML", version="NeuroML_v2.3")
     net = Network(id="net0")
     nml_doc.networks.append(net)
 
@@ -62,27 +65,24 @@ if __name__ == '__main__':
     print(nml_doc)
     print(nml_doc.id)
 
-    nml_doc.to_json_file("%s.json"%nml_doc.id)
-    nml_doc.to_yaml_file("%s.yaml"%nml_doc.id)
-    nml_doc.to_bson_file("%s.bson"%nml_doc.id)
-    #nml_doc.to_xml_file("%s.xml"%nml_doc.id)
+    nml_doc.to_json_file("%s.json" % nml_doc.id)
+    nml_doc.to_yaml_file("%s.yaml" % nml_doc.id)
+    nml_doc.to_bson_file("%s.bson" % nml_doc.id)
+    # nml_doc.to_xml_file("%s.xml"%nml_doc.id)
 
     print(" >> Full document details in YAML format:\n")
 
     print(nml_doc.to_yaml())
-
 
     doc_md = nml_doc.generate_documentation(format="markdown")
 
     with open("NeuroML2.md", "w") as d:
         d.write(doc_md)
 
-
     doc_rst = nml_doc.generate_documentation(format="rst")
 
     with open("NeuroML2.rst", "w") as d:
         d.write(doc_rst)
-
 
     print("\n  >> Generating specification in dict form...")
     doc_dict = nml_doc.generate_documentation(format="dict")
@@ -99,4 +99,3 @@ if __name__ == '__main__':
         yy = yaml.dump(doc_dict, indent=4, sort_keys=False)
         print(yy)
         d.write(yy)
-

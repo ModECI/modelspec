@@ -9,6 +9,7 @@ Some description...
 Allowed field    Data Type    Description
 ===============  ===========  ================================
 **id**           str          The id of the NeuroML 2 document
+**version**      str          NeuroML version used
 ===============  ===========  ================================
 
 **Allowed children**

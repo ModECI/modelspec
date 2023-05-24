@@ -1,5 +1,6 @@
 {
     "TestNeuroML": {
+        "version": "NeuroML_v2.3",
         "networks": {
             "net0": {
                 "populations": {

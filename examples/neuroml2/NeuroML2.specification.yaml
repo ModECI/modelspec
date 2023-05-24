@@ -1,15 +1,18 @@
 NeuroML:
-    definition: 'Some description... '
+    definition: Some description...
     allowed_parameters:
         id:
             type: str
             description: The id of the NeuroML 2 document
+        version:
+            type: str
+            description: NeuroML version used
     allowed_children:
         networks:
             type: Network
             description: The networks present
 Network:
-    definition: 'Some description... '
+    definition: Some description...
     allowed_parameters:
         id:
             type: str
@@ -19,7 +22,7 @@ Network:
             type: Population
             description: the pops in the net
 Population:
-    definition: 'Some description... '
+    definition: Some description...
     allowed_parameters:
         id:
             type: str

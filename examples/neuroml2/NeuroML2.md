@@ -10,6 +10,13 @@ Some description...
  </tr>
 
 
+  <tr>
+    <td><b>version</b></td>
+    <td>str</td>
+    <td><i>NeuroML version used</i></td>
+ </tr>
+
+
 </table>
 
 ### Allowed children
