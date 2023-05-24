@@ -1,0 +1,14 @@
+{
+    "TestNeuroML": {
+        "networks": {
+            "net0": {
+                "populations": {
+                    "pop0": {
+                        "component": "izh2007RS0",
+                        "size": 1
+                    }
+                }
+            }
+        }
+    }
+}
