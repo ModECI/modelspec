@@ -60,6 +60,23 @@ class TestUtils(unittest.TestCase):
         assert AtimesB[0, 0] == 1
         assert AtimesB.shape == (2, 2)
 
+        assert evaluate("math.sin(1)", verbose=True) == 0.8414709848078965
+        assert evaluate("math.exp(1)+1", verbose=True) == 3.718281828459045
+
+        params = {"v": -0.070, "v_offset": -0.050, "MVOLT": 0.001}
+
+        assert (
+            evaluate(
+                "math.exp((13 - (v / MVOLT) + v_offset) / 4.0)", params, verbose=True
+            )
+            == 1014335951.1351416
+        )
+
+        params = {"x": 1}
+        params = {"x": np.array([1, 2])}
+        ee = evaluate("numpy.exp(x)+x", params, verbose=True)
+        assert ee[0] == 3.718281828459045
+
     def test_val_info_tuple(self):
         print(_val_info((1, 2)))
         print(_val_info((("test", 1), 2)))
