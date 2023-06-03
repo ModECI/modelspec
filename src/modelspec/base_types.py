@@ -118,6 +118,9 @@ class Base:
         return bson.encode(self.to_dict())
 
     def to_xml(self):
+        """
+        Convert the Base object to a XML string representation.
+        """
         indent = 4
         xml_bytes = dicttoxml.dicttoxml(self.to_dict())
         xml_string = xml_bytes.decode("utf-8")  # Decode bytes into a string
