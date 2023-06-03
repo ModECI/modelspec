@@ -1,1 +1,25 @@
-<?xml version="1.0" encoding="UTF-8" ?><root><MyBook type="dict"><title type="str">My life in Python</title><sections type="dict"><Abstract type="dict"><paragraphs type="list"><item type="dict"><contents type="str">Blah blah blah</contents></item><item type="dict"><contents type="str">Blah2</contents></item></paragraphs></Abstract><Chapter_1 type="dict"><paragraphs type="list"><item type="dict"><contents type="str">More...</contents></item></paragraphs></Chapter_1></sections></MyBook></root>
+<?xml version="1.0" ?>
+<root>
+    <MyBook type="dict">
+        <title type="str">My life in Python</title>
+        <sections type="dict">
+            <Abstract type="dict">
+                <paragraphs type="list">
+                    <item type="dict">
+                        <contents type="str">Blah blah blah</contents>
+                    </item>
+                    <item type="dict">
+                        <contents type="str">Blah2</contents>
+                    </item>
+                </paragraphs>
+            </Abstract>
+            <Chapter_1 type="dict">
+                <paragraphs type="list">
+                    <item type="dict">
+                        <contents type="str">More...</contents>
+                    </item>
+                </paragraphs>
+            </Chapter_1>
+        </sections>
+    </MyBook>
+</root>
