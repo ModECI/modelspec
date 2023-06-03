@@ -5,6 +5,9 @@ import yaml
 import os
 import math
 import numpy as np
+from xml.dom.minidom import parseString
+import xml.etree.ElementTree as ET
+import dicttoxml
 
 from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
@@ -12,7 +15,7 @@ from modelspec.base_types import EvaluableExpression
 from random import Random
 from typing import Union
 
-verbose = False
+verbose = True
 
 
 def load_json(filename: str):
@@ -56,6 +59,19 @@ def load_bson(filename: str):
     return data
 
 
+def load_xml(filename: str):
+    """
+    Load a generic XML file
+
+    Args:
+        filename: The name of the XML file to laod
+    """
+    with open(filename) as file:
+        tree = ET.parse(file)
+
+    return tree
+
+
 def save_to_json_file(info_dict, filename, indent=4):
 
     strj = json.dumps(info_dict, indent=indent)
@@ -71,6 +87,15 @@ def save_to_yaml_file(info_dict, filename, indent=4):
         stry = yaml.dump(info_dict, indent=indent, sort_keys=False)
     with open(filename, "w") as fp:
         fp.write(stry)
+
+
+def save_to_xml_file(info_dict, filename, indent=4):
+    xml = dicttoxml.dicttoxml(info_dict)
+    parsed_xml = parseString(xml)
+    pretty_xml = parsed_xml.toprettyxml(indent=" " * indent)
+
+    with open(filename, "w") as file:
+        file.write(pretty_xml)
 
 
 def ascii_encode_dict(data):
@@ -320,6 +345,10 @@ def evaluate(
             if rng:
                 expr = expr.replace("random()", "rng.random()")
                 parameters["rng"] = rng
+            elif "random()" in expr:
+                raise Exception(
+                    "The expression [%s] contains a random() call, but a random number generator (rng) must be supplied to the evaluate() call when this expression string is to be evaluated"
+                )
 
             if type(expr) == str and "math." in expr:
                 parameters["math"] = math
