@@ -224,12 +224,14 @@ class Base:
         """
         if filename is None:
             filename = f"{self.id}.xml"
-
+    
         xml_data = dicttoxml.dicttoxml(self.to_dict(), custom_root="root")
-
-        with open(filename, "wb") as file:
-            file.write(xml_data)
-
+        dom = xml.dom.minidom.parseString(xml_data)
+        pretty_xml = dom.toprettyxml(indent=" " * 4)
+    
+        with open(filename, 'w') as file:
+            file.write(pretty_xml)
+            
         return filename
 
     def to_yaml(self, include_metadata: bool = True) -> str:
