@@ -211,7 +211,7 @@ class Base:
 
     def to_xml_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
-    ) -> None:
+    ) -> str:
         """Convert modelspec format to xml format
 
         Args:
