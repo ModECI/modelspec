@@ -159,9 +159,8 @@ class Base:
     @classmethod
     def from_xml(cls, xml_str: str) -> "Base":
         """Instantiate an modelspec object from a XML string"""
-        root = ET.fromstring(xml_str)
-        xml_dict = xml_to_dict(root)
-        return cls.from_dict(xml_dict)
+        xml_dict = xmltodict.parse(xml_str)
+        return cls.from_dict(xml_dict["root"])
 
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
@@ -224,14 +223,14 @@ class Base:
         """
         if filename is None:
             filename = f"{self.id}.xml"
-    
+
         xml_data = dicttoxml.dicttoxml(self.to_dict(), custom_root="root")
         dom = xml.dom.minidom.parseString(xml_data)
         pretty_xml = dom.toprettyxml(indent=" " * 4)
-    
-        with open(filename, 'w') as file:
+
+        with open(filename, "w") as file:
             file.write(pretty_xml)
-            
+
         return filename
 
     def to_yaml(self, include_metadata: bool = True) -> str:
