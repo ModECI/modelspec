@@ -2,7 +2,6 @@ import json
 import yaml
 import bson
 import sys
-import xml.etree.ElementTree as ET
 import xml.dom.minidom
 import dicttoxml
 import xmltodict
@@ -122,7 +121,13 @@ class Base:
         Convert the Base object to a XML string representation.
         """
         indent = 4
-        xml_bytes = dicttoxml.dicttoxml(self.to_dict())
+        xml_bytes = dicttoxml.dicttoxml(
+            self.to_dict(),
+            custom_root=None,
+            root=False,
+            xml_declaration=False,
+            attr_type=False
+        )
         xml_string = xml_bytes.decode("utf-8")  # Decode bytes into a string
         parsed_xml = xml.dom.minidom.parseString(xml_string)
         pretty_xml = parsed_xml.toprettyxml(indent=" " * indent)
@@ -163,7 +168,8 @@ class Base:
     def from_xml(cls, xml_str: str) -> "Base":
         """Instantiate an modelspec object from a XML string"""
         xml_dict = xmltodict.parse(xml_str)
-        return cls.from_dict(xml_dict["root"])
+        root_key = next(iter(xml_dict.keys()))
+        return cls.from_dict(xml_dict[root_key])
 
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
@@ -227,12 +233,16 @@ class Base:
         if filename is None:
             filename = f"{self.id}.xml"
 
-        xml_data = dicttoxml.dicttoxml(self.to_dict(), custom_root="root")
-        dom = xml.dom.minidom.parseString(xml_data)
-        pretty_xml = dom.toprettyxml(indent=" " * 4)
+        xml_data = dicttoxml.dicttoxml(self.to_dict(), custom_root="root", xml_declaration=False, attr_type=False)
+        root_element = xml.dom.minidom.parseString(xml_data).documentElement
+
+    # Get the content of the root element
+        content = "".join([node.toxml() for node in root_element.childNodes])
+
+        formatted_xml = xml.dom.minidom.parseString(content).toprettyxml(indent="  ")
 
         with open(filename, "w") as file:
-            file.write(pretty_xml)
+            file.write(formatted_xml)
 
         return filename
 
@@ -364,8 +374,8 @@ class Base:
         """
         with open(filename) as file:
             xml_data = file.read()
-        data_dict = xmltodict.parse(xml_data)
-        return cls.from_dict(data_dict["root"])
+        data_dict = xmltodict.parse(xml_data, dict_constructor=dict)
+        return cls.from_dict(data_dict)
 
     def get_child(self, id: str, type_: str) -> Any:
         """
