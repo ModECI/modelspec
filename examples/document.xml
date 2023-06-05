@@ -1,25 +1,23 @@
 <?xml version="1.0" ?>
-<root>
-    <MyBook type="dict">
-        <title type="str">My life in Python</title>
-        <sections type="dict">
-            <Abstract type="dict">
-                <paragraphs type="list">
-                    <item type="dict">
-                        <contents type="str">Blah blah blah</contents>
-                    </item>
-                    <item type="dict">
-                        <contents type="str">Blah2</contents>
-                    </item>
-                </paragraphs>
-            </Abstract>
-            <Chapter_1 type="dict">
-                <paragraphs type="list">
-                    <item type="dict">
-                        <contents type="str">More...</contents>
-                    </item>
-                </paragraphs>
-            </Chapter_1>
-        </sections>
-    </MyBook>
-</root>
+<MyBook>
+  <title>My life in Python</title>
+  <sections>
+    <Abstract>
+      <paragraphs>
+        <item>
+          <contents>Blah blah blah</contents>
+        </item>
+        <item>
+          <contents>Blah2</contents>
+        </item>
+      </paragraphs>
+    </Abstract>
+    <Chapter_1>
+      <paragraphs>
+        <item>
+          <contents>More...</contents>
+        </item>
+      </paragraphs>
+    </Chapter_1>
+  </sections>
+</MyBook>

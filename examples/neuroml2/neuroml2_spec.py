@@ -68,11 +68,12 @@ if __name__ == "__main__":
     nml_doc.to_json_file("%s.json" % nml_doc.id)
     nml_doc.to_yaml_file("%s.yaml" % nml_doc.id)
     nml_doc.to_bson_file("%s.bson" % nml_doc.id)
-    # nml_doc.to_xml_file("%s.xml"%nml_doc.id)
+    nml_doc.to_xml_file("%s.xml" % nml_doc.id)
 
     print(" >> Full document details in YAML format:\n")
 
     print(nml_doc.to_yaml())
+    print(nml_doc.to_xml())
 
     doc_md = nml_doc.generate_documentation(format="markdown")
 

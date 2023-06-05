@@ -1,50 +1,50 @@
 <?xml version="1.0" ?>
-<root>
-    <Document type="dict">
-        <definition type="str">A model for documents.</definition>
-        <allowed_parameters type="dict">
-            <id type="dict">
-                <type type="str">str</type>
-                <description type="str">The unique id of the document</description>
+<None>
+    <Document>
+        <definition>A model for documents.</definition>
+        <allowed_parameters>
+            <id>
+                <type>str</type>
+                <description>The unique id of the document</description>
             </id>
-            <title type="dict">
-                <type type="str">str</type>
-                <description type="str">The document title</description>
+            <title>
+                <type>str</type>
+                <description>The document title</description>
             </title>
-            <ISBN type="dict">
-                <type type="str">int</type>
-                <description type="str">International Standard Book Number</description>
+            <ISBN>
+                <type>int</type>
+                <description>International Standard Book Number</description>
             </ISBN>
         </allowed_parameters>
-        <allowed_children type="dict">
-            <sections type="dict">
-                <type type="str">List</type>
-                <description type="str">The sections of the document</description>
+        <allowed_children>
+            <sections>
+                <type>List</type>
+                <description>The sections of the document</description>
             </sections>
         </allowed_children>
     </Document>
-    <Section type="dict">
-        <definition type="str">A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more, i.e the :class:`Paragraph`(s) in the section, probably related to the :code:`title` of the `Document &lt;#document&gt;`_.</definition>
-        <allowed_parameters type="dict">
-            <id type="dict">
-                <type type="str">str</type>
-                <description type="str">The id of the section</description>
+    <Section>
+        <definition>A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more, i.e the :class:`Paragraph`(s) in the section, probably related to the :code:`title` of the `Document &lt;#document&gt;`_.</definition>
+        <allowed_parameters>
+            <id>
+                <type>str</type>
+                <description>The id of the section</description>
             </id>
         </allowed_parameters>
-        <allowed_children type="dict">
-            <paragraphs type="dict">
-                <type type="str">List</type>
-                <description type="str">The paragraphs</description>
+        <allowed_children>
+            <paragraphs>
+                <type>List</type>
+                <description>The paragraphs</description>
             </paragraphs>
         </allowed_children>
     </Section>
-    <Paragraph type="dict">
-        <definition type="str">A model of a paragraph.</definition>
-        <allowed_parameters type="dict">
-            <contents type="dict">
-                <type type="str">str</type>
-                <description type="str">Paragraph contents, which make up the :class:`Section`s.</description>
+    <Paragraph>
+        <definition>A model of a paragraph.</definition>
+        <allowed_parameters>
+            <contents>
+                <type>str</type>
+                <description>Paragraph contents, which make up the :class:`Section`s.</description>
             </contents>
         </allowed_parameters>
     </Paragraph>
-</root>
+</None>
