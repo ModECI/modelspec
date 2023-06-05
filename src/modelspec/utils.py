@@ -61,7 +61,7 @@ def load_bson(filename: str):
 
 def load_xml(filename: str):
     """
-    Load a generic XML file
+    This Loads a generic XML file
 
     Args:
         filename: The name of the XML file to laod
@@ -73,14 +73,30 @@ def load_xml(filename: str):
 
 
 def save_to_json_file(info_dict, filename, indent=4):
+    """
+    This saves a dictionary to a JSON file.
 
+    Args:
+        info_dict (dict): The dictionary containing the data to be saved.
+        filename (str): The name of the file to save the JSON data to.
+        indent (int, optional): The number of spaces used for indentation in the JSON file.
+                                Defaults to 4.
+    """
     strj = json.dumps(info_dict, indent=indent)
     with open(filename, "w") as fp:
         fp.write(strj)
 
 
 def save_to_yaml_file(info_dict, filename, indent=4):
+    """
+    This saves a dictionary to a YAML file.
 
+    Args:
+        info_dict (dict): The dictionary containing the data to be saved.
+        filename (str): The name of the file to save the YAML data to.
+        indent (int, optional): The number of spaces used for indentation in the YAML file.
+                                Defaults to 4.
+    """
     if sys.version_info[0] == 2:
         stry = yaml.dump(info_dict, indent=indent, default_flow_style=False)
     else:
@@ -90,7 +106,21 @@ def save_to_yaml_file(info_dict, filename, indent=4):
 
 
 def save_to_xml_file(info_dict, filename, indent=4):
-    xml = dicttoxml.dicttoxml(info_dict)
+    """
+    This saves a dictionary to an XML file.
+
+    Args:
+        info_dict (dict): The dictionary containing the data to be saved.
+        filename (str): The name of the file to save the XML data to.
+        indent (int, optional): The number of spaces used for indentation in the XML file.
+                                Defaults to 4.
+    """
+    xml = dicttoxml.dicttoxml(
+        info_dict,
+        custom_root=None,
+        xml_declaration=False,
+        attr_type=False)
+    
     parsed_xml = parseString(xml)
     pretty_xml = parsed_xml.toprettyxml(indent=" " * indent)
 
@@ -99,6 +129,15 @@ def save_to_xml_file(info_dict, filename, indent=4):
 
 
 def ascii_encode_dict(data):
+    """
+    This encodes the values in a dictionary to ASCII.
+
+    Args:
+        data (dict): The dictionary to be encoded.
+
+    Returns:
+        dict: The dictionary with encoded values.
+    """
     ascii_encode = (
         lambda x: x.encode("ascii")
         if (sys.version_info[0] == 2 and isinstance(x, unicode))
@@ -108,7 +147,16 @@ def ascii_encode_dict(data):
 
 
 def _parse_element(dict_format, to_build):
+    """
+    This parses an element represented in dictionary format and construct an object with the parsed data.
 
+    Args:
+        dict_format (dict): The dictionary representation of the element.
+        to_build: The object to be constructed with the parsed data.
+
+    Returns:
+        The constructed object with the parsed data.
+    """
     if verbose:
         print("Parse for element: [%s]" % dict_format)
     for k in dict_format.keys():
@@ -123,7 +171,16 @@ def _parse_element(dict_format, to_build):
 
 
 def _parse_attributes(dict_format, to_build):
+    """
+    This parses the attributes of an element represented in dictionary format and set them in the `to_build` object.
 
+    Args:
+        dict_format (dict): The dictionary representation of the element attributes.
+        to_build: The object in which to set the attributes.
+
+    Returns:
+        The `to_build` object with the attributes set.
+        """
     for key in dict_format:
         value = dict_format[key]
         new_format = True
@@ -195,7 +252,14 @@ def _parse_attributes(dict_format, to_build):
 
 def locate_file(f, base_dir):
     """
-    Utility method for finding full path to a filename as string
+    This utility method is for finding the full path to a filename.
+
+    Args:
+        f (str): The filename to locate.
+        base_dir (str): The base directory in which to search for the file.
+
+    Returns:
+        The full path to the file as a string.
     """
     if base_dir is None:
         return f
@@ -206,6 +270,15 @@ def locate_file(f, base_dir):
 
 
 def _val_info(param_val):
+    """
+    This generates a string representation of a parameter value.
+
+    Args:
+        param_val: The parameter value to generate the string representation for.
+
+    Returns:
+        The string representation of the parameter value.
+    """
     if type(param_val) == np.ndarray:
         pp = "%s" % (np.array2string(param_val, threshold=4, edgeitems=1))
         pp = pp.replace("\n", "")
@@ -228,7 +301,14 @@ def _val_info(param_val):
 
 def _params_info(parameters, multiline=False):
     """
-    Short info on names, values and types in parameter list
+    Short info on names, values and types in parameter list.
+    
+    Args:
+        parameters: The parameter list to generate the string representation for.
+        multiline: A boolean indicating whether to include line breaks between parameter entries. Default is False.
+
+    Returns:
+        The string representation of the parameter list.
     """
     pi = "["
     if parameters is not None and len(parameters) > 0:
@@ -392,7 +472,15 @@ def evaluate(
 
 
 def parse_list_like(list_str):
+    """
+    This parse a list-like object represented as a string and convert it back into a Python list.
 
+    Args:
+        list_str: The string representation of the list-like object.
+
+    Returns:
+        A Python list containing the parsed elements from the list-like object.
+    """
     if isinstance(list_str, int):
         return [list_str]
     elif isinstance(list_str, float):
