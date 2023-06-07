@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modelspec.base_types &mdash; modelspec 0.3.0 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            modelspec
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">modelspec</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">modelspec.base_types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for modelspec.base_types</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">bson</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">attr</span>
+<span class="kn">import</span> <span class="nn">cattr</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">docstring_parser</span> <span class="kn">import</span> <span class="n">parse</span>
+
+<span class="c1"># If we running python version 3.7 or lower, we need to using typing_compat</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">typing_compat</span> <span class="kn">import</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">get_origin</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">get_origin</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">cattr.gen</span> <span class="kn">import</span> <span class="n">make_dict_unstructure_fn</span><span class="p">,</span> <span class="n">override</span>
+<span class="kn">from</span> <span class="nn">cattr.preconf.pyyaml</span> <span class="kn">import</span> <span class="n">make_converter</span> <span class="k">as</span> <span class="n">make_yaml_converter</span>
+<span class="kn">from</span> <span class="nn">cattr.preconf.bson</span> <span class="kn">import</span> <span class="n">make_converter</span> <span class="k">as</span> <span class="n">make_bson_converter</span>
+
+<span class="kn">from</span> <span class="nn">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+
+<span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">MARKDOWN_FORMAT</span> <span class="o">=</span> <span class="s2">&quot;markdown&quot;</span>
+<span class="n">RST_FORMAT</span> <span class="o">=</span> <span class="s2">&quot;rst&quot;</span>
+<span class="n">DICT_FORMAT</span> <span class="o">=</span> <span class="s2">&quot;dict&quot;</span>
+<span class="n">ALL_FORMATS</span> <span class="o">=</span> <span class="p">[</span><span class="n">MARKDOWN_FORMAT</span><span class="p">,</span> <span class="n">RST_FORMAT</span><span class="p">,</span> <span class="n">DICT_FORMAT</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="EvaluableExpression"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.EvaluableExpression">[docs]</a><span class="k">class</span> <span class="nc">EvaluableExpression</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    EvaluableExpression is a string that can be evaluated to a value during modelspec execution. This class inherits from</span>
+<span class="sd">    str, so it can be used as a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expr</span> <span class="o">=</span> <span class="n">expr</span></div>
+
+
+<span class="c1"># Union of types that are allowed as value expressions for parameters.</span>
+<span class="n">ValueExprType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">EvaluableExpression</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="n">value_expr_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">EvaluableExpression</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="print_"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.print_">[docs]</a><span class="k">def</span> <span class="nf">print_</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">print_it</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print a message preceded by modelspec, only if print_it=True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;modelspec &gt;&gt;&gt; &quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">print_it</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">prefix</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="print_v"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.print_v">[docs]</a><span class="k">def</span> <span class="nf">print_v</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print a message preceded by modelspec always</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">print_</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+
+<span class="c1"># A general purpose converter for all model spec objects</span>
+<span class="n">converter</span> <span class="o">=</span> <span class="n">cattr</span><span class="o">.</span><span class="n">Converter</span><span class="p">()</span>
+
+<span class="c1"># A setup an additional converter to apply when we are serializing using PyYAML.</span>
+<span class="c1"># This handles things like tuples as lists.</span>
+<span class="n">yaml_converter</span> <span class="o">=</span> <span class="n">make_yaml_converter</span><span class="p">()</span>
+<span class="n">bson_converter</span> <span class="o">=</span> <span class="n">make_bson_converter</span><span class="p">()</span>
+
+<span class="c1"># A simple converter that handles only value expressions.</span>
+<span class="n">value_expr_converter</span> <span class="o">=</span> <span class="n">cattr</span><span class="o">.</span><span class="n">Converter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Base"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base">[docs]</a><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Base</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all object in a model specification. Any object should inherit from this class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Base.to_dict"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the Base object to a nested dict structure.&quot;&quot;&quot;</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># If this object has an id attribute, by default lets serialize it within a dict with the id as the key, even if</span>
+        <span class="c1"># it is a single object.</span>
+        <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)]</span> <span class="ow">and</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># Drop the id field</span>
+            <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">d</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">d</span></div>
+
+<div class="viewcode-block" id="Base.to_json"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the Base object to a JSON string representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.to_bson"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_bson">[docs]</a>    <span class="k">def</span> <span class="nf">to_bson</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the Base object to a BSON string representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">bson</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Base.from_dict"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate an Base object from a dictionary&quot;&quot;&quot;</span>
+
+        <span class="c1"># If this object has an id attribute, it may have been serialized within a dict with the id as the key, even if</span>
+        <span class="c1"># it is a single object.</span>
+        <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">)]</span> <span class="ow">and</span> <span class="s2">&quot;id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Cannot deserialize Base modelspec object (</span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s2">) because it is empty.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Get the first key, this should be the id</span>
+            <span class="n">id_val</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">structure</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">id_val</span><span class="p">,</span> <span class="o">**</span><span class="n">d</span><span class="p">[</span><span class="n">id_val</span><span class="p">]},</span> <span class="bp">cls</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.from_json"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">json_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate an modelspec object from a JSON string&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Base.from_bson"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_bson">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_bson</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">bson_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate an modelspec object from a BSON string&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">bson_str</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Base.to_json_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_json_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_json_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the modelspec model to JSON format and save to a file.</span>
+
+<span class="sd">         .. note::</span>
+<span class="sd">            JSON is standard file format uses human-readable text to store and transmit data objects consisting of</span>
+<span class="sd">                attribute–value pairs and arrays</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The name of the file to save. If None, use :code:`f&quot;{self.id}.json&quot;`</span>
+<span class="sd">            include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,</span>
+<span class="sd">                              benchmark results, and environments in which the specified model was originally implemented</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            The name of the generated JSON file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.json&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="Base.to_bson_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_bson_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_bson_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert modelspec format to bson format</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: File in modelspec format (Filename extension: .bson )</span>
+<span class="sd">            include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,</span>
+<span class="sd">                              benchmark results, and environments in which the specified model was originally implemented</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            The name of the generated bson file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.bson&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">bson_data</span> <span class="o">=</span> <span class="n">bson</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+                <span class="n">bson_converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span>
+            <span class="p">)</span>
+            <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bson_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="Base.to_yaml"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_yaml">[docs]</a>    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the Base object to a YAML dictionary representation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            include_metadata: Should metadata be included in the YAML output?</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A YAML string representation of the object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+            <span class="n">yaml_converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.to_yaml_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_yaml_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_yaml_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert modelspec format to yaml format</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: File in modelspec format (Filename extension: .yaml). If None, use :code:`f&quot;{self.id}.yaml&quot;`</span>
+<span class="sd">            include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,</span>
+<span class="sd">                              benchmark results, and environments in which the specified model was originally implemented</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            The name of the generated yaml file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.yaml&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+
+            <span class="c1"># We need to setup another</span>
+            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+                <span class="n">yaml_converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span>
+                <span class="n">outfile</span><span class="p">,</span>
+                <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="Base.from_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`.Base` from its representation stored in a file. Auto-detect the correct deserialization code</span>
+<span class="sd">        based on file extension. Currently supported formats are; JSON(.json) and YAML (.yaml or .yml)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The name of the file to load.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An modelspec :class:`.Base` for this file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.yml&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_yaml_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_json_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.bson&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_bson_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot auto-detect modelspec serialization format from filename (</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">). The filename &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;must have one of the following extensions: .json, .yml, or .yaml.&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.from_json_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_json_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`.Base` from its JSON representation stored in a file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The file from which to load the JSON data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An modelspec :class:`.Base` for this JSON</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.from_bson_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_bson_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_bson_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`.Base` from its BSON representation stored in a file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The file from which to load the BSON data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An modelspec :class:`.Base` for this BSON</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+            <span class="n">data_encoded</span> <span class="o">=</span> <span class="n">infile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">data_encoded</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.from_yaml_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_yaml_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class:`.Base` from its YAML representation stored in a file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The file from which to load the YAML data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An modelspec :class:`.Base` for this YAML</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">yaml_converter</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.get_child"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.get_child">[docs]</a>    <span class="k">def</span> <span class="nf">get_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a child object from the model specification.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            id: The unique string identifier of the child object.</span>
+<span class="sd">            type_: The type of the child object. Must be an attribute name that contains a list of child objects with</span>
+<span class="sd">                id attributes..</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The child object. If the child object is not found, None is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># We can&#39;t find the container for this type of child object.</span>
+        <span class="k">if</span> <span class="n">type_</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)]:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+
+        <span class="c1"># Find the child object with the given id.</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">c</span>
+
+        <span class="c1"># We didn&#39;t find the child object.</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">definition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The definition of the model.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The definition of the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">_parse_definition</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">allowed_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of allowed fields for this model.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The allowed fields are returned as dict keyed by field name</span>
+<span class="sd">                and with values of tuple with (field_description, field_type).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">_parse_allowed_fields</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">allowed_children</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of allowed children for this model. Children are defined as</span>
+<span class="sd">        any attribute of this object that is a collection of objects that inherits from :class:`Base`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The allowed children are returned as dict keyed attribute name of the collection</span>
+<span class="sd">                and with values of tuple with (description, type).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">_parse_allowed_children</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_definition</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the definition of the model from its doc string.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The definition of the model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parse the docstring</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+
+        <span class="c1"># Extract the description, use the long description if available.</span>
+        <span class="c1"># &quot;short_description&quot; only parse the first non-empty line and</span>
+        <span class="c1"># &quot;long_description&quot; parse the rest of the docstring i.e.</span>
+        <span class="c1"># it skips the first non-empty line and parse the rest of the docstring</span>
+        <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">long_description</span><span class="p">:</span>
+            <span class="n">definition</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">short_description</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">long_description</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">definition</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">short_description</span>
+        <span class="k">return</span> <span class="n">definition</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_allowed_fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of allowed fields for this model.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The allowed fields are returned as dict keyed by field name</span>
+<span class="sd">                and with values of tuple with (field_description, field_type).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parse the docstring</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+
+        <span class="c1"># Extract the description for each parameter from the docstring if available.</span>
+        <span class="n">field_descriptions</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">arg_name</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">description</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">}</span>
+
+        <span class="c1"># Build up the old-style dict format for allowed_fields</span>
+        <span class="n">allowed_fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">(</span><span class="n">field_descriptions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_child_field</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="c1"># If this class has a parent class, add the parent&#39;s allowed fields to this class&#39;s allowed fields.</span>
+        <span class="k">for</span> <span class="n">base_class</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base_class</span><span class="p">,</span> <span class="s2">&quot;allowed_fields&quot;</span><span class="p">):</span>
+                <span class="n">allowed_fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">base_class</span><span class="o">.</span><span class="n">_parse_allowed_fields</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">allowed_fields</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_is_child_field</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if a field is a child field. A child field is an attribute that is a collection of objects</span>
+<span class="sd">        that inherits from :class:`Base`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field_name: The name of the field to check.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if the field is a child field, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">fields_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">)[</span><span class="n">field_name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s2">&#39; not found in modelspec class &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check if the type of the field is a list or dict</span>
+        <span class="n">collection_arg</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">collection_arg</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">collection_arg</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">is_child</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">collection_arg</span><span class="p">,</span> <span class="n">Base</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">is_child</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">is_child</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_parse_allowed_children</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the list of allowed children for this model. Children are defined as</span>
+<span class="sd">        any attribute of this object that is a collection of objects that inherits from :class:`Base`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The allowed children are returned as dict keyed attribute name of the collection</span>
+<span class="sd">                and with values of tuple with (description, type).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parse the docstring</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+
+        <span class="c1"># Extract the description for each parameter from the docstring if available.</span>
+        <span class="n">field_descriptions</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">arg_name</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">description</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">params</span><span class="p">}</span>
+
+        <span class="c1"># Build up the old-style dict format for allowed_children</span>
+        <span class="n">allowed_children</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">(</span><span class="n">field_descriptions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_child_field</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="c1"># If this class has a parent class, add the parent&#39;s allowed fields to this class&#39;s allowed fields.</span>
+        <span class="k">for</span> <span class="n">base_class</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base_class</span><span class="p">,</span> <span class="s2">&quot;allowed_children&quot;</span><span class="p">):</span>
+                <span class="n">allowed_children</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">base_class</span><span class="o">.</span><span class="n">_parse_allowed_children</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">allowed_children</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_is_evaluable_expression</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method to check if a value is of type EvaluableExpressions&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">value</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;EvaluableExpression&quot;</span>
+            <span class="ow">or</span> <span class="n">value</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;modelspec.EvaluableExpression&quot;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_is_base_type</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">,</span>
+        <span class="n">can_be_list</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">can_be_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">can_be_ndarray</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">can_be_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">can_be_eval_expr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="kn">import</span> <span class="nn">numpy</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">print_v</span><span class="p">(</span>
+                <span class="s2">&quot; &gt; Checking type of </span><span class="si">%s</span><span class="s2">, ee: </span><span class="si">%s</span><span class="s2">&quot;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_evaluable_expression</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="p">)</span>
+
+        <span class="c1"># If this is a generic type, get the actual type</span>
+        <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">value</span> <span class="o">==</span> <span class="nb">int</span>
+            <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="nb">str</span>
+            <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="nb">bool</span>
+            <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="nb">float</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">can_be_list</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">can_be_dict</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">can_be_ndarray</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">can_be_none</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="n">can_be_eval_expr</span> <span class="ow">and</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_evaluable_expression</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="n">Union</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_type_to_str</span><span class="p">(</span><span class="n">type_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a Python type (or type annotation) (from :code:`typing`) to a prettier format. Also handles normal types as well.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            type_: The type or type annotation to convert.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A string with a prettier format of the type annotation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># If the type as a __name__ attribute, use that</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">type_</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="c1"># If its a Generic type</span>
+        <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Base</span><span class="o">.</span><span class="n">_type_to_str</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Base</span><span class="o">.</span><span class="n">_type_to_str</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span> <span class="o">==</span> <span class="n">Union</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="s2">&quot;Union[&quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">Base</span><span class="o">.</span><span class="n">_type_to_str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">)])</span>
+                    <span class="o">+</span> <span class="s2">&quot;]&quot;</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Fallback to returning just the string representation. Drop any occurrence of typing</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;typing.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Base.generate_documentation"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.generate_documentation">[docs]</a>    <span class="k">def</span> <span class="nf">generate_documentation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate documentation for the modelspec object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            format: The format to generate the documentation in. Currently supported formats are: [&#39;markdown&#39;, &#39;dict&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">_cls_generate_documentation</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_generate_documentation</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate documentation for the modelspec object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            format: The format to generate the documentation in. Currently supported formats are: [&#39;markdown&#39;, &#39;dict&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span> <span class="ow">or</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+            <span class="n">doc_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">DICT_FORMAT</span><span class="p">:</span>
+            <span class="n">doc_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown format: &#39;</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&#39;, recognised formats: &#39;</span><span class="si">{</span><span class="n">ALL_FORMATS</span><span class="si">}</span><span class="s2">&#39;&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">definition</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_parse_definition</span><span class="p">()</span>
+        <span class="n">allowed_fields</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_parse_allowed_fields</span><span class="p">()</span>
+        <span class="n">allowed_children</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_parse_allowed_children</span><span class="p">()</span>
+
+        <span class="c1"># print(f&quot; - {cls.__name__} ({definition})&quot;)</span>
+
+        <span class="n">rst_url_format</span> <span class="o">=</span> <span class="s2">&quot;`</span><span class="si">%s</span><span class="s2"> &lt;</span><span class="si">%s</span><span class="s2">&gt;`__&quot;</span>
+
+        <span class="k">def</span> <span class="nf">insert_links</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">MARKDOWN_FORMAT</span><span class="p">):</span>
+
+            <span class="n">code_ref</span> <span class="o">=</span> <span class="s2">&quot;:code:`&quot;</span>
+            <span class="c1"># print(&quot;    &gt; Converting: %s&quot; % text)</span>
+            <span class="n">text2</span> <span class="o">=</span> <span class="n">text</span>
+            <span class="k">while</span> <span class="n">code_ref</span> <span class="ow">in</span> <span class="n">text2</span><span class="p">:</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">text2</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">code_ref</span><span class="p">)</span>
+                <span class="n">ind2</span> <span class="o">=</span> <span class="n">text2</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="n">ind</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">code_ref</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">pre</span> <span class="o">=</span> <span class="n">text2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ind</span><span class="p">]</span>
+                <span class="n">ref</span> <span class="o">=</span> <span class="n">text2</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">code_ref</span><span class="p">)</span> <span class="p">:</span> <span class="n">ind2</span><span class="p">]</span>
+                <span class="n">post</span> <span class="o">=</span> <span class="n">text2</span><span class="p">[</span><span class="n">ind2</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+
+                <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pre</span><span class="si">}</span><span class="s2">&lt;b&gt;</span><span class="si">{</span><span class="n">ref</span><span class="si">}</span><span class="s2">&lt;/b&gt;</span><span class="si">{</span><span class="n">post</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pre</span><span class="si">}</span><span class="s2">**</span><span class="si">{</span><span class="n">ref</span><span class="si">}</span><span class="s2">**</span><span class="si">{</span><span class="n">post</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="c1"># print(&quot;    &gt; Converted to: %s&quot; % text2)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text2</span>
+
+            <span class="n">class_ref</span> <span class="o">=</span> <span class="s2">&quot;:class:`&quot;</span>
+            <span class="c1"># print(&quot;    &gt; Converting: %s&quot; % text)</span>
+            <span class="n">text2</span> <span class="o">=</span> <span class="n">text</span>
+            <span class="k">while</span> <span class="n">class_ref</span> <span class="ow">in</span> <span class="n">text2</span><span class="p">:</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">text2</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">class_ref</span><span class="p">)</span>
+                <span class="n">ind2</span> <span class="o">=</span> <span class="n">text2</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="n">ind</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_ref</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">pre</span> <span class="o">=</span> <span class="n">text2</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">ind</span><span class="p">]</span>
+                <span class="n">ref</span> <span class="o">=</span> <span class="n">text2</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_ref</span><span class="p">)</span> <span class="p">:</span> <span class="n">ind2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">ref</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;~&quot;</span><span class="p">:</span>
+                    <span class="n">ref</span> <span class="o">=</span> <span class="n">ref</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="n">post</span> <span class="o">=</span> <span class="n">text2</span><span class="p">[</span><span class="n">ind2</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+                <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pre</span><span class="si">}</span><span class="s1">&lt;a href=&quot;#</span><span class="si">{</span><span class="n">ref</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">ref</span><span class="si">}</span><span class="s1">&lt;/a&gt;</span><span class="si">{</span><span class="n">post</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                    <span class="n">rr</span> <span class="o">=</span> <span class="n">ref</span>
+                    <span class="n">pp</span> <span class="o">=</span> <span class="n">post</span>
+
+                    <span class="c1">######################################</span>
+                    <span class="c1"># Some hardcoded fixes for plurals...</span>
+                    <span class="k">if</span> <span class="n">pp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s &quot;</span><span class="p">):</span>
+                        <span class="n">rr</span> <span class="o">+=</span> <span class="s2">&quot;s&quot;</span>
+                        <span class="n">pp</span> <span class="o">=</span> <span class="n">pp</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                    <span class="k">if</span> <span class="n">pp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s.&quot;</span><span class="p">):</span>
+                        <span class="n">rr</span> <span class="o">+=</span> <span class="s2">&quot;s&quot;</span>
+                        <span class="n">pp</span> <span class="o">=</span> <span class="n">pp</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                    <span class="k">if</span> <span class="n">pp</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;(s)&quot;</span><span class="p">):</span>
+                        <span class="n">rr</span> <span class="o">+=</span> <span class="s2">&quot;(s)&quot;</span>
+                        <span class="n">pp</span> <span class="o">=</span> <span class="n">pp</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                    <span class="c1">######################################</span>
+
+                    <span class="n">text2</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pre</span><span class="si">}</span><span class="s2">`</span><span class="si">{</span><span class="n">rr</span><span class="si">}</span><span class="s2"> &lt;#</span><span class="si">{</span><span class="n">ref</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&gt;`__</span><span class="si">{</span><span class="n">pp</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="c1"># print(&quot;    &gt; Converted to: %s&quot; % text2)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text2</span>
+
+            <span class="k">if</span> <span class="s2">&quot;_&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">text</span>
+            <span class="k">if</span> <span class="s1">&#39;&quot;&#39;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">text</span>  <span class="c1"># Assume it&#39;s a quoted string containing an underscore...</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">text</span>  <span class="c1"># No need to remove underscore for RST format</span>
+
+            <span class="n">split</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="n">text2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)):</span>
+                <span class="n">pre</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span>
+                <span class="nb">type</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">text2</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">pre</span><span class="si">}</span><span class="s1">&lt;a href=&quot;#</span><span class="si">{</span><span class="nb">type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
+
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">:</span>
+                <span class="n">text2</span> <span class="o">+=</span> <span class="n">split</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">text2</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+            <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;## </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span>
+            <span class="k">if</span> <span class="n">definition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">insert_links</span><span class="p">(</span><span class="n">definition</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+            <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">definition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">insert_links</span><span class="p">(</span><span class="n">definition</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">RST_FORMAT</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">DICT_FORMAT</span><span class="p">:</span>
+            <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">definition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;definition&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">definition</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">allowed_fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;### Allowed parameters</span><span class="se">\n</span><span class="s2">&lt;table&gt;&quot;</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                <span class="n">ap</span> <span class="o">=</span> <span class="s2">&quot;**Allowed parameters**&quot;</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ap</span><span class="p">)</span>
+                <span class="n">table_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">DICT_FORMAT</span><span class="p">:</span>
+            <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">referenced</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">allowed_fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">referencable</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">Base</span><span class="o">.</span><span class="n">_is_base_type</span><span class="p">(</span>
+                <span class="n">type_</span><span class="p">,</span> <span class="n">can_be_eval_expr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">can_be_dict</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">type_str</span> <span class="o">=</span> <span class="n">Base</span><span class="o">.</span><span class="n">_type_to_str</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+            <span class="c1"># print(&quot;    Allowed parameter: {} {}&quot;.format(f, (description, type_str)))</span>
+
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">DICT_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_parameters&quot;</span><span class="p">][</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_parameters&quot;</span><span class="p">][</span><span class="n">f</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_str</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_parameters&quot;</span><span class="p">][</span><span class="n">f</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
+
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &lt;tr&gt;</span><span class="se">\n</span><span class="s2">    &lt;td&gt;&lt;b&gt;</span><span class="si">{}</span><span class="s2">&lt;/b&gt;&lt;/td&gt;</span><span class="se">\n</span><span class="s2">    &lt;td&gt;</span><span class="si">{}</span><span class="s2">&lt;/td&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;#</span><span class="si">{</span><span class="n">type_str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">type_str</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
+                        <span class="k">if</span> <span class="n">referencable</span>
+                        <span class="k">else</span> <span class="n">type_str</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    &lt;td&gt;&lt;i&gt;</span><span class="si">%s</span><span class="s2">&lt;/i&gt;&lt;/td&gt;</span><span class="se">\n</span><span class="s2"> &lt;/tr&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">insert_links</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="s2">&quot;**</span><span class="si">%s</span><span class="s2">**&quot;</span> <span class="o">%</span> <span class="n">f</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">rst_url_format</span> <span class="o">%</span> <span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">type_str</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                    <span class="k">if</span> <span class="n">referencable</span>
+                    <span class="k">else</span> <span class="n">type_str</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">insert_links</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">RST_FORMAT</span><span class="p">))</span>
+                <span class="n">table_info</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">referencable</span><span class="p">:</span>
+                <span class="n">referenced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">allowed_fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&lt;/table&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">tabulate</span><span class="p">(</span>
+                        <span class="n">table_info</span><span class="p">,</span>
+                        <span class="p">[</span><span class="s2">&quot;Allowed field&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">],</span>
+                        <span class="n">tablefmt</span><span class="o">=</span><span class="s2">&quot;rst&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">allowed_children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;### Allowed children</span><span class="se">\n</span><span class="s2">&lt;table&gt;&quot;</span>
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                <span class="n">ap</span> <span class="o">=</span> <span class="s2">&quot;**Allowed children**&quot;</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ap</span><span class="p">)</span>
+                <span class="n">table_info</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">DICT_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_children&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">allowed_children</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">type_str</span> <span class="o">=</span> <span class="n">Base</span><span class="o">.</span><span class="n">_type_to_str</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+            <span class="c1"># print(&quot;    Allowed child: {} {}&quot;.format(c, (description, type_str)))</span>
+
+            <span class="n">referencable</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">Base</span><span class="o">.</span><span class="n">_is_base_type</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="n">can_be_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">DICT_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_children&quot;</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_children&quot;</span><span class="p">][</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_str</span>
+                <span class="n">doc_dict</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;allowed_children&quot;</span><span class="p">][</span><span class="n">c</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">allowed_children</span><span class="p">[</span>
+                    <span class="n">c</span>
+                <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &lt;tr&gt;</span><span class="se">\n</span><span class="s2">    &lt;td&gt;&lt;b&gt;</span><span class="si">{}</span><span class="s2">&lt;/b&gt;&lt;/td&gt;</span><span class="se">\n</span><span class="s2">    &lt;td&gt;</span><span class="si">{}</span><span class="s2">&lt;/td&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">c</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;#</span><span class="si">{</span><span class="n">type_str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="n">type_str</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
+                        <span class="k">if</span> <span class="n">referencable</span>
+                        <span class="k">else</span> <span class="n">type_str</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">    &lt;td&gt;&lt;i&gt;</span><span class="si">%s</span><span class="s2">&lt;/i&gt;&lt;/td&gt;</span><span class="se">\n</span><span class="s2">  &lt;/tr&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">insert_links</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="s2">&quot;**</span><span class="si">%s</span><span class="s2">**&quot;</span> <span class="o">%</span> <span class="n">c</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">rst_url_format</span> <span class="o">%</span> <span class="p">(</span><span class="n">type_str</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">type_str</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                    <span class="k">if</span> <span class="n">referencable</span>
+                    <span class="k">else</span> <span class="n">type_str</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">insert_links</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">RST_FORMAT</span><span class="p">))</span>
+                <span class="n">table_info</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span>
+
+            <span class="c1"># Get the contained type</span>
+            <span class="k">if</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">referenced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">referenced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">type_</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">referenced</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">type_</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">allowed_children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">MARKDOWN_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&lt;/table&gt;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">RST_FORMAT</span><span class="p">:</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">tabulate</span><span class="p">(</span>
+                        <span class="n">table_info</span><span class="p">,</span>
+                        <span class="p">[</span><span class="s2">&quot;Allowed child&quot;</span><span class="p">,</span> <span class="s2">&quot;Data Type&quot;</span><span class="p">,</span> <span class="s2">&quot;Description&quot;</span><span class="p">],</span>
+                        <span class="n">tablefmt</span><span class="o">=</span><span class="s2">&quot;rst&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">referenced</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="n">MARKDOWN_FORMAT</span><span class="p">,</span> <span class="n">RST_FORMAT</span><span class="p">):</span>
+                <span class="n">doc_string</span> <span class="o">+=</span> <span class="n">r</span><span class="o">.</span><span class="n">_cls_generate_documentation</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="n">DICT_FORMAT</span><span class="p">):</span>
+                <span class="n">doc_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">_cls_generate_documentation</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="n">MARKDOWN_FORMAT</span><span class="p">,</span> <span class="n">RST_FORMAT</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">doc_string</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">DICT_FORMAT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">doc_dict</span></div>
+
+
+<span class="c1"># Below are a set of structure and unstructure hooks needed to help cattr serialize and deserialize from JSON the</span>
+<span class="c1"># non-standard things.</span>
+
+
+<span class="k">def</span> <span class="nf">_unstructure_value_expr</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle unstructuring of value expressions from JSON&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># If this is an np.ndarray type, it should have a tolist</span>
+        <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_structure_value_expr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle re-structuring of value expressions from JSON&quot;&quot;&quot;</span>
+
+    <span class="c1"># This is a pass through right now. In the future we may want to convert nested lists to np.ndarrays.</span>
+    <span class="c1"># but for now we just pass through. We need to add the hook to cattr or it will complain it doesn&#39;t</span>
+    <span class="c1"># know how to structure the Union with EvaluableExpression and np.ndarray. Right now, these are just</span>
+    <span class="c1"># serialized as strings and lists respectively</span>
+    <span class="k">return</span> <span class="n">o</span>
+
+
+<span class="c1"># Register a structure and unstructure hook to handle value expressions that</span>
+<span class="c1"># can either be str or Dict (not sure if this should be allowed but ACT-R examples</span>
+<span class="c1"># depend on this feature). Value expressions should probably become their own</span>
+<span class="c1"># type later down the line. We want a converter that just handles value expressions</span>
+<span class="c1"># and we also want to add hooks for this to the general converter.</span>
+<span class="c1"># value_expr_converter.register_structure_hook(</span>
+<span class="c1">#     Optional[ValueExprType], _structure_value_expr</span>
+<span class="c1"># )</span>
+<span class="n">value_expr_converter</span><span class="o">.</span><span class="n">register_unstructure_hook</span><span class="p">(</span>
+    <span class="n">Optional</span><span class="p">[</span><span class="n">ValueExprType</span><span class="p">],</span> <span class="n">_unstructure_value_expr</span>
+<span class="p">)</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">register_unstructure_hook</span><span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">ValueExprType</span><span class="p">],</span> <span class="n">_unstructure_value_expr</span><span class="p">)</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">register_structure_hook</span><span class="p">(</span><span class="n">Optional</span><span class="p">[</span><span class="n">ValueExprType</span><span class="p">],</span> <span class="n">_structure_value_expr</span><span class="p">)</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">register_unstructure_hook</span><span class="p">(</span><span class="n">ValueExprType</span><span class="p">,</span> <span class="n">_unstructure_value_expr</span><span class="p">)</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">register_structure_hook</span><span class="p">(</span><span class="n">ValueExprType</span><span class="p">,</span> <span class="n">_structure_value_expr</span><span class="p">)</span>
+
+
+<span class="c1"># Setup a hook factory for any Base class so we don&#39;t serialize attributes whose</span>
+<span class="c1"># current value is the default value.</span>
+<span class="k">def</span> <span class="nf">_base_unstruct_hook_factory</span><span class="p">(</span><span class="n">cl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an unstructure hook for the a class that inherits from Base&quot;&quot;&quot;</span>
+
+    <span class="c1"># Generate overrides for all fields so that we omit default values from serialization</span>
+    <span class="n">field_overrides</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">override</span><span class="p">(</span><span class="n">omit_if_default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;omit_if_default&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">make_dict_unstructure_fn</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">converter</span><span class="p">,</span> <span class="o">**</span><span class="n">field_overrides</span><span class="p">)</span>
+
+
+<span class="c1"># Most of the code below is needed to handle serialization and deserialization of lists of</span>
+<span class="c1"># Base objects that have ids as dicts where the keys are the ids.</span>
+<span class="k">def</span> <span class="nf">_base_struct_hook_factory</span><span class="p">(</span><span class="n">cl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a very simple modification to cattr.Converter.structure_attrs_fromdict. The only</span>
+<span class="sd">    difference is that we give the id value a default value of empty string when structuring.</span>
+<span class="sd">    This is because objects with id are serialized without id when they are stored in a list.</span>
+<span class="sd">    The id is stored in the key of a dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_structure_base</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate a subclass of Base class from a mapping (dict).&quot;&quot;&quot;</span>
+
+        <span class="n">conv_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">cl</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">name</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+            <span class="n">conv_obj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">_structure_attribute</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cl</span><span class="p">(</span><span class="o">**</span><span class="n">conv_obj</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_structure_base</span>
+
+
+<span class="c1"># Register the structure and unstructure hooks for collections of Base classes.</span>
+<span class="k">def</span> <span class="nf">_unstructure_list_base</span><span class="p">(</span><span class="n">cl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Serialize list of Base objects as dicts if all of their elements have ids&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">obj_list</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># If all the elements of this list have id&#39;s, we can serialize them as a dict.</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">o</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">obj_list</span><span class="p">}</span>
+
+            <span class="c1"># Remove the ids from each element since they are stored in the dict&#39;s keys now.</span>
+            <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">objd</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">del</span> <span class="n">objd</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">d</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="n">obj_list</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">f</span>
+
+
+<span class="k">def</span> <span class="nf">_structure_list_base</span><span class="p">(</span><span class="n">cl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deserialize list of dict of Base objects as a list if all of their elements have ids&quot;&quot;&quot;</span>
+    <span class="n">base_class</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">cl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">obj_dict</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">converter</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">base_class</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+            <span class="c1"># Give each object the id that is its key in the dict.</span>
+            <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">obj_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">obj_list</span><span class="p">):</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+
+            <span class="k">return</span> <span class="n">obj_list</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj_dict</span>
+
+    <span class="k">return</span> <span class="n">f</span>
+
+
+<span class="k">def</span> <span class="nf">_is_list_base</span><span class="p">(</span><span class="n">cl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if a class is a list of Base objects. These will be serialized as dicts if the underlying class has an id</span>
+<span class="sd">    attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_origin</span><span class="p">(</span><span class="n">cl</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">get_args</span><span class="p">(</span><span class="n">cl</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Base</span><span class="p">)</span>
+
+
+<span class="n">converter</span><span class="o">.</span><span class="n">register_unstructure_hook_factory</span><span class="p">(</span><span class="n">_is_list_base</span><span class="p">,</span> <span class="n">_unstructure_list_base</span><span class="p">)</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">register_unstructure_hook_factory</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">cl</span><span class="p">:</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">Base</span><span class="p">),</span>
+    <span class="n">_base_unstruct_hook_factory</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">converter</span><span class="o">.</span><span class="n">register_structure_hook_factory</span><span class="p">(</span><span class="n">_is_list_base</span><span class="p">,</span> <span class="n">_structure_list_base</span><span class="p">)</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">register_structure_hook_factory</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">cl</span><span class="p">:</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">cl</span><span class="p">,</span> <span class="n">Base</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="n">cl</span><span class="p">)],</span>
+    <span class="n">_base_struct_hook_factory</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Add a general hook for handling ndarray unstructure</span>
+<span class="n">converter</span><span class="o">.</span><span class="n">register_unstructure_hook</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">_unstructure_value_expr</span><span class="p">)</span>
+
+<span class="c1"># Define some aliases for attr.define and other attrs stuff. This should hid attrs from the user a bit.</span>
+<span class="n">define</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">define</span>
+<span class="n">has</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">has</span>
+<span class="n">field</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span>
+<span class="n">fields</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">fields</span>
+<span class="n">optional</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">optional</span>
+<span class="n">instance_of</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">instance_of</span>
+<span class="n">in_</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">validators</span><span class="o">.</span><span class="n">in_</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, modeci contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

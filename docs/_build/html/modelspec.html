@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modelspec package &mdash; modelspec 0.3.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="src" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            modelspec
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">modelspec package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modelspec.base_types">modelspec.base_types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modelspec.utils">modelspec.utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-modelspec">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">modelspec</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">modelspec package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modelspec.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="modelspec-package">
+<h1>modelspec package<a class="headerlink" href="#modelspec-package" title="Permalink to this headline"></a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</div>
+<div class="section" id="module-modelspec.base_types">
+<span id="modelspec-base-types-module"></span><h2>modelspec.base_types module<a class="headerlink" href="#module-modelspec.base_types" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt id="modelspec.base_types.Base">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">modelspec.base_types.</span></code><code class="sig-name descname"><span class="pre">Base</span></code><a class="reference internal" href="_modules/modelspec/base_types.html#Base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all object in a model specification. Any object should inherit from this class.</p>
+<dl class="py method">
+<dt id="modelspec.base_types.Base.allowed_children">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">allowed_children</span></code><a class="headerlink" href="#modelspec.base_types.Base.allowed_children" title="Permalink to this definition"></a></dt>
+<dd><p>Get the list of allowed children for this model. Children are defined as
+any attribute of this object that is a collection of objects that inherits from <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>The allowed children are returned as dict keyed attribute name of the collection</dt><dd><p>and with values of tuple with (description, type).</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.allowed_fields">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">allowed_fields</span></code><a class="headerlink" href="#modelspec.base_types.Base.allowed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>Get the list of allowed fields for this model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>The allowed fields are returned as dict keyed by field name</dt><dd><p>and with values of tuple with (field_description, field_type).</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.definition">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">definition</span></code><a class="headerlink" href="#modelspec.base_types.Base.definition" title="Permalink to this definition"></a></dt>
+<dd><p>The definition of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The definition of the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.from_bson">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_bson</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bson_str</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_bson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.from_bson" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate an modelspec object from a BSON string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.from_bson_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_bson_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_bson_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.from_bson_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its BSON representation stored in a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The file from which to load the BSON data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this BSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.from_dict">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate an Base object from a dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.from_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.from_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its representation stored in a file. Auto-detect the correct deserialization code
+based on file extension. Currently supported formats are; JSON(.json) and YAML (.yaml or .yml)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the file to load.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.from_json">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_json</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_str</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.from_json" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate an modelspec object from a JSON string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.from_json_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_json_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_json_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.from_json_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its JSON representation stored in a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The file from which to load the JSON data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.from_yaml_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_yaml_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.from_yaml_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its YAML representation stored in a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The file from which to load the YAML data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this YAML</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.generate_documentation">
+<code class="sig-name descname"><span class="pre">generate_documentation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.generate_documentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.generate_documentation" title="Permalink to this definition"></a></dt>
+<dd><p>Generate documentation for the modelspec object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>format</strong> – The format to generate the documentation in. Currently supported formats are: [‘markdown’, ‘dict’]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.get_child">
+<code class="sig-name descname"><span class="pre">get_child</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.get_child"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.get_child" title="Permalink to this definition"></a></dt>
+<dd><p>Get a child object from the model specification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – The unique string identifier of the child object.</p></li>
+<li><p><strong>type</strong> – The type of the child object. Must be an attribute name that contains a list of child objects with
+id attributes..</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The child object. If the child object is not found, None is returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.to_bson">
+<code class="sig-name descname"><span class="pre">to_bson</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_bson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.to_bson" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a BSON string representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.to_bson_file">
+<code class="sig-name descname"><span class="pre">to_bson_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_bson_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.to_bson_file" title="Permalink to this definition"></a></dt>
+<dd><p>Convert modelspec format to bson format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – File in modelspec format (Filename extension: .bson )</p></li>
+<li><p><strong>include_metadata</strong> – Contains contact information, citations, acknowledgements, pointers to sample data,
+benchmark results, and environments in which the specified model was originally implemented</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the generated bson file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.to_dict">
+<code class="sig-name descname"><span class="pre">to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a nested dict structure.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.to_json">
+<code class="sig-name descname"><span class="pre">to_json</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.to_json" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a JSON string representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.to_json_file">
+<code class="sig-name descname"><span class="pre">to_json_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_json_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.to_json_file" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the modelspec model to JSON format and save to a file.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>JSON is standard file format uses human-readable text to store and transmit data objects consisting of</dt><dd><p>attribute–value pairs and arrays</p>
+</dd>
+</dl>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – The name of the file to save. If None, use <code class="code docutils literal notranslate"><span class="pre">f&quot;{self.id}.json&quot;</span></code></p></li>
+<li><p><strong>include_metadata</strong> – Contains contact information, citations, acknowledgements, pointers to sample data,
+benchmark results, and environments in which the specified model was originally implemented</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the generated JSON file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.to_yaml">
+<code class="sig-name descname"><span class="pre">to_yaml</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.to_yaml" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a YAML dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_metadata</strong> – Should metadata be included in the YAML output?</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A YAML string representation of the object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.base_types.Base.to_yaml_file">
+<code class="sig-name descname"><span class="pre">to_yaml_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.Base.to_yaml_file" title="Permalink to this definition"></a></dt>
+<dd><p>Convert modelspec format to yaml format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – File in modelspec format (Filename extension: .yaml). If None, use <code class="code docutils literal notranslate"><span class="pre">f&quot;{self.id}.yaml&quot;</span></code></p></li>
+<li><p><strong>include_metadata</strong> – Contains contact information, citations, acknowledgements, pointers to sample data,
+benchmark results, and environments in which the specified model was originally implemented</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the generated yaml file</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="modelspec.base_types.EvaluableExpression">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">modelspec.base_types.</span></code><code class="sig-name descname"><span class="pre">EvaluableExpression</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/base_types.html#EvaluableExpression"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.EvaluableExpression" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<p>EvaluableExpression is a string that can be evaluated to a value during modelspec execution. This class inherits from
+str, so it can be used as a string.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.base_types.print_">
+<code class="sig-prename descclassname"><span class="pre">modelspec.base_types.</span></code><code class="sig-name descname"><span class="pre">print_</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_it</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/base_types.html#print_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.print_" title="Permalink to this definition"></a></dt>
+<dd><p>Print a message preceded by modelspec, only if print_it=True</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.base_types.print_v">
+<code class="sig-prename descclassname"><span class="pre">modelspec.base_types.</span></code><code class="sig-name descname"><span class="pre">print_v</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/base_types.html#print_v"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.base_types.print_v" title="Permalink to this definition"></a></dt>
+<dd><p>Print a message preceded by modelspec always</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-modelspec.utils">
+<span id="modelspec-utils-module"></span><h2>modelspec.utils module<a class="headerlink" href="#module-modelspec.utils" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt id="modelspec.utils.ascii_encode_dict">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">ascii_encode_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#ascii_encode_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.ascii_encode_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.evaluate">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">evaluate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">list</span><span class="p"><span class="pre">,</span> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">dict</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">random.Random</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_format</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'numpy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cast_to_int</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.evaluate" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate a general string like expression (e.g. “2 * weight”) using a dict
+of parameters (e.g. {‘weight’:10}). Returns floats, ints, etc. if that’s what’s
+given in expr</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expr</strong> – The expression to convert</p></li>
+<li><p><strong>parameters</strong> – A dict of the parameters which can be substituted in to the expression</p></li>
+<li><p><strong>rng</strong> – The random number generator to use</p></li>
+<li><p><strong>array_format</strong> – numpy or tensorflow</p></li>
+<li><p><strong>verbose</strong> – Print the calculations</p></li>
+<li><p><strong>cast_to_int</strong> – return an int for float/string values if castable</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.load_bson">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">load_bson</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#load_bson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.load_bson" title="Permalink to this definition"></a></dt>
+<dd><p>Load a generic BSON file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the BSON file to load</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.load_json">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">load_json</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#load_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.load_json" title="Permalink to this definition"></a></dt>
+<dd><p>Load a generic JSON file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the JSON file to load</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.load_yaml">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">load_yaml</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#load_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.load_yaml" title="Permalink to this definition"></a></dt>
+<dd><p>Load a generic YAML file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the YAML file to load</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.locate_file">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">locate_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#locate_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.locate_file" title="Permalink to this definition"></a></dt>
+<dd><p>Utility method for finding full path to a filename as string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.parse_list_like">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">parse_list_like</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#parse_list_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.parse_list_like" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.save_to_json_file">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">save_to_json_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#save_to_json_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.save_to_json_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.utils.save_to_yaml_file">
+<code class="sig-prename descclassname"><span class="pre">modelspec.utils.</span></code><code class="sig-name descname"><span class="pre">save_to_yaml_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/modelspec/utils.html#save_to_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.utils.save_to_yaml_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-modelspec">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-modelspec" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt id="modelspec.Base">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">Base</span></code><a class="reference internal" href="_modules/modelspec/base_types.html#Base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all object in a model specification. Any object should inherit from this class.</p>
+<dl class="py method">
+<dt id="modelspec.Base.allowed_children">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">allowed_children</span></code><a class="headerlink" href="#modelspec.Base.allowed_children" title="Permalink to this definition"></a></dt>
+<dd><p>Get the list of allowed children for this model. Children are defined as
+any attribute of this object that is a collection of objects that inherits from <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>The allowed children are returned as dict keyed attribute name of the collection</dt><dd><p>and with values of tuple with (description, type).</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.allowed_fields">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">allowed_fields</span></code><a class="headerlink" href="#modelspec.Base.allowed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>Get the list of allowed fields for this model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>The allowed fields are returned as dict keyed by field name</dt><dd><p>and with values of tuple with (field_description, field_type).</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.definition">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">definition</span></code><a class="headerlink" href="#modelspec.Base.definition" title="Permalink to this definition"></a></dt>
+<dd><p>The definition of the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The definition of the model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.from_bson">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_bson</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bson_str</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_bson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.from_bson" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate an modelspec object from a BSON string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.from_bson_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_bson_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_bson_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.from_bson_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its BSON representation stored in a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The file from which to load the BSON data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this BSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.from_dict">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate an Base object from a dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.from_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.from_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its representation stored in a file. Auto-detect the correct deserialization code
+based on file extension. Currently supported formats are; JSON(.json) and YAML (.yaml or .yml)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The name of the file to load.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.from_json">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_json</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_str</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.from_json" title="Permalink to this definition"></a></dt>
+<dd><p>Instantiate an modelspec object from a JSON string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.from_json_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_json_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_json_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.from_json_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its JSON representation stored in a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The file from which to load the JSON data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.from_yaml_file">
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_yaml_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#modelspec.base_types.Base" title="modelspec.base_types.Base"><span class="pre">modelspec.base_types.Base</span></a><a class="reference internal" href="_modules/modelspec/base_types.html#Base.from_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.from_yaml_file" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> from its YAML representation stored in a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> – The file from which to load the YAML data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An modelspec <a class="reference internal" href="#modelspec.Base" title="modelspec.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a> for this YAML</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.generate_documentation">
+<code class="sig-name descname"><span class="pre">generate_documentation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'markdown'</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.generate_documentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.generate_documentation" title="Permalink to this definition"></a></dt>
+<dd><p>Generate documentation for the modelspec object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>format</strong> – The format to generate the documentation in. Currently supported formats are: [‘markdown’, ‘dict’]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.get_child">
+<code class="sig-name descname"><span class="pre">get_child</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Any</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.get_child"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.get_child" title="Permalink to this definition"></a></dt>
+<dd><p>Get a child object from the model specification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – The unique string identifier of the child object.</p></li>
+<li><p><strong>type</strong> – The type of the child object. Must be an attribute name that contains a list of child objects with
+id attributes..</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The child object. If the child object is not found, None is returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.to_bson">
+<code class="sig-name descname"><span class="pre">to_bson</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_bson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.to_bson" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a BSON string representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.to_bson_file">
+<code class="sig-name descname"><span class="pre">to_bson_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_bson_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.to_bson_file" title="Permalink to this definition"></a></dt>
+<dd><p>Convert modelspec format to bson format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – File in modelspec format (Filename extension: .bson )</p></li>
+<li><p><strong>include_metadata</strong> – Contains contact information, citations, acknowledgements, pointers to sample data,
+benchmark results, and environments in which the specified model was originally implemented</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the generated bson file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.to_dict">
+<code class="sig-name descname"><span class="pre">to_dict</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a nested dict structure.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.to_json">
+<code class="sig-name descname"><span class="pre">to_json</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.to_json" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a JSON string representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.to_json_file">
+<code class="sig-name descname"><span class="pre">to_json_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_json_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.to_json_file" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the modelspec model to JSON format and save to a file.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>JSON is standard file format uses human-readable text to store and transmit data objects consisting of</dt><dd><p>attribute–value pairs and arrays</p>
+</dd>
+</dl>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – The name of the file to save. If None, use <code class="code docutils literal notranslate"><span class="pre">f&quot;{self.id}.json&quot;</span></code></p></li>
+<li><p><strong>include_metadata</strong> – Contains contact information, citations, acknowledgements, pointers to sample data,
+benchmark results, and environments in which the specified model was originally implemented</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the generated JSON file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.to_yaml">
+<code class="sig-name descname"><span class="pre">to_yaml</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.to_yaml" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the Base object to a YAML dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_metadata</strong> – Should metadata be included in the YAML output?</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A YAML string representation of the object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="modelspec.Base.to_yaml_file">
+<code class="sig-name descname"><span class="pre">to_yaml_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metadata</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">str</span><a class="reference internal" href="_modules/modelspec/base_types.html#Base.to_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.Base.to_yaml_file" title="Permalink to this definition"></a></dt>
+<dd><p>Convert modelspec format to yaml format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – File in modelspec format (Filename extension: .yaml). If None, use <code class="code docutils literal notranslate"><span class="pre">f&quot;{self.id}.yaml&quot;</span></code></p></li>
+<li><p><strong>include_metadata</strong> – Contains contact information, citations, acknowledgements, pointers to sample data,
+benchmark results, and environments in which the specified model was originally implemented</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the generated yaml file</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.define">
+<code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">define</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maybe_cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">these</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unsafe_hash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frozen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weakref_slot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_attribs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kw_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_hash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_exc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_detect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">getstate_setstate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_setattr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_transformer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/attr/_next_gen.html#define"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.define" title="Permalink to this definition"></a></dt>
+<dd><p>Define an <code class="docutils literal notranslate"><span class="pre">attrs</span></code> class.</p>
+<p>Differences to the classic <cite>attr.s</cite> that it uses underneath:</p>
+<ul>
+<li><p>Automatically detect whether or not <em>auto_attribs</em> should be <cite>True</cite> (c.f.
+<em>auto_attribs</em> parameter).</p></li>
+<li><p>If <em>frozen</em> is <cite>False</cite>, run converters and validators when setting an
+attribute by default.</p></li>
+<li><p><em>slots=True</em></p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Usually this has only upsides and few visible effects in everyday
+programming. But it <em>can</em> lead to some suprising behaviors, so please
+make sure to read <span class="xref std std-term">slotted classes</span>.</p>
+</div>
+</li>
+<li><p><em>auto_exc=True</em></p></li>
+<li><p><em>auto_detect=True</em></p></li>
+<li><p><em>order=False</em></p></li>
+<li><p>Some options that were only relevant on Python 2 or were kept around for
+backwards-compatibility have been removed.</p></li>
+</ul>
+<p>Please note that these are all defaults and you can change them as you
+wish.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>auto_attribs</strong> (<em>Optional</em><em>[</em><em>bool</em><em>]</em>) – <p>If set to <cite>True</cite> or <cite>False</cite>, it behaves
+exactly like <cite>attr.s</cite>. If left <cite>None</cite>, <cite>attr.s</cite> will try to guess:</p>
+<ol class="arabic simple">
+<li><p>If any attributes are annotated and no unannotated <cite>attrs.fields</cite>s
+are found, it assumes <em>auto_attribs=True</em>.</p></li>
+<li><p>Otherwise it assumes <em>auto_attribs=False</em> and tries to collect
+<cite>attrs.fields</cite>s.</p></li>
+</ol>
+</p>
+</dd>
+</dl>
+<p>For now, please refer to <cite>attr.s</cite> for the rest of the parameters.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 20.1.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 21.3.0: </span>Converters are also run <code class="docutils literal notranslate"><span class="pre">on_setattr</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 22.2.0: </span><em>unsafe_hash</em> as an alias for <em>hash</em> (for <span class="target" id="index-0"></span><a class="pep reference external" href="https://www.python.org/dev/peps/pep-0681"><strong>PEP 681</strong></a> compliance).</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.field">
+<code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">field</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">NOTHING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kw_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_setattr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/attr/_next_gen.html#field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.field" title="Permalink to this definition"></a></dt>
+<dd><p>Identical to <cite>attr.ib</cite>, except keyword-only and with some arguments
+removed.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 20.1.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.fields">
+<code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">fields</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/attr/_make.html#fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.fields" title="Permalink to this definition"></a></dt>
+<dd><p>Return the tuple of <code class="docutils literal notranslate"><span class="pre">attrs</span></code> attributes for a class.</p>
+<p>The tuple also allows accessing the fields by their names (see below for
+examples).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cls</strong> (<em>type</em>) – Class to introspect.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – If <em>cls</em> is not a class.</p></li>
+<li><p><strong>attr.exceptions.NotAnAttrsClassError</strong> – If <em>cls</em> is not an <code class="docutils literal notranslate"><span class="pre">attrs</span></code>
+class.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple (with name accessors) of <cite>attrs.Attribute</cite></p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 16.2.0: </span>Returned tuple allows accessing the fields
+by name.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.has">
+<code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">has</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/attr/_funcs.html#has"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.has" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether <em>cls</em> is a class with <code class="docutils literal notranslate"><span class="pre">attrs</span></code> attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cls</strong> (<em>type</em>) – Class to introspect.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – If <em>cls</em> is not a class.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.in_">
+<code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">in_</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/attr/validators.html#in_"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.in_" title="Permalink to this definition"></a></dt>
+<dd><p>A validator that raises a <cite>ValueError</cite> if the initializer is called
+with a value that does not belong in the options provided.  The check is
+performed using <code class="docutils literal notranslate"><span class="pre">value</span> <span class="pre">in</span> <span class="pre">options</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>options</strong> (list, tuple, <cite>enum.Enum</cite>, …) – Allowed options.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – With a human readable error message, the attribute (of
+type <cite>attrs.Attribute</cite>), the expected options, and the value it
+got.</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 17.1.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 22.1.0: </span>The ValueError was incomplete until now and only contained the human
+readable error message. Now it contains all the information that has
+been promised since 17.1.0.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.instance_of">
+<code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">instance_of</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/attr/validators.html#instance_of"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.instance_of" title="Permalink to this definition"></a></dt>
+<dd><p>A validator that raises a <cite>TypeError</cite> if the initializer is called
+with a wrong type for this particular attribute (checks are performed using
+<cite>isinstance</cite> therefore it’s also valid to pass a tuple of types).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> (<em>type</em><em> or </em><em>tuple of type</em>) – The type to check for.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – With a human readable error message, the attribute
+(of type <cite>attrs.Attribute</cite>), the expected type, and the value it
+got.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="modelspec.optional">
+<code class="sig-prename descclassname"><span class="pre">modelspec.</span></code><code class="sig-name descname"><span class="pre">optional</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/attr/validators.html#optional"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modelspec.optional" title="Permalink to this definition"></a></dt>
+<dd><p>A validator that makes an attribute optional.  An optional attribute is one
+which can be set to <code class="docutils literal notranslate"><span class="pre">None</span></code> in addition to satisfying the requirements of
+the sub-validator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>validator</strong> (callable or <cite>list</cite> of callables.) – A validator (or a list of validators) that is used for
+non-<code class="docutils literal notranslate"><span class="pre">None</span></code> values.</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 15.1.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 17.1.0: </span><em>validator</em> can be a list of validators.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="src" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, modeci contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
