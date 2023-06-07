@@ -5,8 +5,7 @@ import yaml
 import os
 import math
 import numpy as np
-from xml.dom.minidom import parseString
-import xml.etree.ElementTree as ET
+from xml.dom.minidom import *
 import dicttoxml
 
 from modelspec.base_types import print_
@@ -115,17 +114,19 @@ def save_to_xml_file(info_dict, filename, indent=4):
         indent (int, optional): The number of spaces used for indentation in the XML file.
                                 Defaults to 4.
     """
+    
     xml = dicttoxml.dicttoxml(
         info_dict,
         custom_root=None,
         xml_declaration=False,
         attr_type=False)
     
-    parsed_xml = parseString(xml)
-    pretty_xml = parsed_xml.toprettyxml(indent=" " * indent)
+    xml_string = xml.decode("utf-8")
+
+    formatted_xml = parseString(xml_string).toprettyxml(indent=" " * indent)
 
     with open(filename, "w") as file:
-        file.write(pretty_xml)
+        file.write(formatted_xml)
 
 
 def ascii_encode_dict(data):
