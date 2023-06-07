@@ -30,7 +30,7 @@ A model for documents.
 <table>
   <tr>
     <td><b>sections</b></td>
-    <td><a href="#section">Section</a></td>
+    <td><a href="#list">List</a></td>
     <td><i>The sections of the document</i></td>
   </tr>
 
@@ -55,7 +55,7 @@ A model of a section of the <a href="#document">Document</a>. Will contain one <
 <table>
   <tr>
     <td><b>paragraphs</b></td>
-    <td><a href="#paragraph">Paragraph</a></td>
+    <td><a href="#list">List</a></td>
     <td><i>The paragraphs</i></td>
   </tr>
 
@@ -75,3 +75,4 @@ A model of a paragraph.
 
 
 </table>
+

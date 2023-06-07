@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<root>
+    <TestNeuroML type="dict">
+        <version type="str">NeuroML_v2.3</version>
+        <networks type="dict">
+            <net0 type="dict">
+                <populations type="dict">
+                    <pop0 type="dict">
+                        <component type="str">izh2007RS0</component>
+                        <size type="int">1</size>
+                    </pop0>
+                </populations>
+            </net0>
+        </networks>
+    </TestNeuroML>
+</root>

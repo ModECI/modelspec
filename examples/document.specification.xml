@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<None>
+    <Document>
+        <definition>A model for documents.</definition>
+        <allowed_parameters>
+            <id>
+                <type>str</type>
+                <description>The unique id of the document</description>
+            </id>
+            <title>
+                <type>str</type>
+                <description>The document title</description>
+            </title>
+            <ISBN>
+                <type>int</type>
+                <description>International Standard Book Number</description>
+            </ISBN>
+        </allowed_parameters>
+        <allowed_children>
+            <sections>
+                <type>List</type>
+                <description>The sections of the document</description>
+            </sections>
+        </allowed_children>
+    </Document>
+    <Section>
+        <definition>A model of a section of the :class:`Document`. Will contain one :class:`Paragraph` or more, i.e the :class:`Paragraph`(s) in the section, probably related to the :code:`title` of the `Document &lt;#document&gt;`_.</definition>
+        <allowed_parameters>
+            <id>
+                <type>str</type>
+                <description>The id of the section</description>
+            </id>
+        </allowed_parameters>
+        <allowed_children>
+            <paragraphs>
+                <type>List</type>
+                <description>The paragraphs</description>
+            </paragraphs>
+        </allowed_children>
+    </Section>
+    <Paragraph>
+        <definition>A model of a paragraph.</definition>
+        <allowed_parameters>
+            <contents>
+                <type>str</type>
+                <description>Paragraph contents, which make up the :class:`Section`s.</description>
+            </contents>
+        </allowed_parameters>
+    </Paragraph>
+</None>

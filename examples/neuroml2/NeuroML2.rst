@@ -14,11 +14,11 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-===============  ======================  ====================
-Allowed child    Data Type               Description
-===============  ======================  ====================
-**networks**     `Network <#network>`__  The networks present
-===============  ======================  ====================
+===============  ================  ====================
+Allowed child    Data Type         Description
+===============  ================  ====================
+**networks**     `List <#list>`__  The networks present
+===============  ================  ====================
 
 =======
 Network
@@ -35,11 +35,11 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-===============  ============================  ===================
-Allowed child    Data Type                     Description
-===============  ============================  ===================
-**populations**  `Population <#population>`__  the pops in the net
-===============  ============================  ===================
+===============  ================  ===================
+Allowed child    Data Type         Description
+===============  ================  ===================
+**populations**  `List <#list>`__  the pops in the net
+===============  ================  ===================
 
 ==========
 Population
@@ -55,3 +55,4 @@ Allowed field    Data Type    Description
 **component**    str          the component to use in the population
 **size**         int          the size of the population
 ===============  ===========  ======================================
+

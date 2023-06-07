@@ -15,11 +15,11 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-===============  ======================  ============================
-Allowed child    Data Type               Description
-===============  ======================  ============================
-**sections**     `Section <#section>`__  The sections of the document
-===============  ======================  ============================
+===============  ================  ============================
+Allowed child    Data Type         Description
+===============  ================  ============================
+**sections**     `List <#list>`__  The sections of the document
+===============  ================  ============================
 
 =======
 Section
@@ -36,11 +36,11 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-===============  ==========================  ==============
-Allowed child    Data Type                   Description
-===============  ==========================  ==============
-**paragraphs**   `Paragraph <#paragraph>`__  The paragraphs
-===============  ==========================  ==============
+===============  ================  ==============
+Allowed child    Data Type         Description
+===============  ================  ==============
+**paragraphs**   `List <#list>`__  The paragraphs
+===============  ================  ==============
 
 =========
 Paragraph
@@ -54,3 +54,4 @@ Allowed field    Data Type    Description
 ===============  ===========  ==============================================================
 **contents**     str          Paragraph contents, which make up the `Sections <#section>`__.
 ===============  ===========  ==============================================================
+
