@@ -9,7 +9,11 @@ Welcome to modelspec's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   
+   api/Introduction
+   api/QuickStart
+   api/Installation
+   api/Contributors
    modules
 
 

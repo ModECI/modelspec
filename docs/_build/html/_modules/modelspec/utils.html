@@ -41,6 +41,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/Introduction.html">modelspec serialization library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/QuickStart.html">Quick Start Guide to MDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/Contributors.html">ModECI contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
 </ul>
 
@@ -76,6 +80,9 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">xml.dom.minidom</span> <span class="kn">import</span> <span class="n">parseString</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+<span class="kn">import</span> <span class="nn">dicttoxml</span>
 
 <span class="kn">from</span> <span class="nn">modelspec.base_types</span> <span class="kn">import</span> <span class="n">print_</span>
 <span class="kn">from</span> <span class="nn">modelspec.base_types</span> <span class="kn">import</span> <span class="n">EvaluableExpression</span>
@@ -83,7 +90,7 @@
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">Random</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
-<span class="n">verbose</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="load_json"><a class="viewcode-back" href="../../modelspec.html#modelspec.utils.load_json">[docs]</a><span class="k">def</span> <span class="nf">load_json</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -127,6 +134,19 @@
     <span class="k">return</span> <span class="n">data</span></div>
 
 
+<div class="viewcode-block" id="load_xml"><a class="viewcode-back" href="../../modelspec.html#modelspec.utils.load_xml">[docs]</a><span class="k">def</span> <span class="nf">load_xml</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a generic XML file</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filename: The name of the XML file to laod</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tree</span></div>
+
+
 <div class="viewcode-block" id="save_to_json_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.utils.save_to_json_file">[docs]</a><span class="k">def</span> <span class="nf">save_to_json_file</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
 
     <span class="n">strj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
@@ -142,6 +162,15 @@
         <span class="n">stry</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">stry</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_to_xml_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.utils.save_to_xml_file">[docs]</a><span class="k">def</span> <span class="nf">save_to_xml_file</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">xml</span> <span class="o">=</span> <span class="n">dicttoxml</span><span class="o">.</span><span class="n">dicttoxml</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">attr_type</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parsed_xml</span> <span class="o">=</span> <span class="n">parseString</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
+    <span class="n">pretty_xml</span> <span class="o">=</span> <span class="n">parsed_xml</span><span class="o">.</span><span class="n">toprettyxml</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pretty_xml</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ascii_encode_dict"><a class="viewcode-back" href="../../modelspec.html#modelspec.utils.ascii_encode_dict">[docs]</a><span class="k">def</span> <span class="nf">ascii_encode_dict</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -391,6 +420,10 @@
             <span class="k">if</span> <span class="n">rng</span><span class="p">:</span>
                 <span class="n">expr</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;random()&quot;</span><span class="p">,</span> <span class="s2">&quot;rng.random()&quot;</span><span class="p">)</span>
                 <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;rng&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rng</span>
+            <span class="k">elif</span> <span class="s2">&quot;random()&quot;</span> <span class="ow">in</span> <span class="n">expr</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s2">&quot;The expression [</span><span class="si">%s</span><span class="s2">] contains a random() call, but a random number generator (rng) must be supplied to the evaluate() call when this expression string is to be evaluated&quot;</span>
+                <span class="p">)</span>
 
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span> <span class="ow">and</span> <span class="s2">&quot;math.&quot;</span> <span class="ow">in</span> <span class="n">expr</span><span class="p">:</span>
                 <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;math&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">math</span>

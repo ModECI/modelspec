@@ -41,6 +41,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/Introduction.html">modelspec serialization library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/QuickStart.html">Quick Start Guide to MDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/Contributors.html">ModECI contributors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
 </ul>
 
@@ -73,6 +77,10 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">bson</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">ET</span>
+<span class="kn">import</span> <span class="nn">xml.dom.minidom</span>
+<span class="kn">import</span> <span class="nn">dicttoxml</span>
+<span class="kn">import</span> <span class="nn">xmltodict</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">attr</span>
@@ -184,6 +192,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">bson</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></div>
 
+<div class="viewcode-block" id="Base.to_xml"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_xml">[docs]</a>    <span class="k">def</span> <span class="nf">to_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the Base object to a XML string representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">xml_bytes</span> <span class="o">=</span> <span class="n">dicttoxml</span><span class="o">.</span><span class="n">dicttoxml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">attr_type</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">xml_string</span> <span class="o">=</span> <span class="n">xml_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>  <span class="c1"># Decode bytes into a string</span>
+        <span class="n">parsed_xml</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">xml_string</span><span class="p">)</span>
+        <span class="n">pretty_xml</span> <span class="o">=</span> <span class="n">parsed_xml</span><span class="o">.</span><span class="n">toprettyxml</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pretty_xml</span></div>
+
 <div class="viewcode-block" id="Base.from_dict"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate an Base object from a dictionary&quot;&quot;&quot;</span>
@@ -214,6 +233,12 @@
     <span class="k">def</span> <span class="nf">from_bson</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">bson_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate an modelspec object from a BSON string&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">bson</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">bson_str</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Base.from_xml"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_xml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_xml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xml_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate an modelspec object from a XML string&quot;&quot;&quot;</span>
+        <span class="n">xml_dict</span> <span class="o">=</span> <span class="n">xmltodict</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">xml_dict</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="Base.to_json_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_json_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_json_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
@@ -259,6 +284,34 @@
                 <span class="n">bson_converter</span><span class="o">.</span><span class="n">unstructure</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()),</span>
             <span class="p">)</span>
             <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bson_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="Base.to_xml_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.to_xml_file">[docs]</a>    <span class="k">def</span> <span class="nf">to_xml_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert modelspec format to xml format</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: File in modelspec format (Filename extension: .xml). If None, use :code:`f&quot;{self.id}.xml&quot;`</span>
+<span class="sd">            include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,</span>
+<span class="sd">                              benchmark results, and environments in which the specified model was originally implemented</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            The name of the generated xml file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">.xml&quot;</span>
+
+        <span class="n">xml_data</span> <span class="o">=</span> <span class="n">dicttoxml</span><span class="o">.</span><span class="n">dicttoxml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">custom_root</span><span class="o">=</span><span class="s2">&quot;root&quot;</span><span class="p">,</span> <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">attr_type</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">dom</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">dom</span><span class="o">.</span><span class="n">minidom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">xml_data</span><span class="p">)</span>
+        <span class="n">pretty_xml</span> <span class="o">=</span> <span class="n">dom</span><span class="o">.</span><span class="n">toprettyxml</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        
+        <span class="n">root_tag_start</span> <span class="o">=</span> <span class="n">pretty_xml</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;&lt;root&gt;&quot;</span><span class="p">)</span>
+        <span class="n">root_tag_end</span> <span class="o">=</span> <span class="n">pretty_xml</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;&lt;/root&gt;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="s2">&quot;&lt;/root&gt;&quot;</span><span class="p">)</span>
+        <span class="n">formatted_xml</span> <span class="o">=</span> <span class="n">pretty_xml</span><span class="p">[</span><span class="n">root_tag_start</span><span class="p">:</span><span class="n">root_tag_end</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">formatted_xml</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">filename</span></div>
 
@@ -308,7 +361,7 @@
     <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a :class:`.Base` from its representation stored in a file. Auto-detect the correct deserialization code</span>
-<span class="sd">        based on file extension. Currently supported formats are; JSON(.json) and YAML (.yaml or .yml)</span>
+<span class="sd">        based on file extension. Currently supported formats are; JSON(.json), YAML (.yaml or .yml) and XML (.xml)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: The name of the file to load.</span>
@@ -322,6 +375,8 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_json_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.bson&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_bson_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;xml&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_xml_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Cannot auto-detect modelspec serialization format from filename (</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">). The filename &quot;</span>
@@ -374,6 +429,22 @@
             <span class="n">d</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">yaml_converter</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Base.from_xml_file"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.from_xml_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_xml_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Base&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a :class: `.Base` from its XML representation stored in a file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: The file from which to load tge XML data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modelspec :class: `.Base` for this XML.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">xml_data</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="n">xmltodict</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">xml_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;root&quot;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="Base.get_child"><a class="viewcode-back" href="../../modelspec.html#modelspec.base_types.Base.get_child">[docs]</a>    <span class="k">def</span> <span class="nf">get_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>

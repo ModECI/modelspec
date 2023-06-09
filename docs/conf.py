@@ -8,8 +8,16 @@
 
 import os
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath("../src"))
+DIR = Path(__file__).parent.parent.parent.resolve()
+BASEDIR = DIR.parent
+
+sys.path.append(str(BASEDIR / "src"))
+
+#sys.path.insert(0, os.path.abspath("../src"))
+
+# -- Project information -----------------------------------------------------
 
 project = "modelspec"
 copyright = "2023, modeci contributors"
@@ -35,6 +43,13 @@ extensions = [
     "myst_parser",
     "sphinx.ext.githubpages",
 ]
+
+autodoc_member_order = "bysource"
+autosummary_generate = True
+autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
+html_show_sourcelink = (
+    False  # Remove 'view source code' from top of page (for html, not python)
+)
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
