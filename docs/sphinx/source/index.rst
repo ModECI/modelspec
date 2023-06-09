@@ -1,0 +1,38 @@
+.. modelspec documentation master file, created by
+   sphinx-quickstart on Thu Jun  8 10:56:48 2023.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+:github_url: https://github.com/ModECI/modelspec
+
+
+Welcome to modelspec's documentation
+=====================================
+Modelspec is an open source, community-supported standard library used for specifying
+the structure of models and enabling automatic serialization. It is still in development and it is being used by
+`MDF <https://github.com/ModECI/MDF>`_ and `NeuroMLite <https://github.com/NeuroML/NeuroMLlite>`_.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Contents:
+
+   api/QuickStart
+   api/Installation
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   api/examples/README.md
+
+.. toctree::
+   :caption: API Reference
+
+   api/_autosummary/modelspec
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
