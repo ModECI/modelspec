@@ -9,7 +9,7 @@ A model for documents.
 Allowed field    Data Type    Description
 ===============  ===========  ==================================
 **id**           str          The unique id of the document
-**title**        str          Document title
+**title**        str          The document title
 **ISBN**         int          International Standard Book Number
 ===============  ===========  ==================================
 

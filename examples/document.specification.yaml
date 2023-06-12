@@ -6,7 +6,7 @@ Document:
             description: The unique id of the document
         title:
             type: str
-            description: Document title
+            description: The document title
         ISBN:
             type: int
             description: International Standard Book Number
