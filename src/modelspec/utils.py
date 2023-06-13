@@ -62,22 +62,6 @@ def load_bson(filename: str):
     return data
 
 
-# def load_xml(filename: str):
-#     """
-#     Load a generic XML file.
-
-#     Args:
-#         filename: The name of the XML file to load.
-
-#     Returns:
-#         The parsed XML data as an ElementTree object.
-#     """
-#     with open(filename) as file:
-#         xml_data = file.read()
-#     root = ET.fromstring(xml_data)
-#     return root
-
-
 def load_xml(filename: str):
     """
     This Loads a generic XML file
