@@ -2,6 +2,12 @@ import sys
 import json
 import bson
 import yaml
+import dicttoxml
+import xmltodict
+import xml.etree.ElementTree as ET
+import xml.dom.minidom
+
+
 import os
 import math
 import numpy as np
@@ -56,6 +62,52 @@ def load_bson(filename: str):
     return data
 
 
+# def load_xml(filename: str):
+#     """
+#     Load a generic XML file.
+
+#     Args:
+#         filename: The name of the XML file to load.
+
+#     Returns:
+#         The parsed XML data as an ElementTree object.
+#     """
+#     with open(filename) as file:
+#         xml_data = file.read()
+#     root = ET.fromstring(xml_data)
+#     return root
+
+def load_xml(filename: str):
+    """
+   This Loads a generic XML file
+
+   Args:
+       filename: The name of the XML file to laod
+   """
+    with open(filename, "r") as file:
+        data = xmltodict.parse(file.read())
+    
+    def convert_values(value):
+        if isinstance(value, str):
+            if value.isdigit():
+                return int(value)
+            try:
+                return float(value)
+            except ValueError:
+                pass
+            if value.lower() == "true":
+                return True
+            elif value.lower() == "false":
+                return False
+        elif isinstance(value, dict):
+            return {key: convert_values(val) for key, val in value.items()}
+        elif isinstance(value, list):
+            return [convert_values(item) for item in value]
+
+        return value
+    return convert_values(data)
+
+
 def save_to_json_file(info_dict, filename, indent=4):
 
     strj = json.dumps(info_dict, indent=indent)
@@ -71,6 +123,26 @@ def save_to_yaml_file(info_dict, filename, indent=4):
         stry = yaml.dump(info_dict, indent=indent, sort_keys=False)
     with open(filename, "w") as fp:
         fp.write(stry)
+
+def save_to_xml_file(info_dict, filename, indent=4):
+    """
+    This saves a dictionary to an XML file.
+
+    Args:
+        info_dict (dict): The dictionary containing the data to be saved.
+        filename (str): The name of the file to save the XML data to.
+        indent (int, optional): The number of spaces used for indentation in the XML file.
+                                Defaults to 4.
+    """
+    xml_data = dicttoxml.dicttoxml(info_dict, custom_root="root", attr_type=False)
+    xml_str = xml_data.decode("utf-8")
+
+    # Create a pretty-formatted XML string using minidom
+    xml_dom = xml.dom.minidom.parseString(xml_str)
+    pretty_xml_str = xml_dom.toprettyxml(indent=" " * indent)
+
+    with open(filename, "w") as fp:
+        fp.write(pretty_xml_str)
 
 
 def ascii_encode_dict(data):
