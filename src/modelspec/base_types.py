@@ -2,6 +2,9 @@ import json
 import yaml
 import bson
 import sys
+import xmltodict
+import xml.dom.minidom
+import dicttoxml
 
 import numpy as np
 import attr
@@ -113,6 +116,22 @@ class Base:
         """
         return bson.encode(self.to_dict())
 
+    def to_xml(self) -> str:
+        """
+        Convert the Base object to an XML string representation using the dicttoxml library.
+        """
+        data = self.to_dict()
+        xml_bytes = dicttoxml.dicttoxml(
+                    data,
+                    custom_root="root",
+                    attr_type=False,
+                    xml_declaration=False
+    )
+        xml_string = xml_bytes.decode("utf-8")
+        parsed_xml = xml.dom.minidom.parseString(xml_string)
+        pretty_xml = parsed_xml.toprettyxml(indent=" " * 4)
+        return pretty_xml
+
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> "Base":
         """Instantiate an Base object from a dictionary"""
@@ -143,6 +162,13 @@ class Base:
     def from_bson(cls, bson_str: str) -> "Base":
         """Instantiate an modelspec object from a BSON string"""
         return cls.from_dict(bson.decode(bson_str))
+    
+    @classmethod
+    def from_xml(cls, xml_str: str) -> "Base":
+        """Instantiate a Base object from an XML string"""
+        data_dict = xmltodict.parse(xml_str)
+        return cls.from_dict(data_dict)
+
 
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
@@ -190,6 +216,35 @@ class Base:
             outfile.write(bson_data)
 
         return filename
+    
+    def to_xml_file(self, filename: Optional[str] = None, include_metadata: bool = True) -> str:
+        """Convert the modelspec model to XML format and save to a file.
+
+        .. note::
+        XML is a markup language that defines rules for encoding documents in a format that is both human-readable
+        and machine-readable.
+
+        Args:
+            filename: The name of the file to save. If None, use :code:`f"{self.id}.xml"`
+            include_metadata: Contains contact information, citations, acknowledgements, pointers to sample data,
+                          benchmark results, and environments in which the specified model was originally implemented
+        Returns:
+            The name of the generated XML file
+        """
+
+        if filename is None:
+            filename = f"{self.id}.xml"
+
+        xml_data = xmltodict.unparse(
+        self.to_dict(),
+        pretty=True,
+        )
+       
+        with open(filename, "w") as file:
+            file.write(xml_data)
+
+        return filename
+
 
     def to_yaml(self, include_metadata: bool = True) -> str:
         """
@@ -251,6 +306,8 @@ class Base:
             return cls.from_json_file(filename)
         elif filename.endswith(".bson"):
             return cls.from_bson_file(filename)
+        elif filename.endswith(".xml"):
+            return cls.from_xml_file(filename)
         else:
             raise ValueError(
                 f"Cannot auto-detect modelspec serialization format from filename ({filename}). The filename "
@@ -303,6 +360,22 @@ class Base:
             d = yaml.safe_load(infile)
             d = yaml_converter.structure(d, Dict)
             return cls.from_dict(d)
+        
+    @classmethod
+    def from_xml_file(cls, filename: str) -> "Base":
+        """
+        Create a :class: `.Base` from its XML representation stored in a file.
+
+        Args:
+            filename: The file from which to load tge XML data.
+
+        Returns:
+            A modelspec :class: `.Base` for this XML.
+        """
+        with open(filename) as file:
+            xml_data = file.read()
+        data_dict = xmltodict.parse(xml_data, dict_constructor=dict)
+        return cls.from_dict(data_dict)   
 
     def get_child(self, id: str, type_: str) -> Any:
         """
