@@ -37,4 +37,3 @@ More details, and importantly, how to set up a [virtual environment](https://vir
 Whenever a model is exchanged between different environments it will usually be a serialized form of the model which is exported/imported. Python scripts can be used to serialize models in various formats included below. (e.g. [this](https://github.com/ModECI/modelspec/blob/main/examples/document.py)), but the models are saved in standardized format in either text based [JSON](https://github.com/ModECI/modelspec/blob/main/examples/document.json) or [YAML](https://github.com/ModECI/modelspec/blob/main/examples/document.yaml) formats or in binary [BSON](https://github.com/ModECI/modelspec/blob/main/examples/document.bson) format.
 
 ### Currently supported environments
-

@@ -27,4 +27,3 @@ For more detailed installation instructions see [here](https://).
 For guidelines on contributing to the development of MDF, see [here](https://).
 
 ## Examples
-
