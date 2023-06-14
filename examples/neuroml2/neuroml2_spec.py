@@ -38,6 +38,28 @@ class Network(Base):
 
 
 @modelspec.define
+class Izhikevich2007Cell:
+    """
+    Some description...
+
+    Args:
+        id: The id of the cell...
+    """
+
+    id: str = field(validator=instance_of(str))
+    C: str = field(validator=instance_of(str))
+    v0: str = field(validator=instance_of(str))
+    k: str = field(validator=instance_of(str))
+    vr: str = field(validator=instance_of(str))
+    vt: str = field(validator=instance_of(str))
+    vpeak: str = field(validator=instance_of(str))
+    a: str = field(validator=instance_of(str))
+    b: str = field(validator=instance_of(str))
+    c: str = field(validator=instance_of(str))
+    d: str = field(validator=instance_of(str))
+
+
+@modelspec.define
 class NeuroML(Base):
     """
     Some description...
@@ -51,6 +73,7 @@ class NeuroML(Base):
     id: str = field(validator=instance_of(str))
     version: str = field(validator=instance_of(str))
 
+    # izhikevich2007Cells: List[Izhikevich2007Cell] = field(factory=list)
     networks: List[Network] = field(factory=list)
 
 
@@ -68,7 +91,7 @@ if __name__ == "__main__":
     nml_doc.to_json_file("%s.json" % nml_doc.id)
     nml_doc.to_yaml_file("%s.yaml" % nml_doc.id)
     nml_doc.to_bson_file("%s.bson" % nml_doc.id)
-    # nml_doc.to_xml_file("%s.xml"%nml_doc.id)
+    nml_doc.to_xml_file("%s.xml" % nml_doc.id)
 
     print(" >> Full document details in YAML format:\n")
 
