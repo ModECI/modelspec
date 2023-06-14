@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MyBook>
+	<title>My life in Python</title>
+	<sections>
+		<Abstract>
+			<paragraphs>
+				<contents>Blah blah blah</contents>
+			</paragraphs>
+			<paragraphs>
+				<contents>Blah2</contents>
+			</paragraphs>
+		</Abstract>
+		<Chapter 1>
+			<paragraphs>
+				<contents>More...</contents>
+			</paragraphs>
+		</Chapter 1>
+	</sections>
+</MyBook>

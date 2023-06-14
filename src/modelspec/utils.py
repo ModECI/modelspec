@@ -18,7 +18,7 @@ from modelspec.base_types import EvaluableExpression
 from random import Random
 from typing import Union
 
-verbose = False
+verbose = True
 
 
 def load_json(filename: str):
@@ -439,6 +439,10 @@ def evaluate(
             if rng:
                 expr = expr.replace("random()", "rng.random()")
                 parameters["rng"] = rng
+            elif "random()" in expr:
+                raise Exception(
+                    "The expression [%s] contains a random() call, but a random number generator (rng) must be supplied to the evaluate() call when this expression string is to be evaluated"
+                )
 
             if type(expr) == str and "math." in expr:
                 parameters["math"] = math
