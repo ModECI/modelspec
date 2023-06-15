@@ -349,7 +349,6 @@ def test_ndarray_xml_metadata():
 
     model = Node(id="a", metadata={"b": np.array([0])})
     model.to_xml()
-    print(model)
 
 
 def test_bson_array(tmp_path):
@@ -371,14 +370,9 @@ def test_bson_array(tmp_path):
 
     model.to_bson_file(test_filename)
 
-    model.to_xml_file(test_filename)
-
     # Load it back in
     m2 = model.from_bson_file(test_filename)
     # Check we get the same values back
     np.testing.assert_array_equal(model.array, m2.array)
     assert model.list_of_lists == m2.list_of_lists
     assert model.ragged_list == m2.ragged_list
-
-
-test_ndarray_xml_metadata()
