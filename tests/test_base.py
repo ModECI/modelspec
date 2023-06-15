@@ -377,9 +377,10 @@ def test_bson_array(tmp_path):
     assert model.list_of_lists == m2.list_of_lists
     assert model.ragged_list == m2.ragged_list
 
+
 if __name__ == "__main__":
     test_save_load_json(".")
-    #test_generate_documentation()
+    test_generate_documentation()
     test_ndarray_json_metadata()
     test_ndarray_xml_metadata()
     test_generate_documentation_example()
