@@ -72,26 +72,27 @@ def load_xml(filename: str):
     with open(filename) as file:
         data = xmltodict.parse(file.read())
 
-    def convert_values(value):
-        if isinstance(value, str):
-            if value.isdigit():
-                return int(value)
-            try:
-                return float(value)
-            except ValueError:
-                pass
-            if value.lower() == "true":
-                return True
-            elif value.lower() == "false":
-                return False
-        elif isinstance(value, dict):
-            return {key: convert_values(val) for key, val in value.items()}
-        elif isinstance(value, list):
-            return [convert_values(item) for item in value]
-
-        return value
-
     return convert_values(data)
+
+
+def convert_values(value):
+    if isinstance(value, str):
+        if value.isdigit():
+            return int(value)
+        try:
+            return float(value)
+        except ValueError:
+            pass
+        if value.lower() == "true":
+            return True
+        elif value.lower() == "false":
+            return False
+    elif isinstance(value, dict):
+        return {key: convert_values(val) for key, val in value.items()}
+    elif isinstance(value, list):
+        return [convert_values(item) for item in value]
+
+    return value
 
 
 def save_to_json_file(info_dict, filename, indent=4):
