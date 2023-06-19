@@ -1,6 +1,8 @@
 import json
 import yaml
 import bson
+import xml.etree.ElementTree as ET
+import xml.dom.minidom
 import sys
 
 import numpy as np
@@ -113,6 +115,25 @@ class Base:
         """
         return bson.encode(self.to_dict())
 
+    def to_xml(self) -> str:
+        """
+        Convert the data dictionary to an XML string representation using the ElementTree library.
+        """
+        from modelspec.utils import build_xml_element
+        root = ET.Element("root")
+        build_xml_element(root, self.to_dict())
+
+        xml_string = ET.tostring(
+            root,
+            encoding='utf-8',
+            xml_declaration=False,
+            method='xml'
+            ).decode('utf-8')
+        
+        parsed_xml = xml.dom.minidom.parseString(xml_string)
+        pretty_xml = parsed_xml.toprettyxml(indent=" " * 4)
+        return pretty_xml
+
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> "Base":
         """Instantiate an Base object from a dictionary"""
@@ -143,6 +164,15 @@ class Base:
     def from_bson(cls, bson_str: str) -> "Base":
         """Instantiate an modelspec object from a BSON string"""
         return cls.from_dict(bson.decode(bson_str))
+
+    @classmethod
+    def from_xml(cls, xml_str: str) -> "Base":
+        """Instantiate a Base object from an XML string"""
+        from modelspec.utils import _parse_xml_element
+
+        root = ET.fromstring(xml_str)
+        data_dict = _parse_xml_element(root)
+        return cls.from_dict(data_dict)
 
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
@@ -189,7 +219,7 @@ class Base:
             )
             outfile.write(bson_data)
 
-        return filename
+        return filename  
 
     def to_yaml(self, include_metadata: bool = True) -> str:
         """
@@ -232,6 +262,61 @@ class Base:
             )
 
         return filename
+    
+
+
+    def to_xml_file(self, filename: Optional[str] = None, include_metadata: bool = True) -> str:
+        from modelspec.utils import build_xml_element
+
+        if filename is None:
+            filename = f"{self.id}.xml"
+
+        root = ET.Element("root")  # Create the root element
+
+        build_xml_element(root, self.to_dict())
+
+        # Create an ElementTree object with the root element
+        tree = ET.ElementTree(root)
+
+        # Generate the XML string
+        xml_str = ET.tostring(root, encoding="utf-8").decode("utf-8")
+
+        # Pretty format the XML string using minidom
+        #dom = xml.dom.minidom.parseString(xml_str)
+        #pretty_xml_str = dom.toprettyxml(indent=" ")
+
+        # Write the formatted XML data to the file
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(xml_str)
+
+        return filename
+
+
+
+    # def to_xml_file(self, filename: Optional[str] = None, include_metadata: bool = True) -> str:
+    #     from modelspec.utils import build_xml_element
+    #     if filename is None:
+    #         filename = f"{self.id}.xml"
+
+    #     root = ET.Element("root")  # Create the root element
+
+    #     # Convert self to dictionary representation (assuming self.to_dict() returns a dictionary)
+    #     model_dict = self.to_dict()
+
+    #     # Create XML elements based on the dictionary
+    #     build_xml_element(root, model_dict)
+
+    #     xml_data = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+
+    #     # Create a pretty-formatted XML string using minidom
+    #     xml_dom = xml.dom.minidom.parseString(xml_data)
+    #     pretty_xml_str = xml_dom.toprettyxml(indent="    ")
+
+    #     with open(filename, "w") as file:
+    #         file.write(pretty_xml_str)
+
+    #     return filename
+
 
     @classmethod
     def from_file(cls, filename: str) -> "Base":
@@ -251,6 +336,8 @@ class Base:
             return cls.from_json_file(filename)
         elif filename.endswith(".bson"):
             return cls.from_bson_file(filename)
+        elif filename.endswith(".xml"):
+            return cls.from_xml_file(filename)
         else:
             raise ValueError(
                 f"Cannot auto-detect modelspec serialization format from filename ({filename}). The filename "
@@ -303,6 +390,26 @@ class Base:
             d = yaml.safe_load(infile)
             d = yaml_converter.structure(d, Dict)
             return cls.from_dict(d)
+    
+    @classmethod
+    def from_xml_file(cls, filename: str) -> "Base":
+        """
+        Create a Base from its XML representation stored in a file.
+
+        Args:
+            filename: The file from which to load the XML data.
+
+        Returns:
+            A modelspec Base for this XML.
+        """
+        from modelspec.utils import _parse_xml_element
+
+        with open(filename) as infile:
+            tree = ET.parse(filename)
+            root = tree.getroot()
+
+        data_dict = _parse_xml_element(root)
+        return cls.from_dict(data_dict)
 
     def get_child(self, id: str, type_: str) -> Any:
         """
