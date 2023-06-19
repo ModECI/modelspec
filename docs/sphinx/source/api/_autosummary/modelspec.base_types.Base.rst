@@ -20,8 +20,6 @@ modelspec.base\_types.Base
             ~Base.from_file
             ~Base.from_json
             ~Base.from_json_file
-            ~Base.from_xml
-            ~Base.from_xml_file
             ~Base.from_yaml_file
             ~Base.generate_documentation
             ~Base.get_child
@@ -30,7 +28,5 @@ modelspec.base\_types.Base
             ~Base.to_dict
             ~Base.to_json
             ~Base.to_json_file
-            ~Base.to_xml
-            ~Base.to_xml_file
             ~Base.to_yaml
             ~Base.to_yaml_file

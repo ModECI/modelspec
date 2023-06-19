@@ -23,8 +23,6 @@ modelspec.utils
 
         load_json
 
-        load_xml
-
         load_yaml
 
         locate_file
@@ -32,7 +30,5 @@ modelspec.utils
         parse_list_like
 
         save_to_json_file
-
-        save_to_xml_file
 
         save_to_yaml_file
