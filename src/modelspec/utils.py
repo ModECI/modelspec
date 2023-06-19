@@ -2,6 +2,8 @@ import sys
 import json
 import bson
 import yaml
+import xml.etree.ElementTree as ET
+import xml.dom.minidom
 import os
 import math
 import numpy as np
@@ -54,7 +56,49 @@ def load_bson(filename: str):
         data = bson.decode(data_encoded)
 
     return data
+    
 
+def load_xml(filename: str):
+    """
+    Load a generic XML file.
+
+    Args:
+        filename: The name of the XML file to load.
+    """
+    with open(filename, "rb") as infile:
+        tree = ET.parse(infile)  # Parse the XML file into an ElementTree object
+    root = tree.getroot()  # Get the root element
+
+    # Convert the ElementTree object to a dictionary
+    data = element_to_dict(root)
+
+    return data
+
+
+def element_to_dict(element):
+    """
+    Convert an ElementTree element to a dictionary.
+
+    Args:
+        element: The ElementTree element to convert.
+
+    Returns:
+        The converted dictionary.
+    """
+    if len(element) == 0:
+        return element.text
+
+    result = {}
+    for child in element:
+        child_data = element_to_dict(child)
+        if child.tag in result:
+            if not isinstance(result[child.tag], list):
+                result[child.tag] = [result[child.tag]]
+            result[child.tag].append(child_data)
+        else:
+            result[child.tag] = child_data
+
+    return result
 
 def save_to_json_file(info_dict, filename, indent=4):
 
@@ -72,6 +116,72 @@ def save_to_yaml_file(info_dict, filename, indent=4):
     with open(filename, "w") as fp:
         fp.write(stry)
 
+def save_to_xml_file(info_dict, filename, indent=4):
+    """
+    Save a dictionary to an XML file.
+
+    Args:
+        info_dict (dict): The dictionary containing the data to be saved.
+        filename (str): The name of the file to save the XML data to.
+        indent (int, optional): The number of spaces used for indentation in the XML file.
+                                Defaults to 4.
+    """
+    root = ET.Element("root")
+
+    build_xml_element(root, info_dict)
+
+    # Create an ElementTree object with the root element
+    tree = ET.ElementTree(root)
+
+    # Generate the XML string
+    xml_str = ET.tostring(root, encoding="utf-8").decode("utf-8")
+
+    # Create a pretty-formatted XML string using minidom
+    dom = xml.dom.minidom.parseString(xml_str)
+    pretty_xml_str = dom.toprettyxml(indent=" " * indent)
+
+    # Write the XML data to the file
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(pretty_xml_str)
+
+def build_xml_element(parent, data):
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if isinstance(value, dict):
+                    element = ET.SubElement(parent, key)
+                    build_xml_element(element, value)
+                elif isinstance(value, list):
+                    for item in value:
+                        subelement = ET.SubElement(parent, key)
+                        build_xml_element(subelement, item)
+                else:
+                    element = ET.SubElement(parent, key)
+                    element.text = str(value)
+        else:
+            parent.text = str(data)
+
+def _parse_xml_element(element):
+        """
+        Recursively convert an XML element to a dictionary.
+
+        Args:
+            element: The XML element.
+
+        Returns:
+            A dictionary representing the XML element and its children.
+        """
+        data = {}
+        for child in element:
+            if child.tag not in data:
+                data[child.tag] = []
+            if len(child) > 0:
+                data[child.tag].append(_parse_xml_element(child))
+            else:
+                data[child.tag].append(child.text)
+        for key, value in data.items():
+            if len(value) == 1:
+                data[key] = value[0]
+        return data
 
 def ascii_encode_dict(data):
     ascii_encode = (
