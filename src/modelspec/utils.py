@@ -56,7 +56,7 @@ def load_bson(filename: str):
         data = bson.decode(data_encoded)
 
     return data
-    
+
 
 def load_xml(filename: str):
     """
@@ -100,6 +100,7 @@ def element_to_dict(element):
 
     return result
 
+
 def save_to_json_file(info_dict, filename, indent=4):
 
     strj = json.dumps(info_dict, indent=indent)
@@ -115,6 +116,7 @@ def save_to_yaml_file(info_dict, filename, indent=4):
         stry = yaml.dump(info_dict, indent=indent, sort_keys=False)
     with open(filename, "w") as fp:
         fp.write(stry)
+
 
 def save_to_xml_file(info_dict, filename, indent=4):
     """
@@ -134,7 +136,7 @@ def save_to_xml_file(info_dict, filename, indent=4):
     tree = ET.ElementTree(root)
 
     # Generate the XML string
-    xml_str = ET.tostring(root, encoding="utf-8").decode("utf-8")
+    xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
 
     # Create a pretty-formatted XML string using minidom
     dom = xml.dom.minidom.parseString(xml_str)
@@ -144,44 +146,47 @@ def save_to_xml_file(info_dict, filename, indent=4):
     with open(filename, "w", encoding="utf-8") as file:
         file.write(pretty_xml_str)
 
+
 def build_xml_element(parent, data):
-        if isinstance(data, dict):
-            for key, value in data.items():
-                if isinstance(value, dict):
-                    element = ET.SubElement(parent, key.replace(" ", "_"))
-                    build_xml_element(element, value)
-                elif isinstance(value, list):
-                    for item in value:
-                        subelement = ET.SubElement(parent, key.replace(" ", "_"))
-                        build_xml_element(subelement, item)
-                else:
-                    element = ET.SubElement(parent, key.replace(" ", "_"))
-                    element.text = str(value)
-        else:
-            parent.text = str(data)
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if isinstance(value, dict):
+                element = ET.SubElement(parent, key.replace(" ", "_"))
+                build_xml_element(element, value)
+            elif isinstance(value, list):
+                for item in value:
+                    subelement = ET.SubElement(parent, key.replace(" ", "_"))
+                    build_xml_element(subelement, item)
+            else:
+                element = ET.SubElement(parent, key.replace(" ", "_"))
+                element.text = str(value)
+    else:
+        parent.text = str(data)
+
 
 def _parse_xml_element(element):
-        """
-        Recursively convert an XML element to a dictionary.
+    """
+    Recursively convert an XML element to a dictionary.
 
-        Args:
-            element: The XML element.
+    Args:
+        element: The XML element.
 
-        Returns:
-            A dictionary representing the XML element and its children.
-        """
-        data = {}
-        for child in element:
-            if child.tag not in data:
-                data[child.tag] = []
-            if len(child) > 0:
-                data[child.tag].append(_parse_xml_element(child))
-            else:
-                data[child.tag].append(child.text)
-        for key, value in data.items():
-            if len(value) == 1:
-                data[key] = value[0]
-        return data
+    Returns:
+        A dictionary representing the XML element and its children.
+    """
+    data = {}
+    for child in element:
+        if child.tag not in data:
+            data[child.tag] = []
+        if len(child) > 0:
+            data[child.tag].append(_parse_xml_element(child))
+        else:
+            data[child.tag].append(child.text)
+    for key, value in data.items():
+        if len(value) == 1:
+            data[key] = value[0]
+    return data
+
 
 def ascii_encode_dict(data):
     ascii_encode = (
