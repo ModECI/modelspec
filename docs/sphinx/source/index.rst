@@ -29,6 +29,13 @@ It is still in development and it is being used by
    api/examples/README.md
 
 
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
+
+   api/_autosummary/modelspec
+
+
 Indices and tables
 ==================
 
