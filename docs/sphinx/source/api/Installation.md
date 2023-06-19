@@ -6,7 +6,7 @@ Python >=3.7 is required. Support on Python 3.11 is limited.
 
 ## Installation using pip
 
-Use pip to install the latest version of MDF (plus dependencies) from [PyPI](https://pypi.org/project/modelspec):
+Use pip to install the latest version of Modelspec (plus dependencies) from [PyPI](https://pypi.org/project/modelspec):
 ```
 pip install modelspec
 ```

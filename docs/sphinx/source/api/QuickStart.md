@@ -1,4 +1,4 @@
-# Quick Start Guide to modelspec
+# Quick Start Guide to Modelspec
 
 This is a quick guide to the various parts of the modelspec module and examples.
 
@@ -11,7 +11,7 @@ pip install modelspec
 
 More details, and importantly, how to set up a [virtual environment](https://virtualenv.pypa.io/en/latest/) for the package, can be found [here](Installation).
 
-## Examples of modelspec
+## Examples of Modelspec
 
 ### Simple example
 

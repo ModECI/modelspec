@@ -5,7 +5,7 @@
 
 :github_url: https://github.com/ModECI/modelspec
 
-Welcome to modelspec's documentation
+Welcome to Modelspec's documentation
 =======================================
 
 Modelspec is an open source, community-supported standard library used for specifying the structure of models
