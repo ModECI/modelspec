@@ -13,7 +13,7 @@
         },
         "allowed_children": {
             "networks": {
-                "type": "Network",
+                "type": "List",
                 "description": "The networks present"
             }
         }
@@ -28,7 +28,7 @@
         },
         "allowed_children": {
             "populations": {
-                "type": "Population",
+                "type": "List",
                 "description": "the pops in the net"
             }
         }

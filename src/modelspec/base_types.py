@@ -121,7 +121,7 @@ class Base:
         """
         from modelspec.utils import build_xml_element
 
-        root = ET.Element("root")
+        root = ET.Element("modelspec")
         build_xml_element(root, self.to_dict())
 
         xml_string = ET.tostring(
@@ -265,14 +265,14 @@ class Base:
         self,
         filename: Optional[str] = None,
         include_metadata: bool = True,
-        root="modelspec",
+        root_name="modelspec",
     ) -> str:
         from modelspec.utils import build_xml_element
 
         if filename is None:
             filename = f"{self.id}.xml"
 
-        root = ET.Element(root)
+        root = ET.Element(root_name)
 
         build_xml_element(root, self.to_dict())
 

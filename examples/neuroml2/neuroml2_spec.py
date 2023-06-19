@@ -2,6 +2,7 @@ import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from typing import List
+from modelspec.utils import save_to_xml_file
 
 # Example showing ...
 
@@ -68,11 +69,12 @@ if __name__ == "__main__":
     nml_doc.to_json_file("%s.json" % nml_doc.id)
     nml_doc.to_yaml_file("%s.yaml" % nml_doc.id)
     nml_doc.to_bson_file("%s.bson" % nml_doc.id)
-    # nml_doc.to_xml_file("%s.xml"%nml_doc.id)
+    nml_doc.to_xml_file("%s.xml" % nml_doc.id)
 
     print(" >> Full document details in YAML format:\n")
 
     print(nml_doc.to_yaml())
+    print(nml_doc.to_xml())
 
     doc_md = nml_doc.generate_documentation(format="markdown")
 
@@ -99,3 +101,5 @@ if __name__ == "__main__":
         yy = yaml.dump(doc_dict, indent=4, sort_keys=False)
         print(yy)
         d.write(yy)
+
+    save_to_xml_file(doc_dict, "NeuroML2.specification.xml")

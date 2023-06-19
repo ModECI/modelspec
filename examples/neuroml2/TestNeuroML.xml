@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<modelspec>
+    <TestNeuroML>
+        <version>NeuroML_v2.3</version>
+        <networks>
+            <net0>
+                <populations>
+                    <pop0>
+                        <component>izh2007RS0</component>
+                        <size>1</size>
+                    </pop0>
+                </populations>
+            </net0>
+        </networks>
+    </TestNeuroML>
+</modelspec>

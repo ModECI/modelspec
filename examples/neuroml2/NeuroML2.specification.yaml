@@ -9,7 +9,7 @@ NeuroML:
             description: NeuroML version used
     allowed_children:
         networks:
-            type: Network
+            type: List
             description: The networks present
 Network:
     definition: Some description...
@@ -19,7 +19,7 @@ Network:
             description: The id of the network
     allowed_children:
         populations:
-            type: Population
+            type: List
             description: the pops in the net
 Population:
     definition: Some description...
