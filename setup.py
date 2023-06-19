@@ -12,7 +12,7 @@ extras = {
         "typing_extensions; python_version<'3.8'",
     ],
     "docs": [
-        "Sphinx~=3.0",
+        "Sphinx",
         "recommonmark>=0.5.0",
         "nbsphinx",
         "sphinx_copybutton",
