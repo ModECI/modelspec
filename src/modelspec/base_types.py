@@ -120,16 +120,14 @@ class Base:
         Convert the data dictionary to an XML string representation using the ElementTree library.
         """
         from modelspec.utils import build_xml_element
+
         root = ET.Element("root")
         build_xml_element(root, self.to_dict())
 
         xml_string = ET.tostring(
-            root,
-            encoding='utf-8',
-            xml_declaration=False,
-            method='xml'
-            ).decode('utf-8')
-        
+            root, encoding="utf-8", xml_declaration=False, method="xml"
+        ).decode("utf-8")
+
         parsed_xml = xml.dom.minidom.parseString(xml_string)
         pretty_xml = parsed_xml.toprettyxml(indent=" " * 4)
         return pretty_xml
@@ -219,7 +217,7 @@ class Base:
             )
             outfile.write(bson_data)
 
-        return filename  
+        return filename
 
     def to_yaml(self, include_metadata: bool = True) -> str:
         """
@@ -262,16 +260,19 @@ class Base:
             )
 
         return filename
-    
 
-
-    def to_xml_file(self, filename: Optional[str] = None, include_metadata: bool = True) -> str:
+    def to_xml_file(
+        self,
+        filename: Optional[str] = None,
+        include_metadata: bool = True,
+        root="modelspec",
+    ) -> str:
         from modelspec.utils import build_xml_element
 
         if filename is None:
             filename = f"{self.id}.xml"
 
-        root = ET.Element("root")  # Create the root element
+        root = ET.Element(root)
 
         build_xml_element(root, self.to_dict())
 
@@ -279,19 +280,17 @@ class Base:
         tree = ET.ElementTree(root)
 
         # Generate the XML string
-        xml_str = ET.tostring(root, encoding="utf-8").decode("utf-8")
+        xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
 
-        # Pretty format the XML string using minidom
-        #dom = xml.dom.minidom.parseString(xml_str)
-        #pretty_xml_str = dom.toprettyxml(indent=" ")
+        # Create a pretty-formatted XML string using minidom
+        parsed_xml = xml.dom.minidom.parseString(xml_str)
+        pretty_xml_str = parsed_xml.toprettyxml(indent=" " * 4)
 
-        # Write the formatted XML data to the file
+        # Write the XML data to the file
         with open(filename, "w", encoding="utf-8") as file:
-            file.write(xml_str)
+            file.write(pretty_xml_str)
 
         return filename
-
-
 
     # def to_xml_file(self, filename: Optional[str] = None, include_metadata: bool = True) -> str:
     #     from modelspec.utils import build_xml_element
@@ -316,7 +315,6 @@ class Base:
     #         file.write(pretty_xml_str)
 
     #     return filename
-
 
     @classmethod
     def from_file(cls, filename: str) -> "Base":
@@ -390,7 +388,7 @@ class Base:
             d = yaml.safe_load(infile)
             d = yaml_converter.structure(d, Dict)
             return cls.from_dict(d)
-    
+
     @classmethod
     def from_xml_file(cls, filename: str) -> "Base":
         """
