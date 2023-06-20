@@ -126,11 +126,8 @@ class Base:
         build_xml_element(root, self.to_dict())
 
         xml_string = ET.tostring(
-            root,
-            encoding="utf-8",
-            xml_declaration=False,
-            method="xml"
-            ).decode("utf-8")
+            root, encoding="utf-8", xml_declaration=False, method="xml"
+        ).decode("utf-8")
 
         parsed_xml = xml.dom.minidom.parseString(xml_string)
         pretty_xml = parsed_xml.toprettyxml(indent=" " * 4)
@@ -284,11 +281,7 @@ class Base:
         tree = ET.ElementTree(root)
 
         # Generate the XML string
-        xml_str = ET.tostring(
-            root, 
-            encoding="utf-8", 
-            method="xml"
-            ).decode("utf-8")
+        xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
 
         # Create a pretty-formatted XML string using minidom
         parsed_xml = xml.dom.minidom.parseString(xml_str)
@@ -299,7 +292,6 @@ class Base:
             file.write(pretty_xml_str)
 
         return filename
-
 
     @classmethod
     def from_file(cls, filename: str) -> "Base":
