@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<modelspec>
+    <TestNeuroML>
+        <version>NeuroML_v2.3</version>
+        <izhikevich2007Cells>
+            <izh2007RS0>
+                <C>100pF</C>
+                <v0>-60mV</v0>
+                <k>0.7nS_per_mV</k>
+                <vr>-60mV</vr>
+                <vt>-40mV</vt>
+                <vpeak>35mV</vpeak>
+                <a>0.03per_ms</a>
+                <b>-2nS</b>
+                <c>-50.0mV</c>
+                <d>100pA</d>
+            </izh2007RS0>
+        </izhikevich2007Cells>
+        <pulseGenerators>
+            <pulseGen_0>
+                <delay>100ms</delay>
+                <duration>800ms</duration>
+                <amplitude>0.07 nA</amplitude>
+            </pulseGen_0>
+        </pulseGenerators>
+        <networks>
+            <IzNet>
+                <populations>
+                    <IzhPop0>
+                        <component>izh2007RS0</component>
+                        <size>1</size>
+                    </IzhPop0>
+                </populations>
+                <explicitInputs>
+                    <target>IzhPop0[0]</target>
+                    <input>pulseGen_0</input>
+                </explicitInputs>
+            </IzNet>
+        </networks>
+    </TestNeuroML>
+</modelspec>

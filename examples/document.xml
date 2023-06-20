@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<modelspec>
+    <MyBook>
+        <title>My life in Python</title>
+        <sections>
+            <Abstract>
+                <paragraphs>
+                    <contents>Blah blah blah</contents>
+                </paragraphs>
+                <paragraphs>
+                    <contents>Blah2</contents>
+                </paragraphs>
+            </Abstract>
+            <Chapter_1>
+                <paragraphs>
+                    <contents>More...</contents>
+                </paragraphs>
+            </Chapter_1>
+        </sections>
+    </MyBook>
+</modelspec>
