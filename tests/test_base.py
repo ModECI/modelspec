@@ -7,6 +7,7 @@ from modelspec.base_types import value_expr_types, ValueExprType, print_v
 from typing import List, Dict, Any, Optional
 
 import sys
+from pathlib import Path
 
 # Some test modelspec classes to use in the tests
 
@@ -154,13 +155,17 @@ def test_save_load_json(tmp_path):
 
     str_orig = str(net)
 
-    filenamej = str(tmp_path / f"{net.id}.json")
+    filenamej = str(Path(tmp_path) / f"{net.id}.json")
     net.to_json_file(filenamej)
 
-    filenamey = str(tmp_path / f"{net.id}.yaml")
+    filenamey = str(Path(tmp_path) / f"{net.id}.yaml")
     # net.id = net.id+'_yaml'
     net.to_yaml_file(filenamey)
-    from modelspec.utils import load_json, load_yaml
+
+    filenamex = str(Path(tmp_path) / f"{net.id}.xml")
+    net.to_xml_file(filenamex)
+
+    from modelspec.utils import load_json, load_yaml, load_xml
 
     dataj = load_json(filenamej)
     print_v("Loaded network specification from %s" % filenamej)
@@ -174,12 +179,20 @@ def test_save_load_json(tmp_path):
     nety = NewNetwork.from_dict(datay)
     str_nety = str(nety)
 
+    datax = load_xml(filenamex)
+    print_v("Loaded network specification from %s" % filenamex)
+
+    netx = NewNetwork.from_dict(datax)
+    str_netx = str(netx)
+
     print("----- Before -----")
     print(str_orig)
     print("----- After via %s -----" % filenamej)
     print(str_netj)
     print("----- After via %s -----" % filenamey)
     print(str_nety)
+    print("----- After via %s -----" % filenamex)
+    print(str_netx)
 
     print("Test JSON..")
     if sys.version_info[0] == 2:
@@ -197,10 +210,19 @@ def test_save_load_json(tmp_path):
     else:
         assert str_orig == str_nety
 
+    print("Test XML..")
+    if sys.version_info[0] == 2:
+        assert len(str_orig) == len(
+            str_netx
+        )  # Order not preserved in py2, just test len
+    else:
+        assert str_orig == str_netx
+
     print("Test EvaluableExpressions")
     for i in range(7):
         assert eval("net.ee%i" % i) == eval("netj.ee%i" % i)
         assert eval("net.ee%i" % i) == eval("nety.ee%i" % i)
+        assert eval("net.ee%i" % i) == eval("netx.ee%i" % i)
 
 
 def test_generate_documentation():
@@ -296,6 +318,7 @@ def test_generate_documentation_example():
 
     doc.to_json()
     doc.to_yaml()
+    doc.to_xml()
     doc.generate_documentation(format="markdown")
     doc.generate_documentation(format="rst")
 
@@ -314,10 +337,24 @@ def test_ndarray_json_metadata():
     model.to_json()
 
 
+def test_ndarray_xml_metadata():
+    import numpy as np
+
+    @modelspec.define(eq=False)
+    class Node(Base):
+        id: str = field(validator=instance_of(str))
+        metadata: Optional[Dict[str, Any]] = field(
+            kw_only=True, default=None, validator=optional(instance_of(dict))
+        )
+
+    model = Node(id="a", metadata={"b": np.array([0])})
+    model.to_xml()
+
+
 def test_bson_array(tmp_path):
     import numpy as np
 
-    test_filename = str(tmp_path / "test_array.bson")
+    test_filename = str(Path(tmp_path) / "test_array.bson")
 
     @modelspec.define(eq=False)
     class ArrayTestModel(Base):
@@ -339,3 +376,13 @@ def test_bson_array(tmp_path):
     np.testing.assert_array_equal(model.array, m2.array)
     assert model.list_of_lists == m2.list_of_lists
     assert model.ragged_list == m2.ragged_list
+
+
+if __name__ == "__main__":
+    test_save_load_json(".")
+    test_generate_documentation()
+    test_ndarray_json_metadata()
+    test_ndarray_xml_metadata()
+    test_generate_documentation_example()
+    test_bson_array(".")
+
