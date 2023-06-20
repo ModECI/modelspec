@@ -385,4 +385,3 @@ if __name__ == "__main__":
     test_ndarray_xml_metadata()
     test_generate_documentation_example()
     test_bson_array(".")
-
