@@ -7,6 +7,7 @@ import xml.dom.minidom
 import os
 import math
 import numpy as np
+import xmltodict
 
 from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
@@ -72,7 +73,7 @@ def load_xml(filename: str):
     # Convert the ElementTree object to a dictionary
     data = element_to_dict(root)
 
-    return data
+    return convert_values(data)
 
 
 def element_to_dict(element):
@@ -100,6 +101,28 @@ def element_to_dict(element):
 
     return result
 
+def convert_values(value):
+    if isinstance(value, str):
+        if value.isdigit():
+            return int(value)
+        try:
+            return float(value)
+        except ValueError:
+            pass
+        if value.lower() == "true":
+            return True
+        elif value.lower() == "false":
+            return False
+        elif value.lower() == "none":
+            return None
+    elif isinstance(value, dict):
+        return {key: convert_values(val) for key, val in value.items()}
+    elif isinstance(value, list):
+        return [convert_values(item) for item in value]
+
+    return value
+
+
 
 def save_to_json_file(info_dict, filename, indent=4):
 
@@ -118,7 +141,7 @@ def save_to_yaml_file(info_dict, filename, indent=4):
         fp.write(stry)
 
 
-def save_to_xml_file(info_dict, filename, indent=4):
+def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
     """
     Save a dictionary to an XML file.
 
@@ -128,7 +151,7 @@ def save_to_xml_file(info_dict, filename, indent=4):
         indent (int, optional): The number of spaces used for indentation in the XML file.
                                 Defaults to 4.
     """
-    root = ET.Element("root")
+    root = ET.Element(root)
 
     build_xml_element(root, info_dict)
 
@@ -162,30 +185,6 @@ def build_xml_element(parent, data):
                 element.text = str(value)
     else:
         parent.text = str(data)
-
-
-def _parse_xml_element(element):
-    """
-    Recursively convert an XML element to a dictionary.
-
-    Args:
-        element: The XML element.
-
-    Returns:
-        A dictionary representing the XML element and its children.
-    """
-    data = {}
-    for child in element:
-        if child.tag not in data:
-            data[child.tag] = []
-        if len(child) > 0:
-            data[child.tag].append(_parse_xml_element(child))
-        else:
-            data[child.tag].append(child.text)
-    for key, value in data.items():
-        if len(value) == 1:
-            data[key] = value[0]
-    return data
 
 
 def ascii_encode_dict(data):
