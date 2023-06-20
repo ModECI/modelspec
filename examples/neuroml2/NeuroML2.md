@@ -37,7 +37,7 @@ Some description...
 
   <tr>
     <td><b>networks</b></td>
-    <td><a href="#list">List</a></td>
+    <td><a href="#network">Network</a></td>
     <td><i>The networks present</i></td>
   </tr>
 
@@ -181,7 +181,7 @@ Some description...
 <table>
   <tr>
     <td><b>populations</b></td>
-    <td><a href="#list">List</a></td>
+    <td><a href="#population">Population</a></td>
     <td><i>the pops in the net</i></td>
   </tr>
 

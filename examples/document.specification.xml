@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<root>
+<modelspec>
     <Document>
         <definition>A model for documents.</definition>
         <allowed_parameters>
@@ -18,7 +18,7 @@
         </allowed_parameters>
         <allowed_children>
             <sections>
-                <type>List</type>
+                <type>Section</type>
                 <description>The sections of the document</description>
             </sections>
         </allowed_children>
@@ -33,7 +33,7 @@
         </allowed_parameters>
         <allowed_children>
             <paragraphs>
-                <type>List</type>
+                <type>Paragraph</type>
                 <description>The paragraphs</description>
             </paragraphs>
         </allowed_children>
@@ -47,4 +47,4 @@
             </contents>
         </allowed_parameters>
     </Paragraph>
-</root>
+</modelspec>

@@ -15,7 +15,7 @@ NeuroML:
             type: PulseGenerator
             description: ''
         networks:
-            type: List
+            type: Network
             description: The networks present
 Izhikevich2007Cell:
     definition: Some description...
@@ -76,7 +76,7 @@ Network:
             description: The id of the network
     allowed_children:
         populations:
-            type: List
+            type: Population
             description: the pops in the net
         explicitInputs:
             type: ExplicitInput
