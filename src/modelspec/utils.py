@@ -7,7 +7,7 @@ import xml.dom.minidom
 import os
 import math
 import numpy as np
-import xmltodict
+
 
 from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
@@ -78,7 +78,7 @@ def load_xml(filename: str):
 
 def element_to_dict(element):
     """
-    Convert an ElementTree element to a dictionary.
+    This convert an ElementTree element to a dictionary.
 
     Args:
         element: The ElementTree element to convert.
@@ -103,6 +103,15 @@ def element_to_dict(element):
 
 
 def convert_values(value):
+    """
+    This recursively converts values to their actual types.
+
+    Args:
+        value: The value to be converted.
+
+    Returns:
+        The converted value with its actual data type.
+    """
     if isinstance(value, str):
         if value.isdigit():
             return int(value)
@@ -143,7 +152,7 @@ def save_to_yaml_file(info_dict, filename, indent=4):
 
 def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
     """
-    Save a dictionary to an XML file.
+    This saves a dictionary to an XML file.
 
     Args:
         info_dict (dict): The dictionary containing the data to be saved.
@@ -171,6 +180,16 @@ def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
 
 
 def build_xml_element(parent, data):
+    """
+    This recursively builds an XML element structure from a dictionary or a list.
+
+    Args:
+        parent: The parent XML element to attach the new element(s) to.
+        data: The data to convert into XML elements.
+
+    Returns:
+        None
+    """
     if isinstance(data, dict):
         for key, value in data.items():
             if isinstance(value, dict):
