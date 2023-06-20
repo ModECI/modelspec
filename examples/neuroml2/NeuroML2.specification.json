@@ -12,9 +12,87 @@
             }
         },
         "allowed_children": {
+            "izhikevich2007Cells": {
+                "type": "Izhikevich2007Cell",
+                "description": ""
+            },
+            "pulseGenerators": {
+                "type": "PulseGenerator",
+                "description": ""
+            },
             "networks": {
                 "type": "Network",
                 "description": "The networks present"
+            }
+        }
+    },
+    "Izhikevich2007Cell": {
+        "definition": "Some description...",
+        "allowed_parameters": {
+            "id": {
+                "type": "str",
+                "description": "The id of the cell..."
+            },
+            "C": {
+                "type": "str",
+                "description": ""
+            },
+            "v0": {
+                "type": "str",
+                "description": ""
+            },
+            "k": {
+                "type": "str",
+                "description": ""
+            },
+            "vr": {
+                "type": "str",
+                "description": ""
+            },
+            "vt": {
+                "type": "str",
+                "description": ""
+            },
+            "vpeak": {
+                "type": "str",
+                "description": ""
+            },
+            "a": {
+                "type": "str",
+                "description": ""
+            },
+            "b": {
+                "type": "str",
+                "description": ""
+            },
+            "c": {
+                "type": "str",
+                "description": ""
+            },
+            "d": {
+                "type": "str",
+                "description": ""
+            }
+        }
+    },
+    "PulseGenerator": {
+        "definition": "Some description...",
+        "allowed_parameters": {
+            "id": {
+                "type": "str",
+                "description": "The id of the pulseGenerator"
+            },
+            "delay": {
+                "type": "str",
+                "description": "the delay"
+            },
+            "duration": {
+                "type": "str",
+                "description": "the duration"
+            },
+            "amplitude": {
+                "type": "str",
+                "description": "the amplitude"
             }
         }
     },
@@ -30,6 +108,10 @@
             "populations": {
                 "type": "Population",
                 "description": "the pops in the net"
+            },
+            "explicitInputs": {
+                "type": "ExplicitInput",
+                "description": ""
             }
         }
     },
@@ -47,6 +129,19 @@
             "size": {
                 "type": "int",
                 "description": "the size of the population"
+            }
+        }
+    },
+    "ExplicitInput": {
+        "definition": "Some description...",
+        "allowed_parameters": {
+            "target": {
+                "type": "str",
+                "description": "the target of the input"
+            },
+            "input": {
+                "type": "str",
+                "description": "the input, e.g. pulseGenerator"
             }
         }
     }
