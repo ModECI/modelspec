@@ -126,8 +126,11 @@ class Base:
         build_xml_element(root, self.to_dict())
 
         xml_string = ET.tostring(
-            root, encoding="utf-8", xml_declaration=False, method="xml"
-        ).decode("utf-8")
+            root,
+            encoding="utf-8",
+            xml_declaration=False,
+            method="xml"
+            ).decode("utf-8")
 
         parsed_xml = xml.dom.minidom.parseString(xml_string)
         pretty_xml = parsed_xml.toprettyxml(indent=" " * 4)
@@ -281,7 +284,11 @@ class Base:
         tree = ET.ElementTree(root)
 
         # Generate the XML string
-        xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
+        xml_str = ET.tostring(
+            root, 
+            encoding="utf-8", 
+            method="xml"
+            ).decode("utf-8")
 
         # Create a pretty-formatted XML string using minidom
         parsed_xml = xml.dom.minidom.parseString(xml_str)
@@ -293,29 +300,6 @@ class Base:
 
         return filename
 
-    # def to_xml_file(self, filename: Optional[str] = None, include_metadata: bool = True) -> str:
-    #     from modelspec.utils import build_xml_element
-    #     if filename is None:
-    #         filename = f"{self.id}.xml"
-
-    #     root = ET.Element("root")  # Create the root element
-
-    #     # Convert self to dictionary representation (assuming self.to_dict() returns a dictionary)
-    #     model_dict = self.to_dict()
-
-    #     # Create XML elements based on the dictionary
-    #     build_xml_element(root, model_dict)
-
-    #     xml_data = ET.tostring(root, encoding="utf-8", xml_declaration=True)
-
-    #     # Create a pretty-formatted XML string using minidom
-    #     xml_dom = xml.dom.minidom.parseString(xml_data)
-    #     pretty_xml_str = xml_dom.toprettyxml(indent="    ")
-
-    #     with open(filename, "w") as file:
-    #         file.write(pretty_xml_str)
-
-    #     return filename
 
     @classmethod
     def from_file(cls, filename: str) -> "Base":
