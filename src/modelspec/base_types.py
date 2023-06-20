@@ -3,6 +3,7 @@ import yaml
 import bson
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
+import xmltodict
 import sys
 
 import numpy as np
@@ -166,10 +167,10 @@ class Base:
     @classmethod
     def from_xml(cls, xml_str: str) -> "Base":
         """Instantiate a Base object from an XML string"""
-        from modelspec.utils import _parse_xml_element
+        from modelspec.utils import element_to_dict
 
         root = ET.fromstring(xml_str)
-        data_dict = _parse_xml_element(root)
+        data_dict = element_to_dict(root)
         return cls.from_dict(data_dict)
 
     def to_json_file(
@@ -400,13 +401,13 @@ class Base:
         Returns:
             A modelspec Base for this XML.
         """
-        from modelspec.utils import _parse_xml_element
+        from modelspec.utils import element_to_dict
 
         with open(filename) as infile:
             tree = ET.parse(filename)
             root = tree.getroot()
 
-        data_dict = _parse_xml_element(root)
+        data_dict = element_to_dict(root)
         return cls.from_dict(data_dict)
 
     def get_child(self, id: str, type_: str) -> Any:
