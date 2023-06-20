@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<root>
+    <NeuroML>
+        <definition>Some description...</definition>
+        <allowed_parameters>
+            <id>
+                <type>str</type>
+                <description>The id of the NeuroML 2 document</description>
+            </id>
+            <version>
+                <type>str</type>
+                <description>NeuroML version used</description>
+            </version>
+        </allowed_parameters>
+        <allowed_children>
+            <networks>
+                <type>List</type>
+                <description>The networks present</description>
+            </networks>
+        </allowed_children>
+    </NeuroML>
+    <Network>
+        <definition>Some description...</definition>
+        <allowed_parameters>
+            <id>
+                <type>str</type>
+                <description>The id of the network</description>
+            </id>
+        </allowed_parameters>
+        <allowed_children>
+            <populations>
+                <type>List</type>
+                <description>the pops in the net</description>
+            </populations>
+        </allowed_children>
+    </Network>
+    <Population>
+        <definition>Some description...</definition>
+        <allowed_parameters>
+            <id>
+                <type>str</type>
+                <description>The id of the population</description>
+            </id>
+            <component>
+                <type>str</type>
+                <description>the component to use in the population</description>
+            </component>
+            <size>
+                <type>int</type>
+                <description>the size of the population</description>
+            </size>
+        </allowed_parameters>
+    </Population>
+</root>
