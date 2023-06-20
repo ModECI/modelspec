@@ -101,6 +101,7 @@ def element_to_dict(element):
 
     return result
 
+
 def convert_values(value):
     if isinstance(value, str):
         if value.isdigit():
@@ -121,7 +122,6 @@ def convert_values(value):
         return [convert_values(item) for item in value]
 
     return value
-
 
 
 def save_to_json_file(info_dict, filename, indent=4):
