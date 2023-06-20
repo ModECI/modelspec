@@ -1,0 +1,39 @@
+{
+    "netid": {
+        "cells": {
+            "cellid1": {
+                "neuroml2_source_file": "nnn"
+            },
+            "cellid2": {
+                "neuroml2_source_file": "nnn2"
+            }
+        },
+        "synapses": {
+            "syn0": {
+                "tested": true
+            },
+            "syn1": {
+                "neuroml2_source_file": "xx"
+            }
+        },
+        "stable": false,
+        "parameters": {
+            "size": 3,
+            "name": null
+        },
+        "random_connectivity": {
+            "probability": 0.01
+        },
+        "ee0": "str",
+        "ee1": {
+            "a": 2
+        },
+        "ee2": 1,
+        "ee3": 1.1,
+        "ee4": true,
+        "ee5": [
+            1,
+            2
+        ]
+    }
+}
