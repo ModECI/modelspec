@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Python >=3.7 is required. Support on Python 3.11 is limited.
+Python >=3.7 is required. Support on Python 3.11 is limited (see [here](https://github.com/ModECI/modelspec/issues/25)).
 
 ## Installation using pip
 

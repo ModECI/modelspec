@@ -11,7 +11,7 @@ Welcome to Modelspec's documentation
 Modelspec is an open source, community-supported standard library used for specifying the structure of models
 and enabling automatic serialization.
 It is still in development and it is being used by
-`MDF <https://github.com/ModECI/MDF>`_ and `NeuroMLite <https://github.com/NeuroML/NeuroMLlite>`_.
+`MDF <https://github.com/ModECI/MDF>`_ and `NeuroMLlite <https://github.com/NeuroML/NeuroMLlite>`_.
 
 .. toctree::
    :maxdepth: 1
