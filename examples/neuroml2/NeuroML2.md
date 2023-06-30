@@ -23,21 +23,21 @@ Some description...
 <table>
   <tr>
     <td><b>izhikevich2007Cells</b></td>
-    <td><a href="#izhikevich2007cell">Izhikevich2007Cell</a></td>
+    <td><a href="#list">List</a></td>
     <td><i></i></td>
   </tr>
 
 
   <tr>
     <td><b>pulseGenerators</b></td>
-    <td><a href="#pulsegenerator">PulseGenerator</a></td>
+    <td><a href="#list">List</a></td>
     <td><i></i></td>
   </tr>
 
 
   <tr>
     <td><b>networks</b></td>
-    <td><a href="#network">Network</a></td>
+    <td><a href="#list">List</a></td>
     <td><i>The networks present</i></td>
   </tr>
 
@@ -181,14 +181,14 @@ Some description...
 <table>
   <tr>
     <td><b>populations</b></td>
-    <td><a href="#population">Population</a></td>
+    <td><a href="#list">List</a></td>
     <td><i>the pops in the net</i></td>
   </tr>
 
 
   <tr>
     <td><b>explicitInputs</b></td>
-    <td><a href="#explicitinput">ExplicitInput</a></td>
+    <td><a href="#list">List</a></td>
     <td><i></i></td>
   </tr>
 
