@@ -8,9 +8,66 @@ NeuroML:
             type: str
             description: NeuroML version used
     allowed_children:
+        izhikevich2007Cells:
+            type: Izhikevich2007Cell
+            description: ''
+        pulseGenerators:
+            type: PulseGenerator
+            description: ''
         networks:
-            type: List
+            type: Network
             description: The networks present
+Izhikevich2007Cell:
+    definition: Some description...
+    allowed_parameters:
+        id:
+            type: str
+            description: The id of the cell...
+        C:
+            type: str
+            description: ''
+        v0:
+            type: str
+            description: ''
+        k:
+            type: str
+            description: ''
+        vr:
+            type: str
+            description: ''
+        vt:
+            type: str
+            description: ''
+        vpeak:
+            type: str
+            description: ''
+        a:
+            type: str
+            description: ''
+        b:
+            type: str
+            description: ''
+        c:
+            type: str
+            description: ''
+        d:
+            type: str
+            description: ''
+PulseGenerator:
+    definition: Some description...
+    allowed_parameters:
+        id:
+            type: str
+            description: The id of the pulseGenerator
+        delay:
+            type: str
+            description: the delay
+        duration:
+            type: str
+            description: the duration
+        amplitude:
+            type: str
+            description: the amplitude
 Network:
     definition: Some description...
     allowed_parameters:
@@ -19,8 +76,11 @@ Network:
             description: The id of the network
     allowed_children:
         populations:
-            type: List
+            type: Population
             description: the pops in the net
+        explicitInputs:
+            type: ExplicitInput
+            description: ''
 Population:
     definition: Some description...
     allowed_parameters:
@@ -33,3 +93,12 @@ Population:
         size:
             type: int
             description: the size of the population
+ExplicitInput:
+    definition: Some description...
+    allowed_parameters:
+        target:
+            type: str
+            description: the target of the input
+        input:
+            type: str
+            description: the input, e.g. pulseGenerator

@@ -24,6 +24,20 @@ class Population(Base):
 
 
 @modelspec.define
+class ExplicitInput(Base):
+    """
+    Some description...
+
+    Args:
+        target: the target of the input
+        input: the input, e.g. pulseGenerator
+    """
+
+    target: str = field(default=None, validator=optional(instance_of(str)))
+    input: str = field(default=None, validator=optional(instance_of(str)))
+
+
+@modelspec.define
 class Network(Base):
     """
     Some description...
@@ -36,6 +50,48 @@ class Network(Base):
     id: str = field(validator=instance_of(str))
 
     populations: List[Population] = field(factory=list)
+    explicitInputs: List[ExplicitInput] = field(factory=list)
+
+
+@modelspec.define
+class PulseGenerator(Base):
+    """
+    Some description...
+
+    Args:
+        id: The id of the pulseGenerator
+        delay: the delay
+        duration: the duration
+        amplitude: the amplitude
+    """
+
+    id: str = field(validator=instance_of(str))
+    delay: str = field(validator=instance_of(str))
+    duration: str = field(validator=instance_of(str))
+    amplitude: str = field(validator=instance_of(str))
+
+
+@modelspec.define
+class Izhikevich2007Cell(Base):
+    """
+    Some description...
+
+    Args:
+        id: The id of the cell...
+    """
+
+    id: str = field(validator=instance_of(str))
+
+    C: str = field(validator=instance_of(str))
+    v0: str = field(validator=instance_of(str))
+    k: str = field(validator=instance_of(str))
+    vr: str = field(validator=instance_of(str))
+    vt: str = field(validator=instance_of(str))
+    vpeak: str = field(validator=instance_of(str))
+    a: str = field(validator=instance_of(str))
+    b: str = field(validator=instance_of(str))
+    c: str = field(validator=instance_of(str))
+    d: str = field(validator=instance_of(str))
 
 
 @modelspec.define
@@ -52,16 +108,40 @@ class NeuroML(Base):
     id: str = field(validator=instance_of(str))
     version: str = field(validator=instance_of(str))
 
+    izhikevich2007Cells: List[Izhikevich2007Cell] = field(factory=list)
+    pulseGenerators: List[PulseGenerator] = field(factory=list)
     networks: List[Network] = field(factory=list)
 
 
 if __name__ == "__main__":
 
     nml_doc = NeuroML(id="TestNeuroML", version="NeuroML_v2.3")
-    net = Network(id="net0")
+
+    izh = Izhikevich2007Cell(
+        id="izh2007RS0",
+        C="100pF",
+        v0="-60mV",
+        k="0.7nS_per_mV",
+        vr="-60mV",
+        vt="-40mV",
+        vpeak="35mV",
+        a="0.03per_ms",
+        b="-2nS",
+        c="-50.0mV",
+        d="100pA",
+    )
+    nml_doc.izhikevich2007Cells.append(izh)
+
+    pg = PulseGenerator(
+        id="pulseGen_0", delay="100ms", duration="800ms", amplitude="0.07 nA"
+    )
+    nml_doc.pulseGenerators.append(pg)
+
+    net = Network(id="IzNet")
     nml_doc.networks.append(net)
 
-    net.populations.append(Population("pop0", component="izh2007RS0", size=1))
+    net.populations.append(Population("IzhPop0", component="izh2007RS0", size=1))
+    net.explicitInputs.append(ExplicitInput(target="IzhPop0[0]", input="pulseGen_0"))
 
     print(nml_doc)
     print(nml_doc.id)
@@ -75,6 +155,8 @@ if __name__ == "__main__":
 
     print(nml_doc.to_yaml())
     print(nml_doc.to_xml())
+
+    print("Generating documentation...")
 
     doc_md = nml_doc.generate_documentation(format="markdown")
 

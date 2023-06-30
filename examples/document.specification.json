@@ -17,7 +17,7 @@
         },
         "allowed_children": {
             "sections": {
-                "type": "List",
+                "type": "Section",
                 "description": "The sections of the document"
             }
         }
@@ -32,7 +32,7 @@
         },
         "allowed_children": {
             "paragraphs": {
-                "type": "List",
+                "type": "Paragraph",
                 "description": "The paragraphs"
             }
         }
