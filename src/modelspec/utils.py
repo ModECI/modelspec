@@ -7,6 +7,7 @@ import xml.dom.minidom
 import os
 import math
 import numpy as np
+import attr
 
 
 from modelspec.base_types import print_
@@ -160,12 +161,12 @@ def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
         indent (int, optional): The number of spaces used for indentation in the XML file.
                                 Defaults to 4.
     """
-    root = ET.Element(root)
+    # root = ET.Element(root)
 
-    build_xml_element(root, info_dict)
+    root = build_xml_element(info_dict)
 
     # Create an ElementTree object with the root element
-    tree = ET.ElementTree(root)
+    # tree = ET.ElementTree(root)
 
     # Generate the XML string
     xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
@@ -179,7 +180,7 @@ def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
         file.write(pretty_xml_str)
 
 
-def build_xml_element(parent, data):
+def build_xml_element(data, parent=None):
     """
     This recursively builds an XML element structure from a dictionary or a list.
 
@@ -188,22 +189,27 @@ def build_xml_element(parent, data):
         data: The data to convert into XML elements.
 
     Returns:
-        None
+        Parent
     """
-    if isinstance(data, dict):
-        for key, value in data.items():
-            if isinstance(value, dict):
-                element = ET.SubElement(parent, key.replace(" ", "_"))
-                build_xml_element(element, value)
-            elif isinstance(value, list):
-                for item in value:
-                    subelement = ET.SubElement(parent, key.replace(" ", "_"))
-                    build_xml_element(subelement, item)
-            else:
-                element = ET.SubElement(parent, key.replace(" ", "_"))
-                element.text = str(value)
-    else:
-        parent.text = str(data)
+    if parent is None:
+        parent = ET.Element(data.__class__.__name__)
+
+    attrs = attr.fields(data.__class__)
+    for aattr in attrs:
+        if isinstance(aattr.default, attr.Factory):
+            children = data.__getattribute__(aattr.name)
+            if not isinstance(children, (list, tuple)):
+                children = [children]
+
+            for child in children:
+                child_element = build_xml_element(child)
+                parent.append(child_element)
+        else:
+            attribute_name = aattr.name
+            attribute_value = data.__getattribute__(aattr.name)
+            parent.set(attribute_name, str(attribute_value))
+
+    return parent
 
 
 def ascii_encode_dict(data):
