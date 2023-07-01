@@ -69,10 +69,10 @@ def load_xml(filename: str):
     """
     with open(filename, "rb") as infile:
         tree = ET.parse(infile)  # Parse the XML file into an ElementTree object
-    root = tree.getroot()  # Get the root element
+        root = tree.getroot()  # Get the root element
 
     # Convert the ElementTree object to a dictionary
-    data = element_to_dict(root)
+    data = {root.tag: element_to_dict(root)}
 
     return convert_values(data)
 
@@ -87,18 +87,21 @@ def element_to_dict(element):
     Returns:
         The converted dictionary.
     """
-    if len(element) == 0:
-        return element.text
-
     result = {}
-    for child in element:
-        child_data = element_to_dict(child)
-        if child.tag in result:
-            if not isinstance(result[child.tag], list):
-                result[child.tag] = [result[child.tag]]
-            result[child.tag].append(child_data)
+    attrs = element.attrib
+    if attrs:
+        result.update(attrs)
+
+    for child_element in element:
+        child_key = child_element.tag
+        child_value = element_to_dict(child_element)
+
+        if child_key in result:
+            if not isinstance(result[child_key], list):
+                result[child_key] = [result[child_key]]
+            result[child_key].append(child_value)
         else:
-            result[child.tag] = child_data
+            result[child_key] = child_value
 
     return result
 
