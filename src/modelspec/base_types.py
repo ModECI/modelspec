@@ -170,7 +170,7 @@ class Base:
         from modelspec.utils import element_to_dict
 
         root = ET.fromstring(xml_str)
-        data_dict = element_to_dict(root)
+        data_dict = {root.tag: element_to_dict(root)}
         return cls.from_dict(data_dict)
 
     def to_json_file(
@@ -383,7 +383,7 @@ class Base:
             tree = ET.parse(filename)
             root = tree.getroot()
 
-        data_dict = element_to_dict(root)
+        data_dict = {root.tag: element_to_dict(root)}
         return cls.from_dict(data_dict)
 
     def get_child(self, id: str, type_: str) -> Any:
