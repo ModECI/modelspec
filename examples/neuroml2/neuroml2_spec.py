@@ -184,4 +184,4 @@ if __name__ == "__main__":
         print(yy)
         d.write(yy)
 
-    save_to_xml_file(doc_rst, "NeuroML2.specification.xml")
+    save_to_xml_file(nml_doc, "NeuroML2.specification.xml")
