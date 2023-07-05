@@ -76,6 +76,18 @@ jobs:
           cd examples/MDF
           python arrays.py -run   # test one example
 
+    - name: Build Documentation
+      run: |
+
+        pip install requests
+        pip install .[docs]
+        cd docs
+        python generate.py
+        python contributors.py
+        cd sphinx
+        make clean
+        make html
+
     - name: Final version info
       run: |
           pip list
