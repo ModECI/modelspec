@@ -12,7 +12,7 @@ Document:
             description: International Standard Book Number
     allowed_children:
         sections:
-            type: List
+            type: Section
             description: The sections of the document
 Section:
     definition: A model of a section of the :class:`Document`. Will contain one :class:`Paragraph`
@@ -24,7 +24,7 @@ Section:
             description: The id of the section
     allowed_children:
         paragraphs:
-            type: List
+            type: Paragraph
             description: The paragraphs
 Paragraph:
     definition: A model of a paragraph.

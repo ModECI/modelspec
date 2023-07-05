@@ -9,13 +9,13 @@ NeuroML:
             description: NeuroML version used
     allowed_children:
         izhikevich2007Cells:
-            type: List
+            type: Izhikevich2007Cell
             description: ''
         pulseGenerators:
-            type: List
+            type: PulseGenerator
             description: ''
         networks:
-            type: List
+            type: Network
             description: The networks present
 Izhikevich2007Cell:
     definition: Some description...
@@ -76,10 +76,10 @@ Network:
             description: The id of the network
     allowed_children:
         populations:
-            type: List
+            type: Population
             description: the pops in the net
         explicitInputs:
-            type: List
+            type: ExplicitInput
             description: ''
 Population:
     definition: Some description...
