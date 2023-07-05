@@ -20,6 +20,7 @@ It is still in development and it is being used by
    api/Introduction
    api/Quickstart
    api/Installation
+   api/Contributors
 
 
 .. toctree::
