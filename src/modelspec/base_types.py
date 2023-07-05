@@ -122,8 +122,8 @@ class Base:
         """
         from modelspec.utils import build_xml_element
 
-        root = ET.Element("modelspec")
-        build_xml_element(root, self.to_dict())
+        # root = ET.Element("modelspec")
+        root = build_xml_element(self)
 
         xml_string = ET.tostring(
             root, encoding="utf-8", xml_declaration=False, method="xml"
@@ -170,7 +170,7 @@ class Base:
         from modelspec.utils import element_to_dict
 
         root = ET.fromstring(xml_str)
-        data_dict = element_to_dict(root)
+        data_dict = {root.tag: element_to_dict(root)}
         return cls.from_dict(data_dict)
 
     def to_json_file(
@@ -273,12 +273,12 @@ class Base:
         if filename is None:
             filename = f"{self.id}.xml"
 
-        root = ET.Element(root_name)
+        # root = ET.Element(root_name)
 
-        build_xml_element(root, self.to_dict())
+        root = build_xml_element(self)
 
         # Create an ElementTree object with the root element
-        tree = ET.ElementTree(root)
+        # tree = ET.ElementTree(root)
 
         # Generate the XML string
         xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
@@ -383,7 +383,7 @@ class Base:
             tree = ET.parse(filename)
             root = tree.getroot()
 
-        data_dict = element_to_dict(root)
+        data_dict = {root.tag: element_to_dict(root)}
         return cls.from_dict(data_dict)
 
     def get_child(self, id: str, type_: str) -> Any:

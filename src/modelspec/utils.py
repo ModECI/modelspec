@@ -7,6 +7,7 @@ import xml.dom.minidom
 import os
 import math
 import numpy as np
+import attr
 
 
 from modelspec.base_types import print_
@@ -68,10 +69,10 @@ def load_xml(filename: str):
     """
     with open(filename, "rb") as infile:
         tree = ET.parse(infile)  # Parse the XML file into an ElementTree object
-    root = tree.getroot()  # Get the root element
+        root = tree.getroot()  # Get the root element
 
     # Convert the ElementTree object to a dictionary
-    data = element_to_dict(root)
+    data = {root.tag: element_to_dict(root)}
 
     return convert_values(data)
 
@@ -86,18 +87,21 @@ def element_to_dict(element):
     Returns:
         The converted dictionary.
     """
-    if len(element) == 0:
-        return element.text
-
     result = {}
-    for child in element:
-        child_data = element_to_dict(child)
-        if child.tag in result:
-            if not isinstance(result[child.tag], list):
-                result[child.tag] = [result[child.tag]]
-            result[child.tag].append(child_data)
+    attrs = element.attrib
+    if attrs:
+        result.update(attrs)
+
+    for child_element in element:
+        child_key = child_element.tag
+        child_value = element_to_dict(child_element)
+
+        if child_key in result:
+            if not isinstance(result[child_key], list):
+                result[child_key] = [result[child_key]]
+            result[child_key].append(child_value)
         else:
-            result[child.tag] = child_data
+            result[child_key] = child_value
 
     return result
 
@@ -160,12 +164,12 @@ def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
         indent (int, optional): The number of spaces used for indentation in the XML file.
                                 Defaults to 4.
     """
-    root = ET.Element(root)
+    # root = ET.Element(root)
 
-    build_xml_element(root, info_dict)
+    root = build_xml_element(info_dict)
 
     # Create an ElementTree object with the root element
-    tree = ET.ElementTree(root)
+    # tree = ET.ElementTree(root)
 
     # Generate the XML string
     xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
@@ -179,7 +183,7 @@ def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
         file.write(pretty_xml_str)
 
 
-def build_xml_element(parent, data):
+def build_xml_element(data, parent=None):
     """
     This recursively builds an XML element structure from a dictionary or a list.
 
@@ -188,22 +192,27 @@ def build_xml_element(parent, data):
         data: The data to convert into XML elements.
 
     Returns:
-        None
+        Parent
     """
-    if isinstance(data, dict):
-        for key, value in data.items():
-            if isinstance(value, dict):
-                element = ET.SubElement(parent, key.replace(" ", "_"))
-                build_xml_element(element, value)
-            elif isinstance(value, list):
-                for item in value:
-                    subelement = ET.SubElement(parent, key.replace(" ", "_"))
-                    build_xml_element(subelement, item)
-            else:
-                element = ET.SubElement(parent, key.replace(" ", "_"))
-                element.text = str(value)
-    else:
-        parent.text = str(data)
+    if parent is None:
+        parent = ET.Element(data.__class__.__name__)
+
+    attrs = attr.fields(data.__class__)
+    for aattr in attrs:
+        if isinstance(aattr.default, attr.Factory):
+            children = data.__getattribute__(aattr.name)
+            if not isinstance(children, (list, tuple)):
+                children = [children]
+
+            for child in children:
+                child_element = build_xml_element(child)
+                parent.append(child_element)
+        else:
+            attribute_name = aattr.name
+            attribute_value = data.__getattribute__(aattr.name)
+            parent.set(attribute_name, str(attribute_value))
+
+    return parent
 
 
 def ascii_encode_dict(data):

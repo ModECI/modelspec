@@ -13,15 +13,15 @@
         },
         "allowed_children": {
             "izhikevich2007Cells": {
-                "type": "Izhikevich2007Cell",
+                "type": "List",
                 "description": ""
             },
             "pulseGenerators": {
-                "type": "PulseGenerator",
+                "type": "List",
                 "description": ""
             },
             "networks": {
-                "type": "Network",
+                "type": "List",
                 "description": "The networks present"
             }
         }
@@ -106,11 +106,11 @@
         },
         "allowed_children": {
             "populations": {
-                "type": "Population",
+                "type": "List",
                 "description": "the pops in the net"
             },
             "explicitInputs": {
-                "type": "ExplicitInput",
+                "type": "List",
                 "description": ""
             }
         }

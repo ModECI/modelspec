@@ -14,13 +14,13 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-=======================  ============================================  ====================
-Allowed child            Data Type                                     Description
-=======================  ============================================  ====================
-**izhikevich2007Cells**  `Izhikevich2007Cell <#izhikevich2007cell>`__
-**pulseGenerators**      `PulseGenerator <#pulsegenerator>`__
-**networks**             `Network <#network>`__                        The networks present
-=======================  ============================================  ====================
+=======================  ================  ====================
+Allowed child            Data Type         Description
+=======================  ================  ====================
+**izhikevich2007Cells**  `List <#list>`__
+**pulseGenerators**      `List <#list>`__
+**networks**             `List <#list>`__  The networks present
+=======================  ================  ====================
 
 ==================
 Izhikevich2007Cell
@@ -76,12 +76,12 @@ Allowed field    Data Type    Description
 
 **Allowed children**
 
-==================  ==================================  ===================
-Allowed child       Data Type                           Description
-==================  ==================================  ===================
-**populations**     `Population <#population>`__        the pops in the net
-**explicitInputs**  `ExplicitInput <#explicitinput>`__
-==================  ==================================  ===================
+==================  ================  ===================
+Allowed child       Data Type         Description
+==================  ================  ===================
+**populations**     `List <#list>`__  the pops in the net
+**explicitInputs**  `List <#list>`__
+==================  ================  ===================
 
 ==========
 Population
