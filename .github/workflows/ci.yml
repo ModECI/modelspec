@@ -79,7 +79,6 @@ jobs:
     - name: Build Documentation
       run: |
 
-        pip install requests
         pip install .[docs]
         cd docs
         python generate.py
