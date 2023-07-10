@@ -72,9 +72,11 @@ def load_xml(filename: str):
         root = tree.getroot()  # Get the root element
 
     # Convert the ElementTree object to a dictionary
-    data = {root.tag: element_to_dict(root)}
+    data = element_to_dict(root)
+    removed_id = handle_id(data)
+    converted_to_actual_val = convert_values(removed_id)
 
-    return convert_values(data)
+    return convert_values(converted_to_actual_val)
 
 
 def element_to_dict(element):
@@ -104,6 +106,20 @@ def element_to_dict(element):
             result[child_key] = child_value
 
     return result
+
+
+def handle_id(dictionary):
+    if isinstance(dictionary, dict):
+        if "id" in dictionary:
+            nested_dict = {dictionary["id"]: dictionary.copy()}
+            del nested_dict[dictionary["id"]]["id"]
+            return {k: handle_id(v) for k, v in nested_dict.items()}
+        else:
+            return {k: handle_id(v) for k, v in dictionary.items()}
+    elif isinstance(dictionary, list):
+        return [handle_id(item) for item in dictionary]
+    else:
+        return dictionary
 
 
 def convert_values(value):
