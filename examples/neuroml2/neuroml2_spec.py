@@ -2,7 +2,6 @@ import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from typing import List
-from modelspec.utils import save_to_xml_file
 
 # Example showing ...
 
@@ -95,7 +94,7 @@ class Izhikevich2007Cell(Base):
 
 
 @modelspec.define
-class NeuroML(Base):
+class neuroML(Base):
     """
     Some description...
 
