@@ -100,8 +100,8 @@ class NeuroML(Base):
     Some description...
 
     Args:
-        id: The id of the NeuroML 2 document
-        version: NeuroML version used
+        id: The id of the neuroML 2 document
+        version: neuroML version used
         networks: The networks present
     """
 
@@ -115,7 +115,7 @@ class NeuroML(Base):
 
 if __name__ == "__main__":
 
-    nml_doc = NeuroML(id="TestNeuroML", version="NeuroML_v2.3")
+    nml_doc = neuroML(id="TestNeuroML", version="NeuroML_v2.3")
 
     izh = Izhikevich2007Cell(
         id="izh2007RS0",
@@ -183,5 +183,3 @@ if __name__ == "__main__":
         yy = yaml.dump(doc_dict, indent=4, sort_keys=False)
         print(yy)
         d.write(yy)
-
-    save_to_xml_file(nml_doc, "NeuroML2.specification.xml")
