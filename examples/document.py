@@ -109,5 +109,3 @@ with open("document.specification.yaml", "w") as d:
 
 with open("document.specification.bson", "wb") as d:
     d.write(bson.encode(doc_dict))
-
-save_to_xml_file(doc, "document.specification.xml")
