@@ -27,7 +27,7 @@ for i in range(len_per_info):
             requests_status = "successful"
             empty_list.append(data.json())
         else:
-            # handle failure on requests to the url
+            # handle failure on requests to the url for mac os
             requests_status = "unsuccessful"
             print(f"Failed to get data from: {url}")
             # make request again to get data from the url
