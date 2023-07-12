@@ -21,7 +21,17 @@ for i in range(len_per_info):
     url = per_info[i]
     print(url)
     data = requests.get(url=url)
-    empty_list.append(data.json())
+    requests_status = "unknown"
+    while (requests_status == "unknown") or (requests_status == "unsuccessful"):
+        if data.status_code == 200:
+            requests_status = "successful"
+            empty_list.append(data.json())
+        else:
+            # handle failure on requests to the url
+            requests_status = "unsuccessful"
+            print(f"Failed to get data from: {url}")
+            # make request again to get data from the url
+            data = requests.get(url=url)
 
 df1 = pd.DataFrame(empty_list)
 df1["name"] = df1["name"].fillna("")
