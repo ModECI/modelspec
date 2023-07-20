@@ -7,7 +7,7 @@ from typing import List
 
 
 @modelspec.define
-class Population(Base):
+class population(Base):
     """
     Some description...
 
@@ -23,7 +23,7 @@ class Population(Base):
 
 
 @modelspec.define
-class ExplicitInput(Base):
+class explicitInput(Base):
     """
     Some description...
 
@@ -37,7 +37,7 @@ class ExplicitInput(Base):
 
 
 @modelspec.define
-class Network(Base):
+class network(Base):
     """
     Some description...
 
@@ -48,12 +48,12 @@ class Network(Base):
 
     id: str = field(validator=instance_of(str))
 
-    populations: List[Population] = field(factory=list)
-    explicitInputs: List[ExplicitInput] = field(factory=list)
+    populations: List[population] = field(factory=list)
+    explicitInputs: List[explicitInput] = field(factory=list)
 
 
 @modelspec.define
-class PulseGenerator(Base):
+class pulseGenerator(Base):
     """
     Some description...
 
@@ -71,7 +71,7 @@ class PulseGenerator(Base):
 
 
 @modelspec.define
-class Izhikevich2007Cell(Base):
+class izhikevich2007Cell(Base):
     """
     Some description...
 
@@ -107,16 +107,16 @@ class neuroML(Base):
     id: str = field(validator=instance_of(str))
     version: str = field(validator=instance_of(str))
 
-    izhikevich2007Cells: List[Izhikevich2007Cell] = field(factory=list)
-    pulseGenerators: List[PulseGenerator] = field(factory=list)
-    networks: List[Network] = field(factory=list)
+    izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
+    pulseGenerators: List[pulseGenerator] = field(factory=list)
+    networks: List[network] = field(factory=list)
 
 
 if __name__ == "__main__":
 
     nml_doc = neuroML(id="TestNeuroML", version="NeuroML_v2.3")
 
-    izh = Izhikevich2007Cell(
+    izh = izhikevich2007Cell(
         id="izh2007RS0",
         C="100pF",
         v0="-60mV",
@@ -131,16 +131,16 @@ if __name__ == "__main__":
     )
     nml_doc.izhikevich2007Cells.append(izh)
 
-    pg = PulseGenerator(
+    pg = pulseGenerator(
         id="pulseGen_0", delay="100ms", duration="800ms", amplitude="0.07 nA"
     )
     nml_doc.pulseGenerators.append(pg)
 
-    net = Network(id="IzNet")
+    net = network(id="IzNet")
     nml_doc.networks.append(net)
 
-    net.populations.append(Population("IzhPop0", component="izh2007RS0", size=1))
-    net.explicitInputs.append(ExplicitInput(target="IzhPop0[0]", input="pulseGen_0"))
+    net.populations.append(population("IzhPop0", component="izh2007RS0", size=1))
+    net.explicitInputs.append(explicitInput(target="IzhPop0[0]", input="pulseGen_0"))
 
     print(nml_doc)
     print(nml_doc.id)
