@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<Document id="MyBook" title="My life in Python" ISBN="None">
+    <Section id="Abstract">
+        <Paragraph contents="Blah blah blah"/>
+        <Paragraph contents="Blah2"/>
+    </Section>
+    <Section id="Chapter 1">
+        <Paragraph contents="More..."/>
+    </Section>
+</Document>
