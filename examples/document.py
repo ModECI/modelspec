@@ -2,7 +2,6 @@ import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from typing import List
-from modelspec.utils import save_to_xml_file
 
 # Example showing how to create a model of a document and use it to create/serialize instances
 

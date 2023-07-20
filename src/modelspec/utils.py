@@ -180,12 +180,8 @@ def save_to_xml_file(info_dict, filename, indent=4, root="modelspec"):
         indent (int, optional): The number of spaces used for indentation in the XML file.
                                 Defaults to 4.
     """
-    # root = ET.Element(root)
 
     root = build_xml_element(info_dict)
-
-    # Create an ElementTree object with the root element
-    # tree = ET.ElementTree(root)
 
     # Generate the XML string
     xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
