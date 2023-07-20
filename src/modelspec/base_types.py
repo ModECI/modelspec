@@ -3,7 +3,6 @@ import yaml
 import bson
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
-import xmltodict
 import sys
 
 import numpy as np
@@ -269,7 +268,6 @@ class Base:
         self,
         filename: Optional[str] = None,
         include_metadata: bool = True,
-        root_name="modelspec",
     ) -> str:
         from modelspec.utils import build_xml_element
 
@@ -378,7 +376,7 @@ class Base:
         from modelspec.utils import element_to_dict, handle_id, convert_values
 
         with open(filename) as infile:
-            tree = ET.parse(filename)
+            tree = ET.parse(infile)
             root = tree.getroot()
 
         data_dict = element_to_dict(root)
