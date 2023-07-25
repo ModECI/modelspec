@@ -12,7 +12,7 @@ from modelspec.base_types import EvaluableExpression
 from random import Random
 from typing import Union
 
-verbose = True
+verbose = False
 
 
 def load_json(filename: str):
