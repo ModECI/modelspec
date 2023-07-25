@@ -119,6 +119,10 @@ class Base:
         """
         Convert the data dictionary to an XML string representation using the ElementTree library.
         """
+        if sys.version_info < (3, 8):
+            raise Exception(
+                "XML export functionality is not available in Python 3.7 or lower"
+            )
         from modelspec.utils import build_xml_element
 
         # root = ET.Element("modelspec")
