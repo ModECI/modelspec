@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<NeuroML id="TestNeuroML" version="NeuroML_v2.3">
-    <Izhikevich2007Cell id="izh2007RS0" C="100pF" v0="-60mV" k="0.7nS_per_mV" vr="-60mV" vt="-40mV" vpeak="35mV" a="0.03per_ms" b="-2nS" c="-50.0mV" d="100pA"/>
-    <PulseGenerator id="pulseGen_0" delay="100ms" duration="800ms" amplitude="0.07 nA"/>
-    <Network id="IzNet">
-        <Population id="IzhPop0" component="izh2007RS0" size="1"/>
-        <ExplicitInput target="IzhPop0[0]" input="pulseGen_0"/>
-    </Network>
-</NeuroML>
+<neuroML id="TestNeuroML" version="NeuroML_v2.3">
+    <izhikevich2007Cell id="izh2007RS0" C="100pF" v0="-60mV" k="0.7nS_per_mV" vr="-60mV" vt="-40mV" vpeak="35mV" a="0.03per_ms" b="-2nS" c="-50.0mV" d="100pA"/>
+    <pulseGenerator id="pulseGen_0" delay="100ms" duration="800ms" amplitude="0.07 nA"/>
+    <network id="IzNet">
+        <population id="IzhPop0" component="izh2007RS0" size="1"/>
+        <explicitInput target="IzhPop0[0]" input="pulseGen_0"/>
+    </network>
+</neuroML>

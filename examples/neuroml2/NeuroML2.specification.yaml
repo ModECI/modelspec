@@ -1,23 +1,23 @@
-NeuroML:
+neuroML:
     definition: Some description...
     allowed_parameters:
         id:
             type: str
-            description: The id of the NeuroML 2 document
+            description: The id of the neuroML 2 document
         version:
             type: str
-            description: NeuroML version used
+            description: neuroML version used
     allowed_children:
         izhikevich2007Cells:
-            type: Izhikevich2007Cell
+            type: izhikevich2007Cell
             description: ''
         pulseGenerators:
-            type: PulseGenerator
+            type: pulseGenerator
             description: ''
         networks:
-            type: Network
+            type: network
             description: The networks present
-Izhikevich2007Cell:
+izhikevich2007Cell:
     definition: Some description...
     allowed_parameters:
         id:
@@ -53,7 +53,7 @@ Izhikevich2007Cell:
         d:
             type: str
             description: ''
-PulseGenerator:
+pulseGenerator:
     definition: Some description...
     allowed_parameters:
         id:
@@ -68,7 +68,7 @@ PulseGenerator:
         amplitude:
             type: str
             description: the amplitude
-Network:
+network:
     definition: Some description...
     allowed_parameters:
         id:
@@ -76,12 +76,12 @@ Network:
             description: The id of the network
     allowed_children:
         populations:
-            type: Population
+            type: population
             description: the pops in the net
         explicitInputs:
-            type: ExplicitInput
+            type: explicitInput
             description: ''
-Population:
+population:
     definition: Some description...
     allowed_parameters:
         id:
@@ -93,7 +93,7 @@ Population:
         size:
             type: int
             description: the size of the population
-ExplicitInput:
+explicitInput:
     definition: Some description...
     allowed_parameters:
         target:

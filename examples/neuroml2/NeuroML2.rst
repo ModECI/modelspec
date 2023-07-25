@@ -1,5 +1,5 @@
 =======
-NeuroML
+neuroML
 =======
 Some description...
 
@@ -8,8 +8,8 @@ Some description...
 ===============  ===========  ================================
 Allowed field    Data Type    Description
 ===============  ===========  ================================
-**id**           str          The id of the NeuroML 2 document
-**version**      str          NeuroML version used
+**id**           str          The id of the neuroML 2 document
+**version**      str          neuroML version used
 ===============  ===========  ================================
 
 **Allowed children**
@@ -17,13 +17,13 @@ Allowed field    Data Type    Description
 =======================  ============================================  ====================
 Allowed child            Data Type                                     Description
 =======================  ============================================  ====================
-**izhikevich2007Cells**  `Izhikevich2007Cell <#izhikevich2007cell>`__
-**pulseGenerators**      `PulseGenerator <#pulsegenerator>`__
-**networks**             `Network <#network>`__                        The networks present
+**izhikevich2007Cells**  `izhikevich2007Cell <#izhikevich2007cell>`__
+**pulseGenerators**      `pulseGenerator <#pulsegenerator>`__
+**networks**             `network <#network>`__                        The networks present
 =======================  ============================================  ====================
 
 ==================
-Izhikevich2007Cell
+izhikevich2007Cell
 ==================
 Some description...
 
@@ -46,7 +46,7 @@ Allowed field    Data Type    Description
 ===============  ===========  =====================
 
 ==============
-PulseGenerator
+pulseGenerator
 ==============
 Some description...
 
@@ -62,7 +62,7 @@ Allowed field    Data Type    Description
 ===============  ===========  ============================
 
 =======
-Network
+network
 =======
 Some description...
 
@@ -79,12 +79,12 @@ Allowed field    Data Type    Description
 ==================  ==================================  ===================
 Allowed child       Data Type                           Description
 ==================  ==================================  ===================
-**populations**     `Population <#population>`__        the pops in the net
-**explicitInputs**  `ExplicitInput <#explicitinput>`__
+**populations**     `population <#population>`__        the pops in the net
+**explicitInputs**  `explicitInput <#explicitinput>`__
 ==================  ==================================  ===================
 
 ==========
-Population
+population
 ==========
 Some description...
 
@@ -99,7 +99,7 @@ Allowed field    Data Type    Description
 ===============  ===========  ======================================
 
 =============
-ExplicitInput
+explicitInput
 =============
 Some description...
 

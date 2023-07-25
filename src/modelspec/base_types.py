@@ -3,7 +3,6 @@ import yaml
 import bson
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
-import xmltodict
 import sys
 
 import numpy as np
@@ -167,11 +166,14 @@ class Base:
     @classmethod
     def from_xml(cls, xml_str: str) -> "Base":
         """Instantiate a Base object from an XML string"""
-        from modelspec.utils import element_to_dict
+        from modelspec.utils import element_to_dict, handle_id, convert_values
 
         root = ET.fromstring(xml_str)
-        data_dict = {root.tag: element_to_dict(root)}
-        return cls.from_dict(data_dict)
+        data_dict = element_to_dict(root)
+        removed_id = handle_id(data_dict)
+        converted_to_actual_val = convert_values(removed_id)
+
+        return cls.from_dict(converted_to_actual_val)
 
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
@@ -266,19 +268,13 @@ class Base:
         self,
         filename: Optional[str] = None,
         include_metadata: bool = True,
-        root_name="modelspec",
     ) -> str:
         from modelspec.utils import build_xml_element
 
         if filename is None:
             filename = f"{self.id}.xml"
 
-        # root = ET.Element(root_name)
-
         root = build_xml_element(self)
-
-        # Create an ElementTree object with the root element
-        # tree = ET.ElementTree(root)
 
         # Generate the XML string
         xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
@@ -377,14 +373,16 @@ class Base:
         Returns:
             A modelspec Base for this XML.
         """
-        from modelspec.utils import element_to_dict
+        from modelspec.utils import element_to_dict, handle_id, convert_values
 
         with open(filename) as infile:
-            tree = ET.parse(filename)
+            tree = ET.parse(infile)
             root = tree.getroot()
 
-        data_dict = {root.tag: element_to_dict(root)}
-        return cls.from_dict(data_dict)
+        data_dict = element_to_dict(root)
+        removed_id = handle_id(data_dict)
+        converted_to_actual_val = convert_values(removed_id)
+        return cls.from_dict(converted_to_actual_val)
 
     def get_child(self, id: str, type_: str) -> Any:
         """
