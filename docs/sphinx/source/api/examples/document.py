@@ -2,6 +2,7 @@ import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from typing import List
+import sys
 
 # Example showing how to create a model of a document and use it to create/serialize instances
 
@@ -69,13 +70,16 @@ print(doc.sections[0].paragraphs[1].__getattribute__("contents"))
 
 doc.to_json_file("document.json")
 doc.to_yaml_file("document.yaml")
-doc.to_bson_file("document.bson")
-doc.to_xml_file("document.xml")
-
 print(" >> Full document details in YAML format:\n")
-
 print(doc.to_yaml())
-print(doc.to_xml())
+
+doc.to_bson_file("document.bson")
+
+if sys.version_info >= (3, 8):
+    doc.to_xml_file("document.xml")
+    print(" >> Full document details in XML format:\n")
+    print(doc.to_xml())
+
 
 doc_md = doc.generate_documentation(format="markdown")
 
