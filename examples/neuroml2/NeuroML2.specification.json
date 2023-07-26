@@ -1,32 +1,32 @@
 {
-    "NeuroML": {
+    "neuroml": {
         "definition": "Some description...",
         "allowed_parameters": {
             "id": {
                 "type": "str",
                 "description": "The id of the NeuroML 2 document"
             },
-            "version": {
+            "xmlns": {
                 "type": "str",
-                "description": "NeuroML version used"
+                "description": "Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2"
             }
         },
         "allowed_children": {
             "izhikevich2007Cells": {
-                "type": "Izhikevich2007Cell",
+                "type": "izhikevich2007Cell",
                 "description": ""
             },
             "pulseGenerators": {
-                "type": "PulseGenerator",
+                "type": "pulseGenerator",
                 "description": ""
             },
             "networks": {
-                "type": "Network",
+                "type": "network",
                 "description": "The networks present"
             }
         }
     },
-    "Izhikevich2007Cell": {
+    "izhikevich2007Cell": {
         "definition": "Some description...",
         "allowed_parameters": {
             "id": {
@@ -75,7 +75,7 @@
             }
         }
     },
-    "PulseGenerator": {
+    "pulseGenerator": {
         "definition": "Some description...",
         "allowed_parameters": {
             "id": {
@@ -96,7 +96,7 @@
             }
         }
     },
-    "Network": {
+    "network": {
         "definition": "Some description...",
         "allowed_parameters": {
             "id": {
@@ -106,16 +106,16 @@
         },
         "allowed_children": {
             "populations": {
-                "type": "Population",
+                "type": "population",
                 "description": "the pops in the net"
             },
             "explicitInputs": {
-                "type": "ExplicitInput",
+                "type": "explicitInput",
                 "description": ""
             }
         }
     },
-    "Population": {
+    "population": {
         "definition": "Some description...",
         "allowed_parameters": {
             "id": {
@@ -132,7 +132,7 @@
             }
         }
     },
-    "ExplicitInput": {
+    "explicitInput": {
         "definition": "Some description...",
         "allowed_parameters": {
             "target": {

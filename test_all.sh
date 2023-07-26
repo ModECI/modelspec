@@ -20,6 +20,10 @@ python test.py
 cd ../neuroml2
 python neuroml2_spec.py
 
+# Requires: pip install pyneuroml
+pynml -validate hello_world_neuroml.net.nml
+pynml -validate TestNeuroML.xml
+
 cd ../..
 
 

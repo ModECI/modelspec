@@ -1,4 +1,4 @@
-## NeuroML
+## neuroml
 Some description...
 
 ### Allowed parameters
@@ -11,9 +11,9 @@ Some description...
 
 
   <tr>
-    <td><b>version</b></td>
+    <td><b>xmlns</b></td>
     <td>str</td>
-    <td><i>NeuroML version used</i></td>
+    <td><i>Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2</i></td>
  </tr>
 
 
@@ -23,28 +23,28 @@ Some description...
 <table>
   <tr>
     <td><b>izhikevich2007Cells</b></td>
-    <td><a href="#izhikevich2007cell">Izhikevich2007Cell</a></td>
+    <td><a href="#izhikevich2007cell">izhikevich2007Cell</a></td>
     <td><i></i></td>
   </tr>
 
 
   <tr>
     <td><b>pulseGenerators</b></td>
-    <td><a href="#pulsegenerator">PulseGenerator</a></td>
+    <td><a href="#pulsegenerator">pulseGenerator</a></td>
     <td><i></i></td>
   </tr>
 
 
   <tr>
     <td><b>networks</b></td>
-    <td><a href="#network">Network</a></td>
+    <td><a href="#network">network</a></td>
     <td><i>The networks present</i></td>
   </tr>
 
 
 </table>
 
-## Izhikevich2007Cell
+## izhikevich2007Cell
 Some description...
 
 ### Allowed parameters
@@ -128,7 +128,7 @@ Some description...
 
 </table>
 
-## PulseGenerator
+## pulseGenerator
 Some description...
 
 ### Allowed parameters
@@ -163,7 +163,7 @@ Some description...
 
 </table>
 
-## Network
+## network
 Some description...
 
 ### Allowed parameters
@@ -181,21 +181,21 @@ Some description...
 <table>
   <tr>
     <td><b>populations</b></td>
-    <td><a href="#population">Population</a></td>
+    <td><a href="#population">population</a></td>
     <td><i>the pops in the net</i></td>
   </tr>
 
 
   <tr>
     <td><b>explicitInputs</b></td>
-    <td><a href="#explicitinput">ExplicitInput</a></td>
+    <td><a href="#explicitinput">explicitInput</a></td>
     <td><i></i></td>
   </tr>
 
 
 </table>
 
-## Population
+## population
 Some description...
 
 ### Allowed parameters
@@ -223,7 +223,7 @@ Some description...
 
 </table>
 
-## ExplicitInput
+## explicitInput
 Some description...
 
 ### Allowed parameters
