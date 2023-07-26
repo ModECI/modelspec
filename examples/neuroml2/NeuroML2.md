@@ -1,4 +1,4 @@
-## neuroML
+## neuroml
 Some description...
 
 ### Allowed parameters
@@ -6,14 +6,14 @@ Some description...
   <tr>
     <td><b>id</b></td>
     <td>str</td>
-    <td><i>The id of the neuroML 2 document</i></td>
+    <td><i>The id of the NeuroML 2 document</i></td>
  </tr>
 
 
   <tr>
-    <td><b>version</b></td>
+    <td><b>xmlns</b></td>
     <td>str</td>
-    <td><i>neuroML version used</i></td>
+    <td><i>Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2</i></td>
  </tr>
 
 
