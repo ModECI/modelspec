@@ -1,14 +1,14 @@
 {
-    "neuroML": {
+    "neuroml": {
         "definition": "Some description...",
         "allowed_parameters": {
             "id": {
                 "type": "str",
-                "description": "The id of the neuroML 2 document"
+                "description": "The id of the NeuroML 2 document"
             },
-            "version": {
+            "xmlns": {
                 "type": "str",
-                "description": "neuroML version used"
+                "description": "Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2"
             }
         },
         "allowed_children": {

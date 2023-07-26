@@ -1,16 +1,16 @@
 =======
-neuroML
+neuroml
 =======
 Some description...
 
 **Allowed parameters**
 
-===============  ===========  ================================
+===============  ===========  ====================================================================
 Allowed field    Data Type    Description
-===============  ===========  ================================
-**id**           str          The id of the neuroML 2 document
-**version**      str          neuroML version used
-===============  ===========  ================================
+===============  ===========  ====================================================================
+**id**           str          The id of the NeuroML 2 document
+**xmlns**        str          Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2
+===============  ===========  ====================================================================
 
 **Allowed children**
 

@@ -95,18 +95,20 @@ class izhikevich2007Cell(Base):
 
 
 @modelspec.define
-class neuroML(Base):
+class neuroml(Base):
     """
     Some description...
 
     Args:
-        id: The id of the neuroML 2 document
-        version: neuroML version used
+        id: The id of the NeuroML 2 document
+        xmlns: Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2
         networks: The networks present
     """
 
     id: str = field(validator=instance_of(str))
-    version: str = field(validator=instance_of(str))
+    xmlns: str = field(
+        validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
+    )
 
     izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
     pulseGenerators: List[pulseGenerator] = field(factory=list)
@@ -115,7 +117,7 @@ class neuroML(Base):
 
 if __name__ == "__main__":
 
-    nml_doc = neuroML(id="TestNeuroML", version="NeuroML_v2.3")
+    nml_doc = neuroml(id="TestNeuroML")
 
     izh = izhikevich2007Cell(
         id="izh2007RS0",
