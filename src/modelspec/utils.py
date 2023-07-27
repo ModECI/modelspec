@@ -94,16 +94,21 @@ def element_to_dict(element):
     if attrs:
         result.update(attrs)
 
+    children_by_tag = {}
     for child_element in element:
-        child_key = child_element.tag
+        child_key = child_element.tag + "s"
         child_value = element_to_dict(child_element)
 
-        if child_key in result:
-            if not isinstance(result[child_key], list):
-                result[child_key] = [result[child_key]]
-            result[child_key].append(child_value)
-        else:
+        # Check if the child element has an 'id' attribute
+        if "id" in child_element.attrib:
+            # If the child element has an 'id', add it to the result dictionary directly
             result[child_key] = child_value
+        else:
+            # If the child element does not have an 'id', represent it as a list
+            children_by_tag.setdefault(child_key, []).append(child_value)
+
+    # Append the lists to the result dictionary
+    result.update(children_by_tag)
 
     return result
 
