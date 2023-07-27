@@ -1,6 +1,8 @@
 import json
 import yaml
 import bson
+import xml.etree.ElementTree as ET
+import xml.dom.minidom
 import sys
 
 import numpy as np
@@ -113,6 +115,27 @@ class Base:
         """
         return bson.encode(self.to_dict())
 
+    def to_xml(self) -> str:
+        """
+        Convert the data dictionary to an XML string representation using the ElementTree library.
+        """
+        if sys.version_info < (3, 8):
+            raise Exception(
+                "XML export functionality is not available in Python 3.7 or lower"
+            )
+        from modelspec.utils import build_xml_element
+
+        # root = ET.Element("modelspec")
+        root = build_xml_element(self)
+
+        xml_string = ET.tostring(
+            root, encoding="utf-8", xml_declaration=False, method="xml"
+        ).decode("utf-8")
+
+        parsed_xml = xml.dom.minidom.parseString(xml_string)
+        pretty_xml = parsed_xml.toprettyxml(indent=" " * 4)
+        return pretty_xml
+
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> "Base":
         """Instantiate an Base object from a dictionary"""
@@ -143,6 +166,18 @@ class Base:
     def from_bson(cls, bson_str: str) -> "Base":
         """Instantiate an modelspec object from a BSON string"""
         return cls.from_dict(bson.decode(bson_str))
+
+    @classmethod
+    def from_xml(cls, xml_str: str) -> "Base":
+        """Instantiate a Base object from an XML string"""
+        from modelspec.utils import element_to_dict, handle_id, convert_values
+
+        root = ET.fromstring(xml_str)
+        data_dict = element_to_dict(root)
+        removed_id = handle_id(data_dict)
+        converted_to_actual_val = convert_values(removed_id)
+
+        return cls.from_dict(converted_to_actual_val)
 
     def to_json_file(
         self, filename: Optional[str] = None, include_metadata: bool = True
@@ -233,6 +268,31 @@ class Base:
 
         return filename
 
+    def to_xml_file(
+        self,
+        filename: Optional[str] = None,
+        include_metadata: bool = True,
+    ) -> str:
+        from modelspec.utils import build_xml_element
+
+        if filename is None:
+            filename = f"{self.id}.xml"
+
+        root = build_xml_element(self)
+
+        # Generate the XML string
+        xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
+
+        # Create a pretty-formatted XML string using minidom
+        parsed_xml = xml.dom.minidom.parseString(xml_str)
+        pretty_xml_str = parsed_xml.toprettyxml(indent=" " * 4)
+
+        # Write the XML data to the file
+        with open(filename, "w", encoding="utf-8") as file:
+            file.write(pretty_xml_str)
+
+        return filename
+
     @classmethod
     def from_file(cls, filename: str) -> "Base":
         """
@@ -251,6 +311,8 @@ class Base:
             return cls.from_json_file(filename)
         elif filename.endswith(".bson"):
             return cls.from_bson_file(filename)
+        elif filename.endswith(".xml"):
+            return cls.from_xml_file(filename)
         else:
             raise ValueError(
                 f"Cannot auto-detect modelspec serialization format from filename ({filename}). The filename "
@@ -303,6 +365,28 @@ class Base:
             d = yaml.safe_load(infile)
             d = yaml_converter.structure(d, Dict)
             return cls.from_dict(d)
+
+    @classmethod
+    def from_xml_file(cls, filename: str) -> "Base":
+        """
+        Create a Base from its XML representation stored in a file.
+
+        Args:
+            filename: The file from which to load the XML data.
+
+        Returns:
+            A modelspec Base for this XML.
+        """
+        from modelspec.utils import element_to_dict, handle_id, convert_values
+
+        with open(filename) as infile:
+            tree = ET.parse(infile)
+            root = tree.getroot()
+
+        data_dict = element_to_dict(root)
+        removed_id = handle_id(data_dict)
+        converted_to_actual_val = convert_values(removed_id)
+        return cls.from_dict(converted_to_actual_val)
 
     def get_child(self, id: str, type_: str) -> Any:
         """

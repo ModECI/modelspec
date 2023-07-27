@@ -80,6 +80,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/sphinx/source/api/_autosummary
 
 # PyBuilder
 .pybuilder/

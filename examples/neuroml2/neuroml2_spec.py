@@ -2,12 +2,13 @@ import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from typing import List
+import sys
 
 # Example showing ...
 
 
 @modelspec.define
-class Population(Base):
+class population(Base):
     """
     Some description...
 
@@ -23,7 +24,21 @@ class Population(Base):
 
 
 @modelspec.define
-class Network(Base):
+class explicitInput(Base):
+    """
+    Some description...
+
+    Args:
+        target: the target of the input
+        input: the input, e.g. pulseGenerator
+    """
+
+    target: str = field(default=None, validator=optional(instance_of(str)))
+    input: str = field(default=None, validator=optional(instance_of(str)))
+
+
+@modelspec.define
+class network(Base):
     """
     Some description...
 
@@ -34,45 +49,118 @@ class Network(Base):
 
     id: str = field(validator=instance_of(str))
 
-    populations: List[Population] = field(factory=list)
+    populations: List[population] = field(factory=list)
+    explicitInputs: List[explicitInput] = field(factory=list)
 
 
 @modelspec.define
-class NeuroML(Base):
+class pulseGenerator(Base):
+    """
+    Some description...
+
+    Args:
+        id: The id of the pulseGenerator
+        delay: the delay
+        duration: the duration
+        amplitude: the amplitude
+    """
+
+    id: str = field(validator=instance_of(str))
+    delay: str = field(validator=instance_of(str))
+    duration: str = field(validator=instance_of(str))
+    amplitude: str = field(validator=instance_of(str))
+
+
+@modelspec.define
+class izhikevich2007Cell(Base):
+    """
+    Some description...
+
+    Args:
+        id: The id of the cell...
+    """
+
+    id: str = field(validator=instance_of(str))
+
+    C: str = field(validator=instance_of(str))
+    v0: str = field(validator=instance_of(str))
+    k: str = field(validator=instance_of(str))
+    vr: str = field(validator=instance_of(str))
+    vt: str = field(validator=instance_of(str))
+    vpeak: str = field(validator=instance_of(str))
+    a: str = field(validator=instance_of(str))
+    b: str = field(validator=instance_of(str))
+    c: str = field(validator=instance_of(str))
+    d: str = field(validator=instance_of(str))
+
+
+@modelspec.define
+class neuroml(Base):
     """
     Some description...
 
     Args:
         id: The id of the NeuroML 2 document
-        version: NeuroML version used
+        xmlns: Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2
         networks: The networks present
     """
 
     id: str = field(validator=instance_of(str))
-    version: str = field(validator=instance_of(str))
+    xmlns: str = field(
+        validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
+    )
 
-    networks: List[Network] = field(factory=list)
+    izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
+    pulseGenerators: List[pulseGenerator] = field(factory=list)
+    networks: List[network] = field(factory=list)
 
 
 if __name__ == "__main__":
 
-    nml_doc = NeuroML(id="TestNeuroML", version="NeuroML_v2.3")
-    net = Network(id="net0")
+    nml_doc = neuroml(id="TestNeuroML")
+
+    izh = izhikevich2007Cell(
+        id="izh2007RS0",
+        C="100pF",
+        v0="-60mV",
+        k="0.7nS_per_mV",
+        vr="-60mV",
+        vt="-40mV",
+        vpeak="35mV",
+        a="0.03per_ms",
+        b="-2nS",
+        c="-50.0mV",
+        d="100pA",
+    )
+    nml_doc.izhikevich2007Cells.append(izh)
+
+    pg = pulseGenerator(
+        id="pulseGen_0", delay="100ms", duration="800ms", amplitude="0.07 nA"
+    )
+    nml_doc.pulseGenerators.append(pg)
+
+    net = network(id="IzNet")
     nml_doc.networks.append(net)
 
-    net.populations.append(Population("pop0", component="izh2007RS0", size=1))
+    net.populations.append(population("IzhPop0", component="izh2007RS0", size=1))
+    net.explicitInputs.append(explicitInput(target="IzhPop0[0]", input="pulseGen_0"))
 
     print(nml_doc)
     print(nml_doc.id)
 
     nml_doc.to_json_file("%s.json" % nml_doc.id)
     nml_doc.to_yaml_file("%s.yaml" % nml_doc.id)
-    nml_doc.to_bson_file("%s.bson" % nml_doc.id)
-    # nml_doc.to_xml_file("%s.xml"%nml_doc.id)
-
     print(" >> Full document details in YAML format:\n")
-
     print(nml_doc.to_yaml())
+
+    nml_doc.to_bson_file("%s.bson" % nml_doc.id)
+
+    if sys.version_info >= (3, 8):
+        nml_doc.to_xml_file("%s.xml" % nml_doc.id)
+        print(" >> Full document details in XML format:\n")
+        print(nml_doc.to_xml())
+
+    print("Generating documentation...")
 
     doc_md = nml_doc.generate_documentation(format="markdown")
 
