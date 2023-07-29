@@ -109,6 +109,15 @@ class neuroml(Base):
     xmlns: str = field(
         validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
     )
+    xmlns_url: str = field(
+        validator=instance_of(str), default="http://www.w3.org/2001/XMLSchema-instance"
+    )
+    xmlns_loc: str = field(
+        validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
+    )
+    xmln_loc_2: str = field(
+        validator=instance_of(str), default="https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"
+    )
 
     izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
     pulseGenerators: List[pulseGenerator] = field(factory=list)
@@ -187,3 +196,7 @@ if __name__ == "__main__":
         yy = yaml.dump(doc_dict, indent=4, sort_keys=False)
         print(yy)
         d.write(yy)
+
+    from modelspec.utils import load_xml
+    new_neuroml = load_xml('hello_world_neuroml.net.nml')
+    print(new_neuroml)
