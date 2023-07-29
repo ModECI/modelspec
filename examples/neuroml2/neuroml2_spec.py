@@ -116,7 +116,8 @@ class neuroml(Base):
         validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
     )
     xmln_loc_2: str = field(
-        validator=instance_of(str), default="https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"
+        validator=instance_of(str),
+        default="https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd",
     )
 
     izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
@@ -198,5 +199,6 @@ if __name__ == "__main__":
         d.write(yy)
 
     from modelspec.utils import load_xml
-    new_neuroml = load_xml('hello_world_neuroml.net.nml')
+
+    new_neuroml = load_xml("hello_world_neuroml.net.nml")
     print(new_neuroml)
