@@ -72,7 +72,10 @@ def load_xml(filename: str):
         root = tree.getroot()  # Get the root element
 
     # Convert the ElementTree object to a dictionary
-    data = element_to_dict(root)
+    xml_string = ET.tostring(root).decode().replace('ns0:', '').replace(':ns0', '').strip()
+
+    removed_namespaces = process_xml_namespace(xml_string)
+    data = element_to_dict(removed_namespaces)
     removed_id = handle_id(data)
     converted_to_actual_val = convert_values(removed_id)
 
@@ -96,11 +99,11 @@ def element_to_dict(element):
 
     children_by_tag = {}
     for child_element in element:
-        child_key = child_element.tag + "s"
+        child_key = child_element.tag + 's'
         child_value = element_to_dict(child_element)
 
         # Check if the child element has an 'id' attribute
-        if "id" in child_element.attrib:
+        if 'id' in child_element.attrib:
             # If the child element has an 'id', add it to the result dictionary directly
             result[child_key] = child_value
         else:
@@ -111,6 +114,21 @@ def element_to_dict(element):
     result.update(children_by_tag)
 
     return result
+
+
+def process_xml_namespace(xml_string):
+    # Remove ignored elements from the XML string
+    ignored_elements = [
+        'xmlns="http://www.neuroml.org/schema/neuroml2"',
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+        'xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"'
+    ]
+    for ignored_element in ignored_elements:
+        xml_string = xml_string.replace(ignored_element, '').strip()
+
+    # Parse the XML string into an ElementTree
+    root = ET.fromstring(xml_string)
+    return root
 
 
 def handle_id(dictionary):
@@ -224,12 +242,20 @@ def build_xml_element(data, parent=None):
             for child in children:
                 child_element = build_xml_element(child)
                 parent.append(child_element)
-        else:
+        elif not any(hasattr(data, attr_name) for attr_name in ["xmlns", "xmlns_url", "xmlns_loc", "xmln_loc_2"]):
             attribute_name = aattr.name
             attribute_value = data.__getattribute__(aattr.name)
             parent.set(attribute_name, str(attribute_value))
 
+    if hasattr(data, "xmlns"):
+        parent.set("xmlns", data.xmlns)
+    if hasattr(data, "xmlns_url"):
+        parent.set("xmlns:xsi", data.xmlns_url)
+    if hasattr(data, "xmlns_loc"):
+        parent.set("xsi:schemaLocation", str(data.xmlns_loc + '\n' + data.xmln_loc_2))
+
     return parent
+
 
 
 def ascii_encode_dict(data):
