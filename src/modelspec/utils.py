@@ -251,11 +251,9 @@ def build_xml_element(data, parent=None):
         parent = ET.Element(data.__class__.__name__)
 
     attrs = attr.fields(data.__class__)
-    id_attribute_value = (
-        None  # Store id attribute value to be set after other attributes
-    )
+    id_attribute_value = None  # Store id attribute value to be set after other attributes
     for aattr in attrs:
-        if aattr.name == "id":
+        if aattr.name == 'id':
             id_attribute_value = data.__getattribute__(aattr.name)
         elif isinstance(aattr.default, attr.Factory):
             children = data.__getattribute__(aattr.name)
@@ -265,7 +263,7 @@ def build_xml_element(data, parent=None):
             for child in children:
                 child_element = build_xml_element(child)
                 parent.append(child_element)
-
+        
         # Filters name space and schemaLoacation attributes, only allows non name space attributes to added as attributes
         elif not any(
             hasattr(data, attr_name)
@@ -274,21 +272,20 @@ def build_xml_element(data, parent=None):
             attribute_name = aattr.name
             attribute_value = data.__getattribute__(aattr.name)
             parent.set(attribute_name, str(attribute_value))
-
+    
     # This defines the various namespaces and schemaLocation of the generated xml
     if hasattr(data, "xmlns"):
         parent.set("xmlns", data.xmlns)
     if hasattr(data, "xmlns_url"):
         parent.set("xmlns:xsi", data.xmlns_url)
     if hasattr(data, "xmlns_loc"):
-        parent.set("xsi:schemaLocation", str(data.xmlns_loc + "\n" + data.xmln_loc_2))
+        parent.set("xsi:schemaLocation", str(data.xmlns_loc + " " + data.xmln_loc_2))
 
     # Set the id attribute after processing all other attributes
     if id_attribute_value is not None:
         parent.set("id", str(id_attribute_value))
 
     return parent
-
 
 def ascii_encode_dict(data):
     ascii_encode = (
