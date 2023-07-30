@@ -67,18 +67,25 @@ def load_xml(filename: str):
     Args:
         filename: The name of the XML file to load.
     """
+    import re
+
     with open(filename, "rb") as infile:
         tree = ET.parse(infile)  # Parse the XML file into an ElementTree object
         root = tree.getroot()  # Get the root element
 
-    # Converts the loaded xml into a string and removes unwanted string values ':ns0' and 'ns0:'
+    # This defines regular expressions to match the namespace patterns to be removed
+    ns_prefix_pattern = r"(ns\d+:|:ns\d+)"
+
+    # Converts the loaded xml into a string and removes unwanted string values ':ns0' to :ns∞ and 'ns0:' to ns∞:
     # They prevent the xml from loading correctly
-    xml_string = ET.tostring(root).decode().replace('ns0:', '').replace(':ns0', '').strip()
+    xml_string = ET.tostring(root).decode()
+    cleaned_xml = re.sub(ns_prefix_pattern, "", xml_string).strip()
 
     # Removes xmlns, xmlns:xsi and xsi:schemaLocation from the xml structure for conversion
-    removed_namespaces = process_xml_namespace(xml_string)
+    # it passes an element tree object to the element_to_dict function
+    removed_namespaces = process_xml_namespace(cleaned_xml)
 
-    # Converts the resulting xml stripped of  xmlns, xmlns:xsi and xsi:schemaLocation into a dict
+    # Converts the resulting xml stripped of xmlns, xmlns:xsi and xsi:schemaLocation into a dict
     data = element_to_dict(removed_namespaces)
 
     # Removes every key having 'id' and replaces it with it's value
@@ -107,11 +114,11 @@ def element_to_dict(element):
 
     children_by_tag = {}
     for child_element in element:
-        child_key = child_element.tag + 's'
+        child_key = child_element.tag + "s"
         child_value = element_to_dict(child_element)
 
         # Check if the child element has an 'id' attribute
-        if 'id' in child_element.attrib:
+        if "id" in child_element.attrib:
             # If the child element has an 'id', add it to the result dictionary directly
             result[child_key] = child_value
         else:
@@ -129,12 +136,12 @@ def process_xml_namespace(xml_string):
     ignored_elements = [
         'xmlns="http://www.neuroml.org/schema/neuroml2"',
         'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
-        'xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"'
+        'xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"',
     ]
 
     # Loops through the xml string and removes every instance of the elements in the list named ignored_elements
     for ignored_element in ignored_elements:
-        xml_string = xml_string.replace(ignored_element, '').strip()
+        xml_string = xml_string.replace(ignored_element, "").strip()
 
     # Parse the XML string into an ElementTree
     root = ET.fromstring(xml_string)
@@ -254,21 +261,25 @@ def build_xml_element(data, parent=None):
             for child in children:
                 child_element = build_xml_element(child)
                 parent.append(child_element)
-        elif not any(hasattr(data, attr_name) for attr_name in ["xmlns", "xmlns_url", "xmlns_loc", "xmln_loc_2"]):
+
+        # Filters name space and schemaLoacation attributes, only allows non name space attributes to added as attributes
+        elif not any(
+            hasattr(data, attr_name)
+            for attr_name in ["xmlns", "xmlns_url", "xmlns_loc", "xmln_loc_2"]
+        ):
             attribute_name = aattr.name
             attribute_value = data.__getattribute__(aattr.name)
             parent.set(attribute_name, str(attribute_value))
-    
+
     # This defines the various namespaces and schemaLocation of the generated xml
     if hasattr(data, "xmlns"):
         parent.set("xmlns", data.xmlns)
     if hasattr(data, "xmlns_url"):
         parent.set("xmlns:xsi", data.xmlns_url)
     if hasattr(data, "xmlns_loc"):
-        parent.set("xsi:schemaLocation", str(data.xmlns_loc + '\n' + data.xmln_loc_2))
+        parent.set("xsi:schemaLocation", str(data.xmlns_loc + "\n" + data.xmln_loc_2))
 
     return parent
-
 
 
 def ascii_encode_dict(data):

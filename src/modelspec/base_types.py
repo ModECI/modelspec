@@ -125,7 +125,6 @@ class Base:
             )
         from modelspec.utils import build_xml_element
 
-        # root = ET.Element("modelspec")
         root = build_xml_element(self)
 
         xml_string = ET.tostring(
