@@ -247,13 +247,17 @@ def build_xml_element(data, parent=None):
         Parent
     """
 
-    # If a parent name isn't given, it extracts the name from the class and use that instead
     if parent is None:
         parent = ET.Element(data.__class__.__name__)
 
     attrs = attr.fields(data.__class__)
+    id_attribute_value = (
+        None  # Store id attribute value to be set after other attributes
+    )
     for aattr in attrs:
-        if isinstance(aattr.default, attr.Factory):
+        if aattr.name == "id":
+            id_attribute_value = data.__getattribute__(aattr.name)
+        elif isinstance(aattr.default, attr.Factory):
             children = data.__getattribute__(aattr.name)
             if not isinstance(children, (list, tuple)):
                 children = [children]
@@ -278,6 +282,10 @@ def build_xml_element(data, parent=None):
         parent.set("xmlns:xsi", data.xmlns_url)
     if hasattr(data, "xmlns_loc"):
         parent.set("xsi:schemaLocation", str(data.xmlns_loc + "\n" + data.xmln_loc_2))
+
+    # Set the id attribute after processing all other attributes
+    if id_attribute_value is not None:
+        parent.set("id", str(id_attribute_value))
 
     return parent
 
