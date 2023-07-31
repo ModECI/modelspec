@@ -82,22 +82,22 @@ def load_xml(filename: str):
     cleaned_xml = re.sub(ns_prefix_pattern, "", xml_string).strip()
 
     # Removes xmlns, xmlns:xsi and xsi:schemaLocation from the xml structure for conversion
-    # it passes an element tree object to the element_to_dict function
+    # it passes an element tree object to the elementtree_element_to_dict function
     removed_namespaces = process_xml_namespace(cleaned_xml)
 
     # Converts the resulting xml stripped of xmlns, xmlns:xsi and xsi:schemaLocation into a dict
-    data = element_to_dict(removed_namespaces)
+    data = elementtree_element_to_dict(removed_namespaces)
 
     # Removes every key having 'id' and replaces it with it's value
-    removed_id = handle_id(data)
+    removed_id = handle_xml_dict_id(data)
 
     # Values are returned as strings after conversion, this corrects them to their actual values
-    converted_to_actual_val = convert_values(removed_id)
+    converted_to_actual_val = convert_xml_dict_values(removed_id)
 
-    return convert_values(converted_to_actual_val)
+    return convert_xml_dict_values(converted_to_actual_val)
 
 
-def element_to_dict(element):
+def elementtree_element_to_dict(element):
     """
     This convert an ElementTree element to a dictionary.
 
@@ -115,7 +115,7 @@ def element_to_dict(element):
     children_by_tag = {}
     for child_element in element:
         child_key = child_element.tag + "s"
-        child_value = element_to_dict(child_element)
+        child_value = elementtree_element_to_dict(child_element)
 
         # Check if the child element has an 'id' attribute
         if "id" in child_element.attrib:
@@ -148,21 +148,21 @@ def process_xml_namespace(xml_string):
     return root
 
 
-def handle_id(dictionary):
+def handle_xml_dict_id(dictionary):
     if isinstance(dictionary, dict):
         if "id" in dictionary:
             nested_dict = {dictionary["id"]: dictionary.copy()}
             del nested_dict[dictionary["id"]]["id"]
-            return {k: handle_id(v) for k, v in nested_dict.items()}
+            return {k: handle_xml_dict_id(v) for k, v in nested_dict.items()}
         else:
-            return {k: handle_id(v) for k, v in dictionary.items()}
+            return {k: handle_xml_dict_id(v) for k, v in dictionary.items()}
     elif isinstance(dictionary, list):
-        return [handle_id(item) for item in dictionary]
+        return [handle_xml_dict_id(item) for item in dictionary]
     else:
         return dictionary
 
 
-def convert_values(value):
+def convert_xml_dict_values(value):
     """
     This recursively converts values to their actual types.
 
@@ -186,9 +186,9 @@ def convert_values(value):
         elif value.lower() == "none":
             return None
     elif isinstance(value, dict):
-        return {key: convert_values(val) for key, val in value.items()}
+        return {key: convert_xml_dict_values(val) for key, val in value.items()}
     elif isinstance(value, list):
-        return [convert_values(item) for item in value]
+        return [convert_xml_dict_values(item) for item in value]
 
     return value
 
@@ -246,16 +246,12 @@ def build_xml_element(data, parent=None):
     Returns:
         Parent
     """
-
     if parent is None:
         parent = ET.Element(data.__class__.__name__)
 
     attrs = attr.fields(data.__class__)
-    id_attribute_value = None  # Store id attribute value to be set after other attributes
     for aattr in attrs:
-        if aattr.name == 'id':
-            id_attribute_value = data.__getattribute__(aattr.name)
-        elif isinstance(aattr.default, attr.Factory):
+        if isinstance(aattr.default, attr.Factory):
             children = data.__getattribute__(aattr.name)
             if not isinstance(children, (list, tuple)):
                 children = [children]
@@ -263,16 +259,13 @@ def build_xml_element(data, parent=None):
             for child in children:
                 child_element = build_xml_element(child)
                 parent.append(child_element)
-        
-        # Filters name space and schemaLoacation attributes, only allows non name space attributes to added as attributes
-        elif not any(
-            hasattr(data, attr_name)
-            for attr_name in ["xmlns", "xmlns_url", "xmlns_loc", "xmln_loc_2"]
-        ):
+
+        # Filters name space and schemaLoacation attributes, only allows non name space attributes to be added as attributes
+        elif aattr.name not in ["xmlns", "xmlns_url", "xmlns_loc", "xmln_loc_2"]:
             attribute_name = aattr.name
             attribute_value = data.__getattribute__(aattr.name)
             parent.set(attribute_name, str(attribute_value))
-    
+
     # This defines the various namespaces and schemaLocation of the generated xml
     if hasattr(data, "xmlns"):
         parent.set("xmlns", data.xmlns)
@@ -280,12 +273,8 @@ def build_xml_element(data, parent=None):
         parent.set("xmlns:xsi", data.xmlns_url)
     if hasattr(data, "xmlns_loc"):
         parent.set("xsi:schemaLocation", str(data.xmlns_loc + " " + data.xmln_loc_2))
-
-    # Set the id attribute after processing all other attributes
-    if id_attribute_value is not None:
-        parent.set("id", str(id_attribute_value))
-
     return parent
+
 
 def ascii_encode_dict(data):
     ascii_encode = (

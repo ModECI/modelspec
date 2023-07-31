@@ -170,15 +170,15 @@ class Base:
     def from_xml(cls, xml_str: str) -> "Base":
         """Instantiate a Base object from an XML string"""
         from modelspec.utils import (
-            element_to_dict,
-            handle_id,
-            convert_values,
+            elementtree_element_to_dict,
+            handle_xml_dict_id,
+            convert_xml_dict_values,
             process_xml_namespace,
         )
         import re
 
         # When the to_xml() method is used it messes up the string therefore,
-        # it is necessary to convert it into an elementree object the decode into a string.
+        # it is necessary to convert it into an elementree object then decode into a string.
         xml_string_a = ET.fromstring(xml_str)
         xml_string_b = ET.tostring(xml_string_a).decode()
 
@@ -192,15 +192,15 @@ class Base:
         # be removed when converting to a dict, the process_xml_namespaes function does just that.
         removed_namespaces = process_xml_namespace(cleaned_xml)
 
-        # process_xml_namespace function returns an elementtree object which can be directly worked upon by the element_to_dict
+        # process_xml_namespace function returns an elementtree object which can be directly worked upon by the elementtree_element_to_dict
         # function, this returns a python dictionary
-        data_dict = element_to_dict(removed_namespaces)
+        data_dict = elementtree_element_to_dict(removed_namespaces)
 
         # This strips every instance of 'id' from the resulting dictionary structure
-        removed_id = handle_id(data_dict)
+        removed_id = handle_xml_dict_id(data_dict)
 
         # XML conversions do not returns exact values, instead all values are returned as a string, this reassigns their actual values
-        converted_to_actual_val = convert_values(removed_id)
+        converted_to_actual_val = convert_xml_dict_values(removed_id)
 
         return cls.from_dict(converted_to_actual_val)
 
@@ -403,9 +403,9 @@ class Base:
             A modelspec Base for this XML.
         """
         from modelspec.utils import (
-            element_to_dict,
-            handle_id,
-            convert_values,
+            elementtree_element_to_dict,
+            handle_xml_dict_id,
+            convert_xml_dict_values,
             process_xml_namespace,
         )
         import re
@@ -423,17 +423,17 @@ class Base:
         cleaned_xml = re.sub(ns_prefix_pattern, "", xml_string).strip()
 
         # Removes xmlns, xmlns:xsi and xsi:schemaLocation from the xml structure for conversion
-        # it passes an element tree object to the element_to_dict function
+        # it passes an element tree object to the elementtree_element_to_dict function
         removed_namespaces = process_xml_namespace(cleaned_xml)
 
         # Converts the resulting xml stripped of xmlns, xmlns:xsi and xsi:schemaLocation into a dict
-        data_dict = element_to_dict(removed_namespaces)
+        data_dict = elementtree_element_to_dict(removed_namespaces)
 
         # Removes every key having 'id' and replaces it with it's value
-        removed_id = handle_id(data_dict)
+        removed_id = handle_xml_dict_id(data_dict)
 
         # Values are returned as strings after conversion, this corrects them to their actual values
-        converted_to_actual_val = convert_values(removed_id)
+        converted_to_actual_val = convert_xml_dict_values(removed_id)
         return cls.from_dict(converted_to_actual_val)
 
     def get_child(self, id: str, type_: str) -> Any:
