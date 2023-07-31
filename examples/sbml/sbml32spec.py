@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-'''
+"""
 initial attempt at creating an SBML API using modelspec
 https://github.com/combine-org/compbiolibs/issues/28
 
 based on sbml.level-3.version-2.core.release-2.pdf
-'''
+"""
 
 import modelspec
 from modelspec import field, instance_of, optional
@@ -14,25 +14,40 @@ from typing import List
 
 from sbml_validators import *
 
+
 @modelspec.define
 class Notes(Base):
-    '''
+    """
     XHTML field of SBase
 
     Args:
         xmlns: str fixed "http://www.w3.org/1999/xhtml"
         content: str valid XHTML
-    '''
-    xmlns: str = field(default="http://www.w3.org/1999/xhtml",validator=[instance_of(str),xmlns_notes])
-    content: str = field(default=None,validator=optional([instance_of(str),valid_xhtml]))
+    """
+
+    xmlns: str = field(
+        default="http://www.w3.org/1999/xhtml",
+        validator=[instance_of(str), xmlns_notes],
+    )
+    content: str = field(
+        default=None, validator=optional([instance_of(str), valid_xhtml])
+    )
+
 
 @modelspec.define
 class Math(Base):
-    '''
+    """
     Subset of MathML 2.0 used to define all formulae in SBML
-    '''
-    xmlns: str = field(default="http://www.w3.org/1998/Math/MathML",validator=[instance_of(str),xmlns_math])
-    content: str = field(default=None,validator=optional([instance_of(str),valid_mathml]))
+    """
+
+    xmlns: str = field(
+        default="http://www.w3.org/1998/Math/MathML",
+        validator=[instance_of(str), xmlns_math],
+    )
+    content: str = field(
+        default=None, validator=optional([instance_of(str), valid_mathml])
+    )
+
 
 @modelspec.define
 class SBase(Base):
@@ -49,44 +64,57 @@ class SBase(Base):
         annotation: XML content optional
     """
 
-    sid:     str = field(default=None,validator=optional([instance_of(str),valid_sid]))
-    name:    str = field(default=None,validator=optional(instance_of(str)))
-    metaid:  str = field(default=None,validator=optional([instance_of(str),valid_xml_id]))
-    sboTerm: str = field(default=None,validator=optional([instance_of(str),valid_sbo]))
+    sid: str = field(default=None, validator=optional([instance_of(str), valid_sid]))
+    name: str = field(default=None, validator=optional(instance_of(str)))
+    metaid: str = field(
+        default=None, validator=optional([instance_of(str), valid_xml_id])
+    )
+    sboTerm: str = field(
+        default=None, validator=optional([instance_of(str), valid_sbo])
+    )
 
-    notes:      Notes = field(default=None,validator=optional(instance_of(Notes)))
-    annotation: str = field(default=None,validator=optional([instance_of(str),valid_xml_content]))
+    notes: Notes = field(default=None, validator=optional(instance_of(Notes)))
+    annotation: str = field(
+        default=None, validator=optional([instance_of(str), valid_xml_content])
+    )
+
 
 @modelspec.define
 class Trigger(SBase):
-    initialValue: bool = field(default=None,validator=instance_of(bool))
-    persistent: bool = field(default=None,validator=instance_of(bool))
-    math: str = field(default=None,validator=optional(instance_of(str)))
+    initialValue: bool = field(default=None, validator=instance_of(bool))
+    persistent: bool = field(default=None, validator=instance_of(bool))
+    math: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Priority(SBase):
-    math: str = field(default=None,validator=optional(instance_of(str)))
+    math: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Delay(SBase):
-    math: str = field(default=None,validator=optional(instance_of(str)))
+    math: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class EventAssignment(SBase):
-    '''
+    """
     Args:
         variable: SIdRef
-    '''
-    math: str = field(default=None,validator=optional(instance_of(str)))
-    variable:  str = field(default=None,validator=optional(instance_of(str)))
+    """
+
+    math: str = field(default=None, validator=optional(instance_of(str)))
+    variable: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Event(SBase):
-    useValuesFromTriggerTime: bool = field(default=None,validator=instance_of(bool))
-    trigger:  Trigger = field(default=None, validator=optional(instance_of(Trigger)))
+    useValuesFromTriggerTime: bool = field(default=None, validator=instance_of(bool))
+    trigger: Trigger = field(default=None, validator=optional(instance_of(Trigger)))
     priority: Priority = field(default=None, validator=optional(instance_of(Priority)))
-    delay:    Delay = field(default=None, validator=optional(instance_of(Delay)))
-    listOfEventAssignments: List[EventAssignment]   = field(factory=list)
+    delay: Delay = field(default=None, validator=optional(instance_of(Delay)))
+    listOfEventAssignments: List[EventAssignment] = field(factory=list)
+
 
 @modelspec.define
 class SimpleSpeciesReference(SBase):
@@ -97,11 +125,13 @@ class SimpleSpeciesReference(SBase):
         species: SIdRef
     """
 
-    species: str = field(default=None,validator=instance_of(str))
+    species: str = field(default=None, validator=instance_of(str))
+
 
 @modelspec.define
 class ModifierSpeciesReference(SimpleSpeciesReference):
-    ''
+    """"""
+
 
 @modelspec.define
 class SpeciesReference(SimpleSpeciesReference):
@@ -111,8 +141,9 @@ class SpeciesReference(SimpleSpeciesReference):
         constant: boolean
     """
 
-    stoichiometry: float = field(default=None,validator=optional(instance_of(float)))
-    constant:      bool = field(default=None,validator=instance_of(bool))
+    stoichiometry: float = field(default=None, validator=optional(instance_of(float)))
+    constant: bool = field(default=None, validator=instance_of(bool))
+
 
 @modelspec.define
 class LocalParameter(SBase):
@@ -121,17 +152,18 @@ class LocalParameter(SBase):
         units: UnitSIdRef optional
     """
 
-    value: float = field(default=None,validator=optional(instance_of(float)))
-    units: str = field(default=None,validator=optional(instance_of(str)))
+    value: float = field(default=None, validator=optional(instance_of(float)))
+    units: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class KineticLaw(SBase):
-    """
-    """
+    """ """
 
-    math: str = field(default=None,validator=optional(instance_of(str)))
+    math: str = field(default=None, validator=optional(instance_of(str)))
 
-    listOfLocalParameters:           List[LocalParameter]   = field(factory=list)
+    listOfLocalParameters: List[LocalParameter] = field(factory=list)
+
 
 @modelspec.define
 class Reaction(SBase):
@@ -143,14 +175,17 @@ class Reaction(SBase):
         compartment: SIdRef optional
     """
 
-    reversible:   bool = field(default=None,validator=instance_of(bool))
-    compartment:  str = field(default=None,validator=optional(instance_of(str)))
+    reversible: bool = field(default=None, validator=instance_of(bool))
+    compartment: str = field(default=None, validator=optional(instance_of(str)))
 
-    listOfReactants:           List[SpeciesReference]           = field(factory=list)
-    listOfProducts:            List[SpeciesReference]           = field(factory=list)
-    listOfModifiers:           List[ModifierSpeciesReference]   = field(factory=list)
+    listOfReactants: List[SpeciesReference] = field(factory=list)
+    listOfProducts: List[SpeciesReference] = field(factory=list)
+    listOfModifiers: List[ModifierSpeciesReference] = field(factory=list)
 
-    kineticLaw:  KineticLaw = field(default=None, validator=optional(instance_of(KineticLaw)))
+    kineticLaw: KineticLaw = field(
+        default=None, validator=optional(instance_of(KineticLaw))
+    )
+
 
 @modelspec.define
 class Constraint(SBase):
@@ -162,8 +197,9 @@ class Constraint(SBase):
         message: XHTML 1.0 optional
     """
 
-    math:    str = field(default=None,validator=optional(instance_of(str)))
-    message: str = field(default=None,validator=optional(instance_of(str)))
+    math: str = field(default=None, validator=optional(instance_of(str)))
+    message: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Rule(SBase):
@@ -174,13 +210,15 @@ class Rule(SBase):
         math: MathML optional
     """
 
-    math: str = field(default=None,validator=optional(instance_of(str)))
+    math: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class AlgebraicRule(Rule):
     """
     An algebraic rule
     """
+
 
 @modelspec.define
 class AssignmentRule(Rule):
@@ -191,7 +229,8 @@ class AssignmentRule(Rule):
         variable: SIdRef required
     """
 
-    variable: str = field(default=None,validator=instance_of(str))
+    variable: str = field(default=None, validator=instance_of(str))
+
 
 @modelspec.define
 class RateRule(Rule):
@@ -202,7 +241,8 @@ class RateRule(Rule):
         variable: SIdRef required
     """
 
-    variable: str = field(default=None,validator=instance_of(str))
+    variable: str = field(default=None, validator=instance_of(str))
+
 
 @modelspec.define
 class InitialAssignment(SBase):
@@ -214,8 +254,9 @@ class InitialAssignment(SBase):
         math: MathML optional
     """
 
-    symbol: str = field(default=None,validator=instance_of(str))
-    math: str = field(default=None,validator=optional(instance_of(str)))
+    symbol: str = field(default=None, validator=instance_of(str))
+    math: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Parameter(SBase):
@@ -228,10 +269,11 @@ class Parameter(SBase):
         constant: boolean
     """
 
-    constant: bool = field(default=None,validator=instance_of(bool))
+    constant: bool = field(default=None, validator=instance_of(bool))
 
-    value: float = field(default=None,validator=optional(instance_of(float)))
-    units: str = field(default=None,validator=optional(instance_of(str)))
+    value: float = field(default=None, validator=optional(instance_of(float)))
+    units: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Species(SBase):
@@ -249,15 +291,18 @@ class Species(SBase):
         conversionFactor: SIdRef optional
     """
 
-    compartment: str = field(default=None,validator=instance_of(str))
-    hasOnlySubstanceUnits: bool = field(default=None,validator=instance_of(bool))
-    boundaryCondition: bool = field(default=None,validator=instance_of(bool))
-    constant: bool = field(default=None,validator=instance_of(bool))
+    compartment: str = field(default=None, validator=instance_of(str))
+    hasOnlySubstanceUnits: bool = field(default=None, validator=instance_of(bool))
+    boundaryCondition: bool = field(default=None, validator=instance_of(bool))
+    constant: bool = field(default=None, validator=instance_of(bool))
 
     initialAmount: float = field(default=None, validator=optional(instance_of(float)))
-    initialConcentration: float = field(default=None, validator=optional(instance_of(float)))
+    initialConcentration: float = field(
+        default=None, validator=optional(instance_of(float))
+    )
     substanceUnits: str = field(default=None, validator=optional(instance_of(str)))
     conversionFactor: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Compartment(SBase):
@@ -271,11 +316,14 @@ class Compartment(SBase):
         constant: whether size is fixed
     """
 
-    constant: bool = field(default=None,validator=instance_of(bool))
+    constant: bool = field(default=None, validator=instance_of(bool))
 
-    spatialDimensions: float = field(default=None,validator=optional(instance_of(float)))
-    size: float = field(default=None,validator=optional(instance_of(float)))
-    units: str = field(default=None,validator=optional(instance_of(str)))
+    spatialDimensions: float = field(
+        default=None, validator=optional(instance_of(float))
+    )
+    size: float = field(default=None, validator=optional(instance_of(float)))
+    units: str = field(default=None, validator=optional(instance_of(str)))
+
 
 @modelspec.define
 class Unit(SBase):
@@ -290,10 +338,11 @@ class Unit(SBase):
         multiplier: double
     """
 
-    kind:       str = field(default=None,validator=[instance_of(str),valid_kind])
-    exponent:   str = field(default=1.0, validator=instance_of(float))
-    scale:      str = field(default=0,   validator=instance_of(int))
+    kind: str = field(default=None, validator=[instance_of(str), valid_kind])
+    exponent: str = field(default=1.0, validator=instance_of(float))
+    scale: str = field(default=0, validator=instance_of(int))
     multiplier: str = field(default=1.0, validator=instance_of(float))
+
 
 @modelspec.define
 class UnitDefinition(SBase):
@@ -305,8 +354,9 @@ class UnitDefinition(SBase):
         listOfUnits: List of units used to compose the definition
     """
 
-    sid:     str = field(default=None,validator=[instance_of(str),valid_unitsid])
+    sid: str = field(default=None, validator=[instance_of(str), valid_unitsid])
     listOfUnits: List[Unit] = field(factory=list)
+
 
 @modelspec.define
 class FunctionDefinition(SBase):
@@ -319,9 +369,10 @@ class FunctionDefinition(SBase):
         math: MathML function definition optional
     """
 
-    sid:     str = field(default=None,validator=[instance_of(str),valid_sid])
+    sid: str = field(default=None, validator=[instance_of(str), valid_sid])
 
     math: Math = field(default=None, validator=optional(instance_of(Math)))
+
 
 @modelspec.define
 class Model(SBase):
@@ -338,24 +389,39 @@ class Model(SBase):
         conversionFactor: SIdRef optional
     """
 
-    substanceUnits:   str = field(default=None, validator=optional([instance_of(str),valid_unitsid]))
-    timeUnits:        str = field(default=None, validator=optional([instance_of(str),valid_unitsid]))
-    volumeUnits:      str = field(default=None, validator=optional([instance_of(str),valid_unitsid]))
-    areaUnits:        str = field(default=None, validator=optional([instance_of(str),valid_unitsid]))
-    lengthUnits:      str = field(default=None, validator=optional([instance_of(str),valid_unitsid]))
-    extentUnits:      str = field(default=None, validator=optional([instance_of(str),valid_unitsid]))
-    conversionFactor: str = field(default=None, validator=optional([instance_of(str),valid_unitsid]))
+    substanceUnits: str = field(
+        default=None, validator=optional([instance_of(str), valid_unitsid])
+    )
+    timeUnits: str = field(
+        default=None, validator=optional([instance_of(str), valid_unitsid])
+    )
+    volumeUnits: str = field(
+        default=None, validator=optional([instance_of(str), valid_unitsid])
+    )
+    areaUnits: str = field(
+        default=None, validator=optional([instance_of(str), valid_unitsid])
+    )
+    lengthUnits: str = field(
+        default=None, validator=optional([instance_of(str), valid_unitsid])
+    )
+    extentUnits: str = field(
+        default=None, validator=optional([instance_of(str), valid_unitsid])
+    )
+    conversionFactor: str = field(
+        default=None, validator=optional([instance_of(str), valid_unitsid])
+    )
 
     listOfFunctionDefinitions: List[FunctionDefinition] = field(factory=list)
-    listOfUnitDefinitions:     List[UnitDefinition]     = field(factory=list)
-    listOfCompartments:        List[Compartment]        = field(factory=list)
-    listOfSpecies:             List[Species]            = field(factory=list)
-    listOfParameters:          List[Parameter]          = field(factory=list)
-    listOfInitialAssignments:  List[InitialAssignment]  = field(factory=list)
-    listOfRules:               List[Rule]               = field(factory=list)
-    listOfConstraints:         List[Constraint]         = field(factory=list)
-    listOfReactions:           List[Reaction]           = field(factory=list)
-    listOfEvents:              List[Event]              = field(factory=list)
+    listOfUnitDefinitions: List[UnitDefinition] = field(factory=list)
+    listOfCompartments: List[Compartment] = field(factory=list)
+    listOfSpecies: List[Species] = field(factory=list)
+    listOfParameters: List[Parameter] = field(factory=list)
+    listOfInitialAssignments: List[InitialAssignment] = field(factory=list)
+    listOfRules: List[Rule] = field(factory=list)
+    listOfConstraints: List[Constraint] = field(factory=list)
+    listOfReactions: List[Reaction] = field(factory=list)
+    listOfEvents: List[Event] = field(factory=list)
+
 
 @modelspec.define
 class SBML(SBase):
@@ -372,8 +438,11 @@ class SBML(SBase):
         model:   Optional model
     """
 
-    xmlns:   str = field(default="http://www.sbml.org/sbml/level3/version2/core",validator=[instance_of(str),xmlns_sbml])
-    level:   str = field(default="3",validator=[instance_of(str),fixed_level])
-    version: str = field(default="2",validator=[instance_of(str),fixed_version])
+    xmlns: str = field(
+        default="http://www.sbml.org/sbml/level3/version2/core",
+        validator=[instance_of(str), xmlns_sbml],
+    )
+    level: str = field(default="3", validator=[instance_of(str), fixed_level])
+    version: str = field(default="2", validator=[instance_of(str), fixed_version])
 
     model: Model = field(default=None, validator=optional(instance_of(Model)))
