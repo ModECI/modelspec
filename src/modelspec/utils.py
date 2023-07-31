@@ -259,7 +259,7 @@ def build_xml_element(data, parent=None):
                 parent.append(child_element)
 
         # Filters name space and schemaLoacation attributes, only allows non name space attributes to be added as attributes
-        elif aattr.name not in ["xmlns", "xmlns_url", "xmlns_loc", "xmln_loc_2"]:
+        elif not isinstance(aattr.default, str):
             attribute_name = aattr.name
             attribute_value = data.__getattribute__(aattr.name)
             parent.set(attribute_name, str(attribute_value))
