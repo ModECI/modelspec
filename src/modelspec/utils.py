@@ -92,9 +92,9 @@ def load_xml(filename: str):
     removed_id = handle_xml_dict_id(data)
 
     # Values are returned as strings after conversion, this corrects them to their actual values
-    converted_to_actual_val = convert_xml_dict_values(removed_id)
+    # converted_to_actual_val = convert_xml_dict_values(removed_id)
 
-    return convert_xml_dict_values(converted_to_actual_val)
+    return convert_xml_dict_values(removed_id)
 
 
 def elementtree_element_to_dict(element):
