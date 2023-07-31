@@ -92,8 +92,6 @@ def load_xml(filename: str):
     removed_id = handle_xml_dict_id(data)
 
     # Values are returned as strings after conversion, this corrects them to their actual values
-    # converted_to_actual_val = convert_xml_dict_values(removed_id)
-
     return convert_xml_dict_values(removed_id)
 
 
@@ -272,7 +270,7 @@ def build_xml_element(data, parent=None):
     if hasattr(data, "xmlns_url"):
         parent.set("xmlns:xsi", data.xmlns_url)
     if hasattr(data, "xmlns_loc"):
-        parent.set("xsi:schemaLocation", str(data.xmlns_loc + " " + data.xmln_loc_2))
+        parent.set("xsi:schemaLocation", str(data.xmlns_loc + "\n" + data.xmln_loc_2))
     return parent
 
 
