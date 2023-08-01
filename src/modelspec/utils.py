@@ -267,10 +267,10 @@ def build_xml_element(data, parent=None):
     # This defines the various namespaces and schemaLocation of the generated xml
     if hasattr(data, "xmlns"):
         parent.set("xmlns", data.xmlns)
-    if hasattr(data, "xmlns_url"):
-        parent.set("xmlns:xsi", data.xmlns_url)
+    if hasattr(data, "xmlns_xsi"):
+        parent.set("xmlns:xsi", data.xmlns_xsi)
     if hasattr(data, "xmlns_loc"):
-        parent.set("xsi:schemaLocation", str(data.xmlns_loc + "\n" + data.xmln_loc_2))
+        parent.set("xsi:schemaLocation", str(data.xmlns_loc))
     return parent
 
 

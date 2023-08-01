@@ -109,16 +109,13 @@ class neuroml(Base):
     xmlns: str = field(
         validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
     )
-    xmlns_url: str = field(
+    xmlns_xsi: str = field(
         validator=instance_of(str), default="http://www.w3.org/2001/XMLSchema-instance"
     )
     xmlns_loc: str = field(
-        validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
+        validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"
     )
-    xmln_loc_2: str = field(
-        validator=instance_of(str),
-        default="https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd",
-    )
+    
 
     izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
     pulseGenerators: List[pulseGenerator] = field(factory=list)
