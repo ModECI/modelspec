@@ -113,9 +113,9 @@ class neuroml(Base):
         validator=instance_of(str), default="http://www.w3.org/2001/XMLSchema-instance"
     )
     xmlns_loc: str = field(
-        validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"
+        validator=instance_of(str),
+        default="http://www.neuroml.org/schema/neuroml2https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd",
     )
-    
 
     izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
     pulseGenerators: List[pulseGenerator] = field(factory=list)
