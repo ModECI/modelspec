@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ "3.7", "3.8", "3.9", "3.10"]
+        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
         runs-on: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
@@ -34,9 +34,16 @@ jobs:
       with:
         python-version:  ${{ matrix.python-version }}
 
+
+    - name: Install h5py
+      if: ${{ matrix.python-version == '3.11' }}
+      run: |
+        #if [[  ${{ matrix.runs-on }} == *"macos"* ]]; then brew install graphviz ; fi
+        #if [[  ${{ matrix.runs-on }} == *"ubuntu"* ]]; then sudo apt-get install libhdf5-serial-dev liblzo2-dev -y; pip3 install --no-binary=h5py h5py ; fi
+        pip list
+
     - name: Install package
       run: |
-        if [[ ${{ matrix.python-version }} == 3.11 ]]; then sudo apt-get install libhdf5-serial-dev liblzo2-dev -y; pip3 install --no-binary=h5py h5py ; fi
         python -m pip install --upgrade pip
         pip install .[dev]
 
