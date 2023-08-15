@@ -5,22 +5,24 @@ Some description...
 
 **Allowed parameters**
 
-===============  ===========  ====================================================================
+===============  ===========  ======================================================================================
 Allowed field    Data Type    Description
-===============  ===========  ====================================================================
+===============  ===========  ======================================================================================
 **id**           str          The id of the NeuroML 2 document
-**xmlns**        str          Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2
-===============  ===========  ====================================================================
+**xmlns**        str          Default namespace for the NeuroML file, usually http://www.neuroml.org/schema/neuroml2
+**xmlns_xsi**    str          Namespace for XMLSchema-instance
+**xmlns_loc**    str          Specifies location of the main namespace
+===============  ===========  ======================================================================================
 
 **Allowed children**
 
-=======================  ============================================  ====================
+=======================  ============================================  ============================
 Allowed child            Data Type                                     Description
-=======================  ============================================  ====================
-**izhikevich2007Cells**  `izhikevich2007Cell <#izhikevich2007cell>`__
-**pulseGenerators**      `pulseGenerator <#pulsegenerator>`__
+=======================  ============================================  ============================
+**izhikevich2007Cells**  `izhikevich2007Cell <#izhikevich2007cell>`__  The izhikevich2007Cells
+**pulseGenerators**      `pulseGenerator <#pulsegenerator>`__          The pulse current generators
 **networks**             `network <#network>`__                        The networks present
-=======================  ============================================  ====================
+=======================  ============================================  ============================
 
 ==================
 izhikevich2007Cell
