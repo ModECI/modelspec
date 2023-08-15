@@ -125,7 +125,6 @@ class Base:
             )
         from modelspec.utils import build_xml_element
 
-        # root = ET.Element("modelspec")
         root = build_xml_element(self)
 
         xml_string = ET.tostring(
@@ -170,12 +169,38 @@ class Base:
     @classmethod
     def from_xml(cls, xml_str: str) -> "Base":
         """Instantiate a Base object from an XML string"""
-        from modelspec.utils import element_to_dict, handle_id, convert_values
+        from modelspec.utils import (
+            elementtree_element_to_dict,
+            handle_xml_dict_id,
+            convert_xml_dict_values,
+            process_xml_namespace,
+        )
+        import re
 
-        root = ET.fromstring(xml_str)
-        data_dict = element_to_dict(root)
-        removed_id = handle_id(data_dict)
-        converted_to_actual_val = convert_values(removed_id)
+        # When the to_xml() method is used it messes up the string therefore,
+        # it is necessary to convert it into an elementree object then decode into a string.
+        xml_string_a = ET.fromstring(xml_str)
+        xml_string_b = ET.tostring(xml_string_a).decode()
+
+        # while trying to obtain a useable xml structure, using the conversion above it acquires
+        # some unusual string element that sometimes can be incremental from either :ns0 to :nsX or ns0: to nsX:.
+        # Using the regex expression pattern catches it in any form and removes it from the xml string structure.
+        ns_prefix_pattern = r"(ns\d+:|:ns\d+)"
+        cleaned_xml = re.sub(ns_prefix_pattern, "", xml_string_b).strip()
+
+        # For the xml to be useable in modelspec unnecessary string elements which only serve as asthetics for the xml must
+        # be removed when converting to a dict, the process_xml_namespaes function does just that.
+        removed_namespaces = process_xml_namespace(cleaned_xml)
+
+        # process_xml_namespace function returns an elementtree object which can be directly worked upon by the elementtree_element_to_dict
+        # function, this returns a python dictionary
+        data_dict = elementtree_element_to_dict(removed_namespaces)
+
+        # This strips every instance of 'id' from the resulting dictionary structure
+        removed_id = handle_xml_dict_id(data_dict)
+
+        # XML conversions do not returns exact values, instead all values are returned as a string, this reassigns their actual values
+        converted_to_actual_val = convert_xml_dict_values(removed_id)
 
         return cls.from_dict(converted_to_actual_val)
 
@@ -377,15 +402,38 @@ class Base:
         Returns:
             A modelspec Base for this XML.
         """
-        from modelspec.utils import element_to_dict, handle_id, convert_values
+        from modelspec.utils import (
+            elementtree_element_to_dict,
+            handle_xml_dict_id,
+            convert_xml_dict_values,
+            process_xml_namespace,
+        )
+        import re
 
         with open(filename) as infile:
-            tree = ET.parse(infile)
-            root = tree.getroot()
+            tree = ET.parse(infile)  # Parse the XML file into an ElementTree object
+            root = tree.getroot()  # Get the root element
 
-        data_dict = element_to_dict(root)
-        removed_id = handle_id(data_dict)
-        converted_to_actual_val = convert_values(removed_id)
+        # This defines regular expressions to match the namespace patterns to be removed
+        ns_prefix_pattern = r"(ns\d+:|:ns\d+)"
+
+        # Converts the loaded xml into a string and removes unwanted string values ':ns0' to :ns∞ and 'ns0:' to ns∞:
+        # They prevent the xml from loading correctly
+        xml_string = ET.tostring(root).decode()
+        cleaned_xml = re.sub(ns_prefix_pattern, "", xml_string).strip()
+
+        # Removes xmlns, xmlns:xsi and xsi:schemaLocation from the xml structure for conversion
+        # it passes an element tree object to the elementtree_element_to_dict function
+        removed_namespaces = process_xml_namespace(cleaned_xml)
+
+        # Converts the resulting xml stripped of xmlns, xmlns:xsi and xsi:schemaLocation into a dict
+        data_dict = elementtree_element_to_dict(removed_namespaces)
+
+        # Removes every key having 'id' and replaces it with it's value
+        removed_id = handle_xml_dict_id(data_dict)
+
+        # Values are returned as strings after conversion, this corrects them to their actual values
+        converted_to_actual_val = convert_xml_dict_values(removed_id)
         return cls.from_dict(converted_to_actual_val)
 
     def get_child(self, id: str, type_: str) -> Any:
