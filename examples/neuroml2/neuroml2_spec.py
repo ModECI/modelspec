@@ -101,13 +101,25 @@ class neuroml(Base):
 
     Args:
         id: The id of the NeuroML 2 document
-        xmlns: Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2
+        xmlns: Default namespace for the NeuroML file, usually http://www.neuroml.org/schema/neuroml2
+        xmlns_xsi: Namespace for XMLSchema-instance
+        xmlns_loc: Specifies location of the main namespace
+        izhikevich2007Cells: The izhikevich2007Cells
+        pulseGenerators: The pulse current generators
         networks: The networks present
     """
 
     id: str = field(validator=instance_of(str))
+
     xmlns: str = field(
         validator=instance_of(str), default="http://www.neuroml.org/schema/neuroml2"
+    )
+    xmlns_xsi: str = field(
+        validator=instance_of(str), default="http://www.w3.org/2001/XMLSchema-instance"
+    )
+    xmlns_loc: str = field(
+        validator=instance_of(str),
+        default="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd",
     )
 
     izhikevich2007Cells: List[izhikevich2007Cell] = field(factory=list)
@@ -187,3 +199,8 @@ if __name__ == "__main__":
         yy = yaml.dump(doc_dict, indent=4, sort_keys=False)
         print(yy)
         d.write(yy)
+
+    from modelspec.utils import load_xml
+
+    new_neuroml = load_xml("hello_world_neuroml.net.nml")
+    print(new_neuroml)
