@@ -60,11 +60,7 @@ jobs:
         cd ../neuroml2
         python neuroml2_spec.py
 
-        pip install pyneuroml
-
-        # Requires: pip install pyneuroml
-        pynml -validate hello_world_neuroml.net.nml
-        pynml -validate TestNeuroML.xml
+        # Note: NeuroML files will be validated with OMV below
 
     - name: Run pytest
       run: |
@@ -105,6 +101,7 @@ jobs:
         pip install scipy sympy matplotlib cython pandas tables
 
         # Run OMV tests on all engines
+        cd examples
         omv all -V
 
         omv list -V # list installed engines
