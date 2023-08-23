@@ -60,11 +60,7 @@ jobs:
         cd ../neuroml2
         python neuroml2_spec.py
 
-        pip install pyneuroml
-
-        # Requires: pip install pyneuroml
-        pynml -validate hello_world_neuroml.net.nml
-        pynml -validate TestNeuroML.xml
+        # Note: NeuroML files will be validated with OMV below
 
     - name: Run pytest
       run: |
@@ -77,7 +73,6 @@ jobs:
           #pip install . # Use versions of neuroml libs as set in setup.py
           cd examples
           python Example1.py
-
 
     - name: Install MDF
       run: |
@@ -99,6 +94,20 @@ jobs:
         cd sphinx
         make clean
         make html
+
+    - name: Install and test with OMV
+      if: ${{ matrix.runs-on != 'windows-latest' }}
+      run: |
+        # Note: OMV not well tested on Windows...
+
+        pip install git+https://github.com/OpenSourceBrain/osb-model-validation
+        pip install scipy sympy matplotlib cython pandas tables
+
+        # Run OMV tests on all engines
+        cd examples
+        omv all -V
+
+        omv list -V # list installed engines
 
     - name: Final version info
       run: |
