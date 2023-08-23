@@ -78,7 +78,6 @@ jobs:
           cd examples
           python Example1.py
 
-
     - name: Install MDF
       run: |
 
@@ -99,6 +98,16 @@ jobs:
         cd sphinx
         make clean
         make html
+
+    - name: Install and test with OMV
+      run: |
+        pip install git+https://github.com/OpenSourceBrain/osb-model-validation
+        pip install scipy sympy matplotlib cython pandas tables
+
+        # Run OMV tests on all engines
+        omv all -V
+
+        omv list -V # list installed engines
 
     - name: Final version info
       run: |
