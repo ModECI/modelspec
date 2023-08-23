@@ -36,6 +36,7 @@ pytest tests -v
 
 cd docs
 python generate.py
+python contributors.py
 cd sphinx
 make clean
 make html
