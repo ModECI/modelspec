@@ -19,12 +19,13 @@ jobs:
         extra_args: --hook-stage manual --all-files
 
   build:
-
-    runs-on: ubuntu-latest
+    name: Build for Python ${{ matrix.python-version }} on ${{ matrix.runs-on }}
+    runs-on: ${{ matrix.runs-on }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: [ "3.7", "3.8", "3.9", "3.10"]
+        runs-on: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -54,6 +55,17 @@ jobs:
         cd test
         python test.py
 
+        ## Test NeuroML example
+
+        cd ../neuroml2
+        python neuroml2_spec.py
+
+        pip install pyneuroml
+
+        # Requires: pip install pyneuroml
+        pynml -validate hello_world_neuroml.net.nml
+        pynml -validate TestNeuroML.xml
+
     - name: Run pytest
       run: |
         pytest tests
@@ -75,6 +87,17 @@ jobs:
           pip install .
           cd examples/MDF
           python arrays.py -run   # test one example
+
+    - name: Build Documentation
+      run: |
+
+        pip install .[docs]
+        cd docs
+        python generate.py
+        python contributors.py
+        cd sphinx
+        make clean
+        make html
 
     - name: Final version info
       run: |

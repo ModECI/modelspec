@@ -1,0 +1,41 @@
+{
+    "TestNeuroML": {
+        "izhikevich2007Cells": {
+            "izh2007RS0": {
+                "C": "100pF",
+                "v0": "-60mV",
+                "k": "0.7nS_per_mV",
+                "vr": "-60mV",
+                "vt": "-40mV",
+                "vpeak": "35mV",
+                "a": "0.03per_ms",
+                "b": "-2nS",
+                "c": "-50.0mV",
+                "d": "100pA"
+            }
+        },
+        "pulseGenerators": {
+            "pulseGen_0": {
+                "delay": "100ms",
+                "duration": "800ms",
+                "amplitude": "0.07 nA"
+            }
+        },
+        "networks": {
+            "IzNet": {
+                "populations": {
+                    "IzhPop0": {
+                        "component": "izh2007RS0",
+                        "size": 1
+                    }
+                },
+                "explicitInputs": [
+                    {
+                        "target": "IzhPop0[0]",
+                        "input": "pulseGen_0"
+                    }
+                ]
+            }
+        }
+    }
+}

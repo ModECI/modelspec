@@ -1,0 +1,110 @@
+neuroml:
+    definition: Some description...
+    allowed_parameters:
+        id:
+            type: str
+            description: The id of the NeuroML 2 document
+        xmlns:
+            type: str
+            description: Default namespace for the NeuroML file, usually http://www.neuroml.org/schema/neuroml2
+        xmlns_xsi:
+            type: str
+            description: Namespace for XMLSchema-instance
+        xmlns_loc:
+            type: str
+            description: Specifies location of the main namespace
+    allowed_children:
+        izhikevich2007Cells:
+            type: izhikevich2007Cell
+            description: The izhikevich2007Cells
+        pulseGenerators:
+            type: pulseGenerator
+            description: The pulse current generators
+        networks:
+            type: network
+            description: The networks present
+izhikevich2007Cell:
+    definition: Some description...
+    allowed_parameters:
+        id:
+            type: str
+            description: The id of the cell...
+        C:
+            type: str
+            description: ''
+        v0:
+            type: str
+            description: ''
+        k:
+            type: str
+            description: ''
+        vr:
+            type: str
+            description: ''
+        vt:
+            type: str
+            description: ''
+        vpeak:
+            type: str
+            description: ''
+        a:
+            type: str
+            description: ''
+        b:
+            type: str
+            description: ''
+        c:
+            type: str
+            description: ''
+        d:
+            type: str
+            description: ''
+pulseGenerator:
+    definition: Some description...
+    allowed_parameters:
+        id:
+            type: str
+            description: The id of the pulseGenerator
+        delay:
+            type: str
+            description: the delay
+        duration:
+            type: str
+            description: the duration
+        amplitude:
+            type: str
+            description: the amplitude
+network:
+    definition: Some description...
+    allowed_parameters:
+        id:
+            type: str
+            description: The id of the network
+    allowed_children:
+        populations:
+            type: population
+            description: the pops in the net
+        explicitInputs:
+            type: explicitInput
+            description: ''
+population:
+    definition: Some description...
+    allowed_parameters:
+        id:
+            type: str
+            description: The id of the population
+        component:
+            type: str
+            description: the component to use in the population
+        size:
+            type: int
+            description: the size of the population
+explicitInput:
+    definition: Some description...
+    allowed_parameters:
+        target:
+            type: str
+            description: the target of the input
+        input:
+            type: str
+            description: the input, e.g. pulseGenerator
