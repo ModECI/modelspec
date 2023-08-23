@@ -96,7 +96,10 @@ jobs:
         make html
 
     - name: Install and test with OMV
+      if: ${{ matrix.runs-on != 'windows-latest' }}
       run: |
+        # Note: OMV not well tested on Windows...
+
         pip install git+https://github.com/OpenSourceBrain/osb-model-validation
         pip install scipy sympy matplotlib cython pandas tables
 
