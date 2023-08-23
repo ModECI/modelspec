@@ -17,14 +17,19 @@ per_info = list(df["url"].unique())
 len_per_info = len(per_info)
 
 empty_list = []
+max_tries = 3
+
 for i in range(len_per_info):
     url = per_info[i]
     print(url)
     data = requests.get(url=url)
     requests_status = "unknown"
-    while (requests_status == "unknown") or (requests_status == "unsuccessful"):
+    while max_tries > 0 and (
+        (requests_status == "unknown") or (requests_status == "unsuccessful")
+    ):
         if data.status_code == 200:
             requests_status = "successful"
+            print("   Received: %s" % data.json())
             empty_list.append(data.json())
         else:
             # handle failure on requests to the url for mac os
@@ -32,9 +37,10 @@ for i in range(len_per_info):
             print(f"Failed to get data from: {url}")
             # make request again to get data from the url
             data = requests.get(url=url)
+            max_tries -= 1
 
 df1 = pd.DataFrame(empty_list)
-df1["name"] = df1["name"].fillna("")
+df1["name"] = df1["name"].fillna(df1["login"])
 name = df1["name"]
 login = df1["login"]
 url_html = df1["html_url"]
