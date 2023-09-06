@@ -33,6 +33,7 @@ pytest tests -v
 
 ## Run OMV tests
 
+# See https://github.com/OpenSourceBrain/osb-model-validation
 omv all -V
 
 
