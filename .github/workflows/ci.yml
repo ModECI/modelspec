@@ -12,9 +12,9 @@ jobs:
     name: Format
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v2
-    - uses: pre-commit/action@v2.0.0
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+    - uses: pre-commit/action@v3.0.0
       with:
         extra_args: --hook-stage manual --all-files
 
@@ -28,9 +28,9 @@ jobs:
         runs-on: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python  ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version:  ${{ matrix.python-version }}
 
@@ -60,11 +60,7 @@ jobs:
         cd ../neuroml2
         python neuroml2_spec.py
 
-        pip install pyneuroml
-
-        # Requires: pip install pyneuroml
-        pynml -validate hello_world_neuroml.net.nml
-        pynml -validate TestNeuroML.xml
+        # Note: NeuroML files will be validated with OMV below
 
     - name: Run pytest
       run: |
@@ -78,7 +74,6 @@ jobs:
           cd examples
           python Example1.py
 
-
     - name: Install MDF
       run: |
 
@@ -89,8 +84,9 @@ jobs:
           python arrays.py -run   # test one example
 
     - name: Build Documentation
+      if: ${{ matrix.python-version != '3.7'}}
       run: |
-
+        # Note: contributors generation below fails on py 3.7 due to pandas version...
         pip install .[docs]
         cd docs
         python generate.py
@@ -98,6 +94,20 @@ jobs:
         cd sphinx
         make clean
         make html
+
+    - name: Install and test with OMV
+      if: ${{ matrix.runs-on != 'windows-latest' }}
+      run: |
+        # Note: OMV not well tested on Windows...
+
+        pip install git+https://github.com/OpenSourceBrain/osb-model-validation
+        pip install scipy sympy matplotlib cython pandas tables
+
+        # Run OMV tests on all engines
+        cd examples
+        omv all -V
+
+        omv list -V # list installed engines
 
     - name: Final version info
       run: |

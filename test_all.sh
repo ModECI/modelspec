@@ -31,14 +31,21 @@ cd ../..
 
 pytest tests -v
 
+## Run OMV tests
+
+omv all -V
+
 
 ## Generate the docs
 
 cd docs
 python generate.py
+python contributors.py
 cd sphinx
 make clean
 make html
 cd ..
+
+## Format all file
 
 pre-commit run --all-files
