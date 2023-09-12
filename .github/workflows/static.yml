@@ -29,15 +29,44 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Set up Python 
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install package
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[dev]
+
+    - name: List packages so far
+      run: |
+        pip list
+
+    - name: Build Documentation
+      run: |
+
+        pip install .[docs]
+        cd docs
+        python generate.py
+        python contributors.py
+        cd sphinx
+        make clean
+        make html
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          # Upload entire repository
-          path: '.'
+          # Upload just docs
+          path: 'docs/sphinx/build/html'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
