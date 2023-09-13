@@ -31,6 +31,11 @@ cd ../..
 
 pytest tests -v
 
+## Run OMV tests
+
+# See https://github.com/OpenSourceBrain/osb-model-validation
+omv all -V
+
 
 ## Generate the docs
 
@@ -41,5 +46,7 @@ cd sphinx
 make clean
 make html
 cd ..
+
+## Format all file
 
 pre-commit run --all-files
