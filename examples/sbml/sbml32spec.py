@@ -66,6 +66,7 @@ class SBase(Base):
 
     sid: str = field(default=None, validator=optional([instance_of(str), valid_sid]))
     name: str = field(default=None, validator=optional(instance_of(str)))
+
     metaid: str = field(
         default=None, validator=optional([instance_of(str), valid_xml_id])
     )
@@ -77,6 +78,12 @@ class SBase(Base):
     annotation: str = field(
         default=None, validator=optional([instance_of(str), valid_xml_content])
     )
+
+
+@modelspec.define
+class SBaseWithId(SBase):
+
+    id: str = field(default=None, validator=optional([instance_of(str), valid_sid]))
 
 
 @modelspec.define
@@ -345,7 +352,7 @@ class Unit(SBase):
 
 
 @modelspec.define
-class UnitDefinition(SBase):
+class unitDefinition(SBase):
     """
     A unit definition
 
@@ -412,7 +419,7 @@ class Model(SBase):
     )
 
     listOfFunctionDefinitions: List[FunctionDefinition] = field(factory=list)
-    listOfUnitDefinitions: List[UnitDefinition] = field(factory=list)
+    listOfUnitDefinitions: List[unitDefinition] = field(factory=list)
     listOfCompartments: List[Compartment] = field(factory=list)
     listOfSpecies: List[Species] = field(factory=list)
     listOfParameters: List[Parameter] = field(factory=list)
@@ -424,7 +431,7 @@ class Model(SBase):
 
 
 @modelspec.define
-class SBML(SBase):
+class sbml(SBaseWithId):
     """
     The top-level SBML container implementing SBML 3.2.
     See sbml.level-3.version-2.core.release-2.pdf section 4.
@@ -439,10 +446,11 @@ class SBML(SBase):
     """
 
     xmlns: str = field(
-        default="http://www.sbml.org/sbml/level3/version2/core",
+        default="http://www.sbml.org/sbml/level3/version%s/core" % SBML_VERSION,
         validator=[instance_of(str), xmlns_sbml],
     )
-    level: str = field(default="3", validator=[instance_of(str), fixed_level])
-    version: str = field(default="2", validator=[instance_of(str), fixed_version])
+    level: str = field(default=None, validator=[instance_of(str), fixed_level])
+    version: str = field(default=None, validator=[instance_of(str), fixed_version])
 
     model: Model = field(default=None, validator=optional(instance_of(Model)))
+    # models: List[Model] = field(factory=list)

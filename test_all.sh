@@ -24,6 +24,11 @@ python neuroml2_spec.py
 pynml -validate hello_world_neuroml.net.nml
 pynml -validate TestNeuroML.xml
 
+## Test SBML example
+
+cd ../sbml
+./regenerateAndTest.sh
+
 cd ../..
 
 
