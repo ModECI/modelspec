@@ -333,7 +333,7 @@ class Compartment(SBase):
 
 
 @modelspec.define
-class Unit(SBase):
+class unit(SBase):
     """
     A unit used to compose a unit definition.
     unit = (multiplier x 10^scale x kind)^exponent
@@ -352,17 +352,41 @@ class Unit(SBase):
 
 
 @modelspec.define
-class unitDefinition(SBase):
+class ListOfUnits(SBase):
+    """
+    A listOfUnits
+
+    Args:
+        listOfUnits: the actual list Of Units
+    """
+
+    listOfUnits: List[unit] = field(factory=list)
+
+
+@modelspec.define
+class unitDefinition(SBaseWithId):
     """
     A unit definition
 
     Args:
-        sid: UnitSid required (overrides SBase sid)
         listOfUnits: List of units used to compose the definition
     """
 
-    sid: str = field(default=None, validator=[instance_of(str), valid_unitsid])
-    listOfUnits: List[Unit] = field(factory=list)
+    listOfUnits: ListOfUnits = field(
+        default=None, validator=optional(instance_of(ListOfUnits))
+    )
+
+
+@modelspec.define
+class ListOfUnitDefinitions(SBase):
+    """
+    A listOfUnitDefinitions
+
+    Args:
+        listOfUnitDefinitions: the actual list Of Unit Definitions
+    """
+
+    listOfUnitDefinitions: List[unitDefinition] = field(factory=list)
 
 
 @modelspec.define
@@ -419,7 +443,11 @@ class Model(SBase):
     )
 
     listOfFunctionDefinitions: List[FunctionDefinition] = field(factory=list)
-    listOfUnitDefinitions: List[unitDefinition] = field(factory=list)
+
+    listOfUnitDefinitions: ListOfUnitDefinitions = field(
+        default=None, validator=optional(instance_of(ListOfUnitDefinitions))
+    )
+
     listOfCompartments: List[Compartment] = field(factory=list)
     listOfSpecies: List[Species] = field(factory=list)
     listOfParameters: List[Parameter] = field(factory=list)
@@ -435,7 +463,7 @@ class sbml(SBaseWithId):
     """
     The top-level SBML container implementing SBML 3.2.
     See sbml.level-3.version-2.core.release-2.pdf section 4.
-    http://www.sbml.org/sbml/level3/version2/core
+    http://www.sbml.org/sbml/level3/version2/
 
     Args:
         xmlns:   string, fixed to "http://www.sbml.org/sbml/level3/version2/core"

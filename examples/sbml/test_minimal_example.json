@@ -5,7 +5,21 @@
         "model": {
             "substanceUnits": "mole",
             "timeUnits": "second",
-            "extentUnits": "mole"
+            "extentUnits": "mole",
+            "listOfUnitDefinitions": {
+                "listOfUnitDefinitions": {
+                    "per_second": {
+                        "listOfUnits": {
+                            "listOfUnits": [
+                                {
+                                    "kind": "second",
+                                    "exponent": -1.0
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
     }
 }

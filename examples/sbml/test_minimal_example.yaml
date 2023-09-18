@@ -5,3 +5,10 @@ test_minimal_example:
         substanceUnits: mole
         timeUnits: second
         extentUnits: mole
+        listOfUnitDefinitions:
+            listOfUnitDefinitions:
+                per_second:
+                    listOfUnits:
+                        listOfUnits:
+                        -   kind: second
+                            exponent: -1.0

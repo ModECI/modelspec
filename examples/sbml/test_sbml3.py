@@ -23,11 +23,15 @@ def test_example_sbml_minimal():
     model = Model(substanceUnits="mole", timeUnits="second", extentUnits="mole")
     sbml_doc.model = model
 
-    unit_def = unitDefinition(sid="per_second")
-    """
-    model.listOfUnitDefinitions.append(unit_def)
-    unit = Unit(kind="second", exponent=-1.0)
-    unit_def.listOfUnits.append(unit)"""
+    unit_def = unitDefinition(id="per_second")
+
+    model.listOfUnitDefinitions = ListOfUnitDefinitions()
+
+    model.listOfUnitDefinitions.listOfUnitDefinitions.append(unit_def)
+
+    unit_s = unit(kind="second", exponent=-1.0)
+    unit_def.listOfUnits = ListOfUnits()
+    unit_def.listOfUnits.listOfUnits.append(unit_s)
 
     print("------------------------------------------------")
     print(sbml_doc)

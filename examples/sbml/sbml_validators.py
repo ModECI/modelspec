@@ -57,10 +57,11 @@ def fixed_version(instance, attribute, value):
 
 
 def valid_sid(instance, attribute, value):
-    if not re.fullmatch("[_A-Za-z][_A-Za-z0-9]*", value):
-        raise ValueError(
-            "an SId must match the regular expression: [_A-Za-z][_A-Za-z0-9]*"
-        )
+    if value is not None:
+        if not re.fullmatch("[_A-Za-z][_A-Za-z0-9]*", value):
+            raise ValueError(
+                "an SId must match the regular expression: [_A-Za-z][_A-Za-z0-9]*"
+            )
 
 
 def valid_unitsid(instance, attribute, value):
@@ -163,6 +164,8 @@ def validate_sbml(doc, units_consistency: bool = False) -> None:
             )
     print("-" * 80)
 
+    return len(warnings) + len(errors)
+
 
 if __name__ == "__main__":
 
@@ -174,4 +177,6 @@ if __name__ == "__main__":
     reader = libsbml.SBMLReader()
     document = reader.readSBML(sbml_file)
 
-    validate_sbml(document, units_consistency=False)
+    issues = validate_sbml(document, units_consistency=False)
+
+    exit(issues)
