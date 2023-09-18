@@ -57,6 +57,7 @@ jobs:
 
     - name: Test NeuroML examples
       if: ${{ matrix.python-version != '3.7'}}
+      run: |
 
         cd examples/neuroml2
         python neuroml2_spec.py
@@ -65,6 +66,7 @@ jobs:
 
     - name: Test SBML examples
       if: ${{ matrix.python-version != '3.7'}}
+      run: |
 
         cd examples/sbml
         ./regenerateAndTest.sh
