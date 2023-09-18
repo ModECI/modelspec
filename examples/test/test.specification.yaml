@@ -10,3 +10,18 @@ TopClass:
         float_like_optional:
             type: int
             description: name also says it all...
+        float_like_optional2:
+            type: int
+            description: name also says it all...
+        mid:
+            type: MidClassNoId
+            description: ''
+MidClassNoId:
+    definition: A model....
+    allowed_parameters:
+        int_val:
+            type: int
+            description: name says it all...
+        str_val:
+            type: int
+            description: name says it all...
