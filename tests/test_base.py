@@ -162,8 +162,9 @@ def test_save_load_json(tmp_path):
     # net.id = net.id+'_yaml'
     net.to_yaml_file(filenamey)
 
-    filenamex = str(Path(tmp_path) / f"{net.id}.xml")
-    net.to_xml_file(filenamex)
+    if sys.version_info >= (3, 8):
+        filenamex = str(Path(tmp_path) / f"{net.id}.xml")
+        net.to_xml_file(filenamex)
 
     from modelspec.utils import load_json, load_yaml, load_xml
 
