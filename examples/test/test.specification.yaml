@@ -5,12 +5,12 @@ TopClass:
             type: str
             description: The unique id of the thing
         float_like_req:
-            type: int
+            type: float
             description: name says it all...
         float_like_optional:
-            type: int
+            type: float
             description: name also says it all...
-        float_like_optional2:
+        int_like_optional:
             type: int
             description: name also says it all...
         mid:
@@ -23,5 +23,5 @@ MidClassNoId:
             type: int
             description: name says it all...
         str_val:
-            type: int
+            type: str
             description: name says it all...

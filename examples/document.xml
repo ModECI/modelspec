@@ -1,5 +1,5 @@
-<?xml version="1.0" ?>
-<Document id="MyBook" title="My life in Python" ISBN="None">
+<?xml version="1.0" encoding="UTF-8"?>
+<Document id="MyBook" title="My life in Python">
     <Section id="Abstract">
         <Paragraph contents="Blah blah blah"/>
         <Paragraph contents="Blah2"/>

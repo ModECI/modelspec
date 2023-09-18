@@ -1,18 +1,11 @@
 {
-    "model": {
-        "substanceUnits": "mole",
-        "timeUnits": "second",
-        "extentUnits": "mole",
-        "listOfUnitDefinitions": [
-            {
-                "sid": "per_second",
-                "listOfUnits": [
-                    {
-                        "kind": "second",
-                        "exponent": -1.0
-                    }
-                ]
-            }
-        ]
+    "test_minimal_example": {
+        "level": "3",
+        "version": "2",
+        "model": {
+            "substanceUnits": "mole",
+            "timeUnits": "second",
+            "extentUnits": "mole"
+        }
     }
 }

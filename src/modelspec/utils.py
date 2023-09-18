@@ -14,7 +14,7 @@ from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
 
 from random import Random
-from typing import Union
+from typing import Union, Dict
 
 verbose = False
 
@@ -247,8 +247,12 @@ def build_xml_element(data, parent=None):
     if parent is None:
         parent = ET.Element(data.__class__.__name__)
 
+    print_(" == Converting to XML: %s" % data, verbose)
+
     attrs = attr.fields(data.__class__)
     for aattr in attrs:
+
+        print_("     == Looking at: {} ({})".format(aattr, type(aattr)), verbose)
         if isinstance(aattr.default, attr.Factory):
             children = data.__getattribute__(aattr.name)
             if not isinstance(children, (list, tuple)):
@@ -258,11 +262,32 @@ def build_xml_element(data, parent=None):
                 child_element = build_xml_element(child)
                 parent.append(child_element)
 
-        # Filters name space and schemaLoacation attributes, only allows non name space attributes to be added as attributes
+        # Filters name space and schemaLocation attributes, only allows non name space attributes to be added as attributes
         elif not isinstance(aattr.default, str):
             attribute_name = aattr.name
             attribute_value = data.__getattribute__(aattr.name)
-            parent.set(attribute_name, str(attribute_value))
+            print_(
+                f"     --   {attribute_name} = {attribute_value} (is type: {type(attribute_value)}, should be type:{aattr.type}))",
+                verbose,
+            )
+            if attribute_value is not None:
+                if (
+                    type(attribute_value) == int
+                    or type(attribute_value) == float
+                    or type(attribute_value) == str
+                    or type(attribute_value) == bool
+                    or type(attribute_value) == list
+                ):
+                    parent.set(attribute_name, str(attribute_value))
+                elif type(attribute_value) == dict:
+
+                    """for k, v in attribute_value.items():
+                    child_element = build_xml_element(v)"""
+                else:
+                    child_element = build_xml_element(attribute_value)
+                    child_element.tag = attribute_name
+                    #
+                    parent.append(child_element)
 
     # This defines the various namespaces and schemaLocation of the generated xml
     if hasattr(data, "xmlns"):
@@ -285,13 +310,12 @@ def ascii_encode_dict(data):
 
 def _parse_element(dict_format, to_build):
 
-    if verbose:
-        print("Parse for element: [%s]" % dict_format)
+    print_("Parse for element: [%s]" % dict_format, verbose)
     for k in dict_format.keys():
-        if verbose:
-            print(
-                "  Setting id: {} in {} ({})".format(k, type.__name__, type(to_build))
-            )
+        print_(
+            "  Setting id: {} in {} ({})".format(k, type.__name__, type(to_build)),
+            verbose,
+        )
         to_build.id = k
         to_build = _parse_attributes(dict_format[k], to_build)
 
@@ -303,10 +327,10 @@ def _parse_attributes(dict_format, to_build):
     for key in dict_format:
         value = dict_format[key]
         new_format = True
-        if verbose:
-            print(
-                "  Setting {}={} ({}) in {}".format(key, value, type(value), to_build)
-            )
+        print_(
+            "  Setting {}={} ({}) in {}".format(key, value, type(value), to_build),
+            verbose,
+        )
 
         if new_format:
             if type(to_build) == dict:
@@ -316,8 +340,7 @@ def _parse_attributes(dict_format, to_build):
                 type_to_use = to_build.allowed_children[key][1]
                 for v in value:
                     ff = type_to_use()
-                    if verbose:
-                        print(f"    Type for {key}: {type_to_use} ({ff})")
+                    print_(f"    Type for {key}: {type_to_use} ({ff})", verbose)
                     ff = _parse_element({v: value[v]}, ff)
                     exec("to_build.%s.append(ff)" % key)
             else:
@@ -332,13 +355,11 @@ def _parse_attributes(dict_format, to_build):
                     to_build.__setattr__(key, value)
                 else:
                     type_to_use = to_build.allowed_fields[key][1]
-                    if verbose:
-                        print(
-                            "type_to_use: {} ({})".format(
-                                type_to_use, type(type_to_use)
-                            )
-                        )
-                        print(f"- {key} = {value}")
+                    print_(
+                        "type_to_use: {} ({})".format(type_to_use, type(type_to_use)),
+                        verbose,
+                    )
+                    print_(f"- {key} = {value}", verbose)
 
                     if type_to_use == EvaluableExpression:
                         vv = {}
@@ -449,19 +470,17 @@ def evaluate(
     if array_format == FORMAT_TENSORFLOW:
         import tensorflow as tf
 
-    if verbose:
-        print_(
-            " > Evaluating: [%s] which is a: %s, vs parameters: %s (using %s arrays)..."
-            % (expr, type(expr).__name__, _params_info(parameters), array_format),
-            verbose,
-        )
+    print_(
+        " > Evaluating: [%s] which is a: %s, vs parameters: %s (using %s arrays)..."
+        % (expr, type(expr).__name__, _params_info(parameters), array_format),
+        verbose,
+    )
     try:
         if type(expr) == str and expr in parameters:
             expr = parameters[
                 expr
             ]  # replace with the value in parameters & check whether it's float/int...
-            if verbose:
-                print_("   Using for that param: %s" % _val_info(expr), verbose)
+            print_("   Using for that param: %s" % _val_info(expr), verbose)
 
         if type(expr) == str:
             try:
@@ -480,41 +499,34 @@ def evaluate(
                     pass
 
         if type(expr) == list:
-            if verbose:
-                print_("   Returning a list in format: %s" % array_format, verbose)
+            print_("   Returning a list in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.constant(expr, dtype=tf.float64)
             else:
                 return np.array(expr)
 
         if type(expr) == np.ndarray:
-            if verbose:
-                print_(
-                    "   Returning a numpy array in format: %s" % array_format, verbose
-                )
+            print_("   Returning a numpy array in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.convert_to_tensor(expr, dtype=tf.float64)
             else:
                 return np.array(expr)
 
         if "Tensor" in type(expr).__name__:
-            if verbose:
-                print_(
-                    "   Returning a tensorflow Tensor in format: %s" % array_format,
-                    verbose,
-                )
+            print_(
+                "   Returning a tensorflow Tensor in format: %s" % array_format,
+                verbose,
+            )
             if array_format == FORMAT_NUMPY:
                 return expr.numpy()
             else:
                 return expr
 
         if int(expr) == expr and cast_to_int:
-            if verbose:
-                print_("   Returning int: %s" % int(expr), verbose)
+            print_("   Returning int: %s" % int(expr), verbose)
             return int(expr)
         else:  # will have failed if not number
-            if verbose:
-                print_("   Returning {}: {}".format(type(expr), expr), verbose)
+            print_("   Returning {}: {}".format(type(expr), expr), verbose)
             return expr
     except:
         try:
@@ -531,25 +543,22 @@ def evaluate(
             if type(expr) == str and "numpy." in expr:
                 parameters["numpy"] = np
 
-            if verbose:
-                print_(
-                    "   Trying to eval [%s] with Python using %s..."
-                    % (expr, parameters.keys()),
-                    verbose,
-                )
+            print_(
+                "   Trying to eval [%s] with Python using %s..."
+                % (expr, parameters.keys()),
+                verbose,
+            )
 
             v = eval(expr, parameters)
 
-            if verbose:
-                print_(
-                    "   Evaluated with Python: {} = {}".format(expr, _val_info(v)),
-                    verbose,
-                )
+            print_(
+                "   Evaluated with Python: {} = {}".format(expr, _val_info(v)),
+                verbose,
+            )
 
             if (type(v) == float or type(v) == str) and int(v) == v:
 
-                if verbose:
-                    print_("   Returning int: %s" % int(v), verbose)
+                print_("   Returning int: %s" % int(v), verbose)
 
                 if array_format == FORMAT_TENSORFLOW:
                     return tf.constant(int(v))
@@ -557,8 +566,7 @@ def evaluate(
                     return int(v)
             return v
         except Exception as e:
-            if verbose:
-                print_(f"   Returning without altering: {expr} (error: {e})", verbose)
+            print_(f"   Returning without altering: {expr} (error: {e})", verbose)
             return expr
 
 

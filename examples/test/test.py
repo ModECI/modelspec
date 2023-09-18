@@ -10,10 +10,19 @@ from typing import Any
 
 
 def convert2float(x: Any) -> float:
-    print("Converting {} ({})".format(x, type(x)))
+    print("convert2float {} ({})".format(x, type(x)))
     """Convert to float if not None"""
     if x is not None:
         return float(x)
+    else:
+        return None
+
+
+def convert2int(x: Any) -> int:
+    print("convert2int {} ({})".format(x, type(x)))
+    """Convert to int if not None"""
+    if x is not None:
+        return int(x)
     else:
         return None
 
@@ -29,7 +38,7 @@ class MidClassNoId(Base):
     """
 
     int_val: int = field(default=None, validator=instance_of(int))
-    str_val: int = field(default=None, validator=optional(instance_of(str)))
+    str_val: str = field(default=None, validator=optional(instance_of(str)))
 
 
 @modelspec.define
@@ -41,18 +50,18 @@ class TopClass(Base):
         id: The unique id of the thing
         float_like_req: name says it all...
         float_like_optional: name also says it all...
-        float_like_optional2: name also says it all...
+        int_like_optional: name also says it all...
     """
 
     id: str = field(validator=instance_of(str))
-    float_like_req: int = field(
+    float_like_req: float = field(
         default=None, validator=instance_of(float), converter=convert2float
     )
-    float_like_optional: int = field(
+    float_like_optional: float = field(
         default=None, validator=optional(instance_of(float)), converter=convert2float
     )
-    float_like_optional2: int = field(
-        default=None, validator=optional(instance_of(float)), converter=convert2float
+    int_like_optional: int = field(
+        default=None, validator=optional(instance_of(int)), converter=convert2int
     )
 
     mid: MidClassNoId = field(
@@ -66,8 +75,8 @@ tc = TopClass(
 
 # tc.float_like_req = 2.01
 tc.float_like_optional = 44
-tc.float_like_optional2 = 66
-# tc.mid = MidClassNoId(int_val=4, str_val="three")
+# tc.float_like_optional2 = 66
+tc.mid = MidClassNoId(int_val=4, str_val="three")
 
 
 print(tc)
