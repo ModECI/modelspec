@@ -3,10 +3,11 @@ from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from modelspec.utils import load_json
 from typing import List
+from typing import Any
+import sys
+
 
 # Example testing multiple options...
-
-from typing import Any
 
 
 def convert2float(x: Any) -> float:
@@ -83,7 +84,9 @@ print(tc)
 
 tc.to_yaml_file("test_instance.yaml")
 tc.to_json_file("test_instance.json")
-tc.to_xml_file("test_instance.xml")
+
+if sys.version_info >= (3, 8):
+    tc.to_xml_file("test_instance.xml")
 
 str_b4 = str(tc)
 
