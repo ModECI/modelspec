@@ -57,11 +57,13 @@ def print_(text: str, print_it: bool = False):
     """
     Print a message preceded by modelspec, only if print_it=True
     """
+    if not print_it:
+        return
+
     prefix = "modelspec >>> "
     if not isinstance(text, str):
         text = ("%s" % text).decode("ascii")
-    if print_it:
-        print("{}{}".format(prefix, text.replace("\n", "\n" + prefix)))
+    print("{}{}".format(prefix, text.replace("\n", "\n" + prefix)))
 
 
 def print_v(text: str):
@@ -128,11 +130,14 @@ class Base:
         root = build_xml_element(self)
 
         xml_string = ET.tostring(
-            root, encoding="utf-8", xml_declaration=False, method="xml"
+            root, encoding="UTF-8", xml_declaration=True, method="xml"
         ).decode("utf-8")
 
         parsed_xml = xml.dom.minidom.parseString(xml_string)
         pretty_xml = parsed_xml.toprettyxml(indent=" " * 4)
+        pretty_xml = pretty_xml.replace(
+            '?xml version="1.0" ?', '?xml version="1.0" encoding="UTF-8"?'
+        )
         return pretty_xml
 
     @classmethod
@@ -157,9 +162,24 @@ class Base:
             return converter.structure(d, cls)
 
     @classmethod
+    def from_yaml(cls, yaml_str: str) -> "Base":
+        """Instantiate an modelspec object from a YAML string"""
+        return cls.from_dict(yaml.load(yaml_str, Loader=yaml.SafeLoader))
+
+    @classmethod
+    def from_yaml_file(cls, yaml_file: str) -> "Base":
+        """Instantiate an modelspec object from a file containing YAML"""
+        return cls.from_dict(yaml.load(yaml_str, Loader=yaml.SafeLoader))
+
+    @classmethod
     def from_json(cls, json_str: str) -> "Base":
         """Instantiate an modelspec object from a JSON string"""
         return cls.from_dict(json.loads(json_str))
+
+    @classmethod
+    def from_json_file(cls, json_file: str) -> "Base":
+        """Instantiate an modelspec object from a file containing JSON"""
+        return cls.from_dict(json.load(json_file))
 
     @classmethod
     def from_bson(cls, bson_str: str) -> "Base":
@@ -303,14 +323,7 @@ class Base:
         if filename is None:
             filename = f"{self.id}.xml"
 
-        root = build_xml_element(self)
-
-        # Generate the XML string
-        xml_str = ET.tostring(root, encoding="utf-8", method="xml").decode("utf-8")
-
-        # Create a pretty-formatted XML string using minidom
-        parsed_xml = xml.dom.minidom.parseString(xml_str)
-        pretty_xml_str = parsed_xml.toprettyxml(indent=" " * 4)
+        pretty_xml_str = self.to_xml()
 
         # Write the XML data to the file
         with open(filename, "w", encoding="utf-8") as file:

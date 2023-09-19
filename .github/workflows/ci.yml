@@ -47,7 +47,7 @@ jobs:
       run: |
         pip list
 
-    - name: Run some examples
+    - name: Run simple examples
       run: |
         cd examples
         python document.py
@@ -55,12 +55,21 @@ jobs:
         cd test
         python test.py
 
-        ## Test NeuroML example
+    - name: Test NeuroML examples
+      if: ${{ matrix.python-version != '3.7'}}
+      run: |
 
-        cd ../neuroml2
+        cd examples/neuroml2
         python neuroml2_spec.py
 
         # Note: NeuroML files will be validated with OMV below
+
+    - name: Test SBML examples
+      if: ${{ matrix.python-version != '3.7'}}
+      run: |
+
+        cd examples/sbml
+        ./regenerateAndTest.sh
 
     - name: Run pytest
       run: |

@@ -162,8 +162,9 @@ def test_save_load_json(tmp_path):
     # net.id = net.id+'_yaml'
     net.to_yaml_file(filenamey)
 
-    # filenamex = str(Path(tmp_path) / f"{net.id}.xml")
-    # net.to_xml_file(filenamex)
+    if sys.version_info >= (3, 8):
+        filenamex = str(Path(tmp_path) / f"{net.id}.xml")
+        net.to_xml_file(filenamex)
 
     from modelspec.utils import load_json, load_yaml, load_xml
 
@@ -173,11 +174,23 @@ def test_save_load_json(tmp_path):
 
     str_netj = str(netj)
 
+    netj2 = NewNetwork.from_json(net.to_json())
+    str_netj2 = str(netj2)
+
+    netj3 = NewNetwork.from_json_file(filenamej)
+    str_netj3 = str(netj3)
+
     datay = load_yaml(filenamey)
     print_v("Loaded network specification from %s" % filenamey)
 
     nety = NewNetwork.from_dict(datay)
     str_nety = str(nety)
+
+    nety2 = NewNetwork.from_yaml(net.to_yaml() + " ")
+    str_nety2 = str(nety2)
+
+    nety3 = NewNetwork.from_yaml_file(filenamey)
+    str_nety3 = str(nety3)
 
     # datax = load_xml(filenamex)
     # print_v("Loaded network specification from %s" % filenamex)
@@ -201,6 +214,8 @@ def test_save_load_json(tmp_path):
         )  # Order not preserved in py2, just test len
     else:
         assert str_orig == str_netj
+        assert str_orig == str_netj2
+        assert str_orig == str_netj3
 
     print("Test YAML..")
     if sys.version_info[0] == 2:
@@ -209,6 +224,8 @@ def test_save_load_json(tmp_path):
         )  # Order not preserved in py2, just test len
     else:
         assert str_orig == str_nety
+        assert str_orig == str_nety2
+        assert str_orig == str_nety3
 
     # print("Test XML..")
     # if sys.version_info[0] == 2:

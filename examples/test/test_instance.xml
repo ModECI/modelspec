@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TopClass id="MyTest" float_like_req="4.0" float_like_optional="44.0">
+    <mid int_val="4" str_val="three"/>
+</TopClass>
