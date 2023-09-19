@@ -882,4 +882,3 @@ Allowed field    Data Type    Description
 **xmlns**        str          str fixed "http://www.w3.org/1999/xhtml"
 **content**      str          str valid XHTML
 ===============  ===========  ========================================
-
