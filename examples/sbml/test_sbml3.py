@@ -41,6 +41,31 @@ def test_example_sbml_minimal():
     sbml_doc.to_yaml_file(f"{name}.yaml")
     sbml_doc.to_xml_file(f"{name}.xml")
 
+    print("Generating documentation...")
+
+    doc_md = sbml_doc.generate_documentation(format="markdown")
+
+    with open("SBML.md", "w") as d:
+        d.write(doc_md)
+
+    doc_rst = sbml_doc.generate_documentation(format="rst")
+
+    with open("SBML.rst", "w") as d:
+        d.write(doc_rst)
+
+    print("\n  >> Generating specification in dict form...")
+    doc_dict = sbml_doc.generate_documentation(format="dict")
+
+    with open("SBML.specification.json", "w") as d:
+        d.write(json.dumps(doc_dict, indent=4))
+
+    print("  >> Generating specification in YAML...\n")
+
+    with open("SBML.specification.yaml", "w") as d:
+        yy = yaml.dump(doc_dict, indent=4, sort_keys=False)
+        # print(yy)
+        d.write(yy)
+
 
 if __name__ == "__main__":
     test_example_sbml_minimal()
