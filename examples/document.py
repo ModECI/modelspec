@@ -52,7 +52,7 @@ class Document(Base):
     sections: List[Section] = field(factory=list)
 
 
-doc = Document(id="MyBook")
+doc = Document(id="MyBook", ISBN=123)
 doc.title = "My life in Python"
 
 a = Section(id="Abstract")

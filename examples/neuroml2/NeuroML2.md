@@ -13,7 +13,21 @@ Some description...
   <tr>
     <td><b>xmlns</b></td>
     <td>str</td>
-    <td><i>Schema for NeuroML 2, usually http://www.neuroml.org/schema/neuroml2</i></td>
+    <td><i>Default namespace for the NeuroML file, usually http://www.neuroml.org/schema/neuroml2</i></td>
+ </tr>
+
+
+  <tr>
+    <td><b>xmlns_xsi</b></td>
+    <td>str</td>
+    <td><i>Namespace for XMLSchema-instance</i></td>
+ </tr>
+
+
+  <tr>
+    <td><b>xmlns_loc</b></td>
+    <td>str</td>
+    <td><i>Specifies location of the main namespace</i></td>
  </tr>
 
 
@@ -24,14 +38,14 @@ Some description...
   <tr>
     <td><b>izhikevich2007Cells</b></td>
     <td><a href="#izhikevich2007cell">izhikevich2007Cell</a></td>
-    <td><i></i></td>
+    <td><i>The izhikevich2007Cells</i></td>
   </tr>
 
 
   <tr>
     <td><b>pulseGenerators</b></td>
     <td><a href="#pulsegenerator">pulseGenerator</a></td>
-    <td><i></i></td>
+    <td><i>The pulse current generators</i></td>
   </tr>
 
 

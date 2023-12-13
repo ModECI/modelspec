@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version2/core" id="test_minimal_example" level="3" version="2">
+    <model substanceUnits="mole" timeUnits="second" extentUnits="mole">
+        <listOfUnitDefinitions>
+            <unitDefinition id="per_second">
+                <listOfUnits>
+                    <unit kind="second" exponent="-1.0" scale="0" multiplier="1.0"/>
+                </listOfUnits>
+            </unitDefinition>
+        </listOfUnitDefinitions>
+    </model>
+</sbml>

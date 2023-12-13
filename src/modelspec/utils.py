@@ -14,7 +14,7 @@ from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
 
 from random import Random
-from typing import Union
+from typing import Union, Dict
 
 verbose = False
 
@@ -67,19 +67,35 @@ def load_xml(filename: str):
     Args:
         filename: The name of the XML file to load.
     """
+    import re
+
     with open(filename, "rb") as infile:
         tree = ET.parse(infile)  # Parse the XML file into an ElementTree object
         root = tree.getroot()  # Get the root element
 
-    # Convert the ElementTree object to a dictionary
-    data = element_to_dict(root)
-    removed_id = handle_id(data)
-    converted_to_actual_val = convert_values(removed_id)
+    # This defines regular expressions to match the namespace patterns to be removed
+    ns_prefix_pattern = r"(ns\d+:|:ns\d+)"
 
-    return convert_values(converted_to_actual_val)
+    # Converts the loaded xml into a string and removes unwanted string values ':ns0' to :ns∞ and 'ns0:' to ns∞:
+    # They prevent the xml from loading correctly
+    xml_string = ET.tostring(root).decode()
+    cleaned_xml = re.sub(ns_prefix_pattern, "", xml_string).strip()
+
+    # Removes xmlns, xmlns:xsi and xsi:schemaLocation from the xml structure for conversion
+    # it passes an element tree object to the elementtree_element_to_dict function
+    removed_namespaces = process_xml_namespace(cleaned_xml)
+
+    # Converts the resulting xml stripped of xmlns, xmlns:xsi and xsi:schemaLocation into a dict
+    data = elementtree_element_to_dict(removed_namespaces)
+
+    # Removes every key having 'id' and replaces it with it's value
+    removed_id = handle_xml_dict_id(data)
+
+    # Values are returned as strings after conversion, this corrects them to their actual values
+    return convert_xml_dict_values(removed_id)
 
 
-def element_to_dict(element):
+def elementtree_element_to_dict(element):
     """
     This convert an ElementTree element to a dictionary.
 
@@ -94,35 +110,57 @@ def element_to_dict(element):
     if attrs:
         result.update(attrs)
 
+    children_by_tag = {}
     for child_element in element:
-        child_key = child_element.tag
-        child_value = element_to_dict(child_element)
+        child_key = child_element.tag + "s"
+        child_value = elementtree_element_to_dict(child_element)
 
-        if child_key in result:
-            if not isinstance(result[child_key], list):
-                result[child_key] = [result[child_key]]
-            result[child_key].append(child_value)
-        else:
+        # Check if the child element has an 'id' attribute
+        if "id" in child_element.attrib:
+            # If the child element has an 'id', add it to the result dictionary directly
             result[child_key] = child_value
+        else:
+            # If the child element does not have an 'id', represent it as a list
+            children_by_tag.setdefault(child_key, []).append(child_value)
+
+    # Append the lists to the result dictionary
+    result.update(children_by_tag)
 
     return result
 
 
-def handle_id(dictionary):
+def process_xml_namespace(xml_string):
+    # Remove ignored elements from the XML string
+    ignored_elements = [
+        'xmlns="http://www.neuroml.org/schema/neuroml2"',
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"',
+        'xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2.3.xsd"',
+    ]
+
+    # Loops through the xml string and removes every instance of the elements in the list named ignored_elements
+    for ignored_element in ignored_elements:
+        xml_string = xml_string.replace(ignored_element, "").strip()
+
+    # Parse the XML string into an ElementTree
+    root = ET.fromstring(xml_string)
+    return root
+
+
+def handle_xml_dict_id(dictionary):
     if isinstance(dictionary, dict):
         if "id" in dictionary:
             nested_dict = {dictionary["id"]: dictionary.copy()}
             del nested_dict[dictionary["id"]]["id"]
-            return {k: handle_id(v) for k, v in nested_dict.items()}
+            return {k: handle_xml_dict_id(v) for k, v in nested_dict.items()}
         else:
-            return {k: handle_id(v) for k, v in dictionary.items()}
+            return {k: handle_xml_dict_id(v) for k, v in dictionary.items()}
     elif isinstance(dictionary, list):
-        return [handle_id(item) for item in dictionary]
+        return [handle_xml_dict_id(item) for item in dictionary]
     else:
         return dictionary
 
 
-def convert_values(value):
+def convert_xml_dict_values(value):
     """
     This recursively converts values to their actual types.
 
@@ -146,9 +184,9 @@ def convert_values(value):
         elif value.lower() == "none":
             return None
     elif isinstance(value, dict):
-        return {key: convert_values(val) for key, val in value.items()}
+        return {key: convert_xml_dict_values(val) for key, val in value.items()}
     elif isinstance(value, list):
-        return [convert_values(item) for item in value]
+        return [convert_xml_dict_values(item) for item in value]
 
     return value
 
@@ -209,8 +247,12 @@ def build_xml_element(data, parent=None):
     if parent is None:
         parent = ET.Element(data.__class__.__name__)
 
+    print_(" == Converting to XML: %s" % data, verbose)
+
     attrs = attr.fields(data.__class__)
     for aattr in attrs:
+
+        print_("     == Looking at: {} ({})".format(aattr, type(aattr)), verbose)
         if isinstance(aattr.default, attr.Factory):
             children = data.__getattribute__(aattr.name)
             if not isinstance(children, (list, tuple)):
@@ -219,11 +261,41 @@ def build_xml_element(data, parent=None):
             for child in children:
                 child_element = build_xml_element(child)
                 parent.append(child_element)
-        else:
+
+        # Filters name space and schemaLocation attributes, only allows non name space attributes to be added as attributes
+        elif not isinstance(aattr.default, str):
             attribute_name = aattr.name
             attribute_value = data.__getattribute__(aattr.name)
-            parent.set(attribute_name, str(attribute_value))
+            print_(
+                f"     --   {attribute_name} = {attribute_value} (is type: {type(attribute_value)}, should be type:{aattr.type}))",
+                verbose,
+            )
+            if attribute_value is not None:
+                if (
+                    type(attribute_value) == int
+                    or type(attribute_value) == float
+                    or type(attribute_value) == str
+                    or type(attribute_value) == bool
+                    or type(attribute_value) == list
+                ):
+                    parent.set(attribute_name, str(attribute_value))
+                elif type(attribute_value) == dict:
 
+                    """for k, v in attribute_value.items():
+                    child_element = build_xml_element(v)"""
+                else:
+                    child_element = build_xml_element(attribute_value)
+                    child_element.tag = attribute_name
+                    #
+                    parent.append(child_element)
+
+    # This defines the various namespaces and schemaLocation of the generated xml
+    if hasattr(data, "xmlns"):
+        parent.set("xmlns", data.xmlns)
+    if hasattr(data, "xmlns_xsi"):
+        parent.set("xmlns:xsi", data.xmlns_xsi)
+    if hasattr(data, "xmlns_loc"):
+        parent.set("xsi:schemaLocation", str(data.xmlns_loc))
     return parent
 
 
@@ -238,13 +310,12 @@ def ascii_encode_dict(data):
 
 def _parse_element(dict_format, to_build):
 
-    if verbose:
-        print("Parse for element: [%s]" % dict_format)
+    print_("Parse for element: [%s]" % dict_format, verbose)
     for k in dict_format.keys():
-        if verbose:
-            print(
-                "  Setting id: {} in {} ({})".format(k, type.__name__, type(to_build))
-            )
+        print_(
+            "  Setting id: {} in {} ({})".format(k, type.__name__, type(to_build)),
+            verbose,
+        )
         to_build.id = k
         to_build = _parse_attributes(dict_format[k], to_build)
 
@@ -256,10 +327,10 @@ def _parse_attributes(dict_format, to_build):
     for key in dict_format:
         value = dict_format[key]
         new_format = True
-        if verbose:
-            print(
-                "  Setting {}={} ({}) in {}".format(key, value, type(value), to_build)
-            )
+        print_(
+            "  Setting {}={} ({}) in {}".format(key, value, type(value), to_build),
+            verbose,
+        )
 
         if new_format:
             if type(to_build) == dict:
@@ -269,8 +340,7 @@ def _parse_attributes(dict_format, to_build):
                 type_to_use = to_build.allowed_children[key][1]
                 for v in value:
                     ff = type_to_use()
-                    if verbose:
-                        print(f"    Type for {key}: {type_to_use} ({ff})")
+                    print_(f"    Type for {key}: {type_to_use} ({ff})", verbose)
                     ff = _parse_element({v: value[v]}, ff)
                     exec("to_build.%s.append(ff)" % key)
             else:
@@ -285,13 +355,11 @@ def _parse_attributes(dict_format, to_build):
                     to_build.__setattr__(key, value)
                 else:
                     type_to_use = to_build.allowed_fields[key][1]
-                    if verbose:
-                        print(
-                            "type_to_use: {} ({})".format(
-                                type_to_use, type(type_to_use)
-                            )
-                        )
-                        print(f"- {key} = {value}")
+                    print_(
+                        "type_to_use: {} ({})".format(type_to_use, type(type_to_use)),
+                        verbose,
+                    )
+                    print_(f"- {key} = {value}", verbose)
 
                     if type_to_use == EvaluableExpression:
                         vv = {}
@@ -402,19 +470,17 @@ def evaluate(
     if array_format == FORMAT_TENSORFLOW:
         import tensorflow as tf
 
-    if verbose:
-        print_(
-            " > Evaluating: [%s] which is a: %s, vs parameters: %s (using %s arrays)..."
-            % (expr, type(expr).__name__, _params_info(parameters), array_format),
-            verbose,
-        )
+    print_(
+        " > Evaluating: [%s] which is a: %s, vs parameters: %s (using %s arrays)..."
+        % (expr, type(expr).__name__, _params_info(parameters), array_format),
+        verbose,
+    )
     try:
         if type(expr) == str and expr in parameters:
             expr = parameters[
                 expr
             ]  # replace with the value in parameters & check whether it's float/int...
-            if verbose:
-                print_("   Using for that param: %s" % _val_info(expr), verbose)
+            print_("   Using for that param: %s" % _val_info(expr), verbose)
 
         if type(expr) == str:
             try:
@@ -433,41 +499,34 @@ def evaluate(
                     pass
 
         if type(expr) == list:
-            if verbose:
-                print_("   Returning a list in format: %s" % array_format, verbose)
+            print_("   Returning a list in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.constant(expr, dtype=tf.float64)
             else:
                 return np.array(expr)
 
         if type(expr) == np.ndarray:
-            if verbose:
-                print_(
-                    "   Returning a numpy array in format: %s" % array_format, verbose
-                )
+            print_("   Returning a numpy array in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.convert_to_tensor(expr, dtype=tf.float64)
             else:
                 return np.array(expr)
 
         if "Tensor" in type(expr).__name__:
-            if verbose:
-                print_(
-                    "   Returning a tensorflow Tensor in format: %s" % array_format,
-                    verbose,
-                )
+            print_(
+                "   Returning a tensorflow Tensor in format: %s" % array_format,
+                verbose,
+            )
             if array_format == FORMAT_NUMPY:
                 return expr.numpy()
             else:
                 return expr
 
         if int(expr) == expr and cast_to_int:
-            if verbose:
-                print_("   Returning int: %s" % int(expr), verbose)
+            print_("   Returning int: %s" % int(expr), verbose)
             return int(expr)
         else:  # will have failed if not number
-            if verbose:
-                print_("   Returning {}: {}".format(type(expr), expr), verbose)
+            print_("   Returning {}: {}".format(type(expr), expr), verbose)
             return expr
     except:
         try:
@@ -484,25 +543,22 @@ def evaluate(
             if type(expr) == str and "numpy." in expr:
                 parameters["numpy"] = np
 
-            if verbose:
-                print_(
-                    "   Trying to eval [%s] with Python using %s..."
-                    % (expr, parameters.keys()),
-                    verbose,
-                )
+            print_(
+                "   Trying to eval [%s] with Python using %s..."
+                % (expr, parameters.keys()),
+                verbose,
+            )
 
             v = eval(expr, parameters)
 
-            if verbose:
-                print_(
-                    "   Evaluated with Python: {} = {}".format(expr, _val_info(v)),
-                    verbose,
-                )
+            print_(
+                "   Evaluated with Python: {} = {}".format(expr, _val_info(v)),
+                verbose,
+            )
 
             if (type(v) == float or type(v) == str) and int(v) == v:
 
-                if verbose:
-                    print_("   Returning int: %s" % int(v), verbose)
+                print_("   Returning int: %s" % int(v), verbose)
 
                 if array_format == FORMAT_TENSORFLOW:
                     return tf.constant(int(v))
@@ -510,8 +566,7 @@ def evaluate(
                     return int(v)
             return v
         except Exception as e:
-            if verbose:
-                print_(f"   Returning without altering: {expr} (error: {e})", verbose)
+            print_(f"   Returning without altering: {expr} (error: {e})", verbose)
             return expr
 
 

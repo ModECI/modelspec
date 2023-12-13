@@ -1,0 +1,10 @@
+{
+    "MyTest": {
+        "float_like_req": 4.0,
+        "float_like_optional": 44.0,
+        "mid": {
+            "int_val": 4,
+            "str_val": "three"
+        }
+    }
+}
