@@ -1,0 +1,735 @@
+sbml:
+    definition: 'The top-level SBML container implementing SBML 3.2. See sbml.level-3.version-2.core.release-2.pdf
+        section 4.
+
+        http://www.sbml.org/sbml/level3/version2/'
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        id:
+            type: str
+            description: ''
+        xmlns:
+            type: str
+            description: '  string, fixed to "http://www.sbml.org/sbml/level3/version2/core"'
+        level:
+            type: str
+            description: '  SBML level, fixed to 3'
+        version:
+            type: str
+            description: SBML version, fixed to 2
+        model:
+            type: Model
+            description: '  Optional model'
+Notes:
+    definition: XHTML field of SBase
+    allowed_parameters:
+        xmlns:
+            type: str
+            description: str fixed "http://www.w3.org/1999/xhtml"
+        content:
+            type: str
+            description: str valid XHTML
+Model:
+    definition: The model
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        substanceUnits:
+            type: str
+            description: '  UnitSIdRef optional'
+        timeUnits:
+            type: str
+            description: '       UnitSIdRef optional'
+        volumeUnits:
+            type: str
+            description: '     UnitSIdRef optional'
+        areaUnits:
+            type: str
+            description: '       UnitSIdRef optional'
+        lengthUnits:
+            type: str
+            description: '     UnitSIdRef optional'
+        extentUnits:
+            type: str
+            description: '     UnitSIdRef optional'
+        conversionFactor:
+            type: str
+            description: SIdRef optional
+        listOfUnitDefinitions:
+            type: ListOfUnitDefinitions
+            description: ''
+    allowed_children:
+        listOfFunctionDefinitions:
+            type: FunctionDefinition
+            description: ''
+        listOfCompartments:
+            type: Compartment
+            description: ''
+        listOfSpecies:
+            type: Species
+            description: ''
+        listOfParameters:
+            type: Parameter
+            description: ''
+        listOfInitialAssignments:
+            type: InitialAssignment
+            description: ''
+        listOfRules:
+            type: Rule
+            description: ''
+        listOfConstraints:
+            type: Constraint
+            description: ''
+        listOfReactions:
+            type: Reaction
+            description: ''
+        listOfEvents:
+            type: Event
+            description: ''
+ListOfUnitDefinitions:
+    definition: A listOfUnitDefinitions
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+    allowed_children:
+        listOfUnitDefinitions:
+            type: unitDefinition
+            description: the actual list Of Unit Definitions
+unitDefinition:
+    definition: A unit definition
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        id:
+            type: str
+            description: ''
+        listOfUnits:
+            type: ListOfUnits
+            description: List of units used to compose the definition
+ListOfUnits:
+    definition: A listOfUnits
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+    allowed_children:
+        listOfUnits:
+            type: unit
+            description: the actual list Of Units
+unit:
+    definition: A unit used to compose a unit definition. unit = (multiplier x 10^scale
+        x kind)^exponent
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        kind:
+            type: str
+            description: base unit (base or derived SI units only, see Table 2 of
+                the SBML spec)
+        exponent:
+            type: str
+            description: double
+        scale:
+            type: str
+            description: integer
+        multiplier:
+            type: str
+            description: double
+FunctionDefinition:
+    definition: A function definition using MathML
+    allowed_parameters:
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        sid:
+            type: str
+            description: '    SId optional'
+        math:
+            type: Math
+            description: MathML function definition optional
+Math:
+    definition: Subset of MathML 2.0 used to define all formulae in SBML
+    allowed_parameters:
+        xmlns:
+            type: str
+            description: ''
+        content:
+            type: str
+            description: ''
+Compartment:
+    definition: A compartment
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        constant:
+            type: bool
+            description: whether size is fixed
+        spatialDimensions:
+            type: float
+            description: eg 3 for three dimensional space etc
+        size:
+            type: float
+            description: initial size of compartment
+        units:
+            type: str
+            description: units being used to define the compartment's size
+Species:
+    definition: 'A species: entities of the same kind participating in reactions within
+        a specific compartment'
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        compartment:
+            type: str
+            description: SIdRef
+        hasOnlySubstanceUnits:
+            type: bool
+            description: boolean
+        boundaryCondition:
+            type: bool
+            description: boolean
+        constant:
+            type: bool
+            description: boolean
+        initialAmount:
+            type: float
+            description: double optional
+        initialConcentration:
+            type: float
+            description: double optional
+        substanceUnits:
+            type: str
+            description: UnitSIdRef optional
+        conversionFactor:
+            type: str
+            description: SIdRef optional
+Parameter:
+    definition: A parameter
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        constant:
+            type: bool
+            description: boolean
+        value:
+            type: float
+            description: double optional
+        units:
+            type: str
+            description: UnitSIdRef optional
+InitialAssignment:
+    definition: An initial assignment
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        symbol:
+            type: str
+            description: SIdRef required
+        math:
+            type: str
+            description: MathML optional
+Rule:
+    definition: A rule, either algebraic, assignment or rate
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        math:
+            type: str
+            description: MathML optional
+Constraint:
+    definition: A model constraint
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        math:
+            type: str
+            description: '   MathML optional'
+        message:
+            type: str
+            description: XHTML 1.0 optional
+Reaction:
+    definition: A model reaction
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        reversible:
+            type: bool
+            description: boolean
+        compartment:
+            type: str
+            description: SIdRef optional
+        kineticLaw:
+            type: KineticLaw
+            description: ''
+    allowed_children:
+        listOfReactants:
+            type: SpeciesReference
+            description: ''
+        listOfProducts:
+            type: SpeciesReference
+            description: ''
+        listOfModifiers:
+            type: ModifierSpeciesReference
+            description: ''
+KineticLaw:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        math:
+            type: str
+            description: ''
+    allowed_children:
+        listOfLocalParameters:
+            type: LocalParameter
+            description: ''
+LocalParameter:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        value:
+            type: float
+            description: ''
+        units:
+            type: str
+            description: UnitSIdRef optional
+SpeciesReference:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        species:
+            type: str
+            description: SIdRef
+        stoichiometry:
+            type: float
+            description: double optional
+        constant:
+            type: bool
+            description: boolean
+ModifierSpeciesReference:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        species:
+            type: str
+            description: SIdRef
+Event:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        useValuesFromTriggerTime:
+            type: bool
+            description: ''
+        trigger:
+            type: Trigger
+            description: ''
+        priority:
+            type: Priority
+            description: ''
+        delay:
+            type: Delay
+            description: ''
+    allowed_children:
+        listOfEventAssignments:
+            type: EventAssignment
+            description: ''
+Trigger:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        initialValue:
+            type: bool
+            description: ''
+        persistent:
+            type: bool
+            description: ''
+        math:
+            type: str
+            description: ''
+Priority:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        math:
+            type: str
+            description: ''
+Delay:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        math:
+            type: str
+            description: ''
+EventAssignment:
+    allowed_parameters:
+        sid:
+            type: str
+            description: '    SId optional'
+        name:
+            type: str
+            description: '   string optional'
+        metaid:
+            type: str
+            description: ' XML ID optional'
+        sboTerm:
+            type: str
+            description: SBOTerm optional
+        notes:
+            type: Notes
+            description: '     XHTML 1.0 optional'
+        annotation:
+            type: str
+            description: XML content optional
+        math:
+            type: str
+            description: ''
+        variable:
+            type: str
+            description: SIdRef

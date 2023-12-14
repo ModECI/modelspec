@@ -24,6 +24,11 @@ python neuroml2_spec.py
 pynml -validate hello_world_neuroml.net.nml
 pynml -validate TestNeuroML.xml
 
+## Test SBML example
+
+cd ../sbml
+./regenerateAndTest.sh
+
 cd ../..
 
 
@@ -33,6 +38,7 @@ pytest tests -v
 
 ## Run OMV tests
 
+# See https://github.com/OpenSourceBrain/osb-model-validation
 omv all -V
 
 

@@ -163,3 +163,4 @@ cython_debug/
 .idea/
 /examples/document.specification.bson
 /examples/neuroml2/hello_world.v.dat
+/examples/sbml/example_sbml_test.xml

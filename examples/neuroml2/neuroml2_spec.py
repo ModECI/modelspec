@@ -197,7 +197,7 @@ if __name__ == "__main__":
 
     with open("NeuroML2.specification.yaml", "w") as d:
         yy = yaml.dump(doc_dict, indent=4, sort_keys=False)
-        print(yy)
+        # print(yy)
         d.write(yy)
 
     from modelspec.utils import load_xml
