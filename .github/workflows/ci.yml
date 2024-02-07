@@ -52,6 +52,7 @@ jobs:
       run: |
         cd examples
         python document.py
+        git diff
 
         cd test
         python test.py
