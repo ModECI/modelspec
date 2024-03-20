@@ -1,5 +1,6 @@
 MyBook:
     title: My life in Python
+    ISBN: 123
     sections:
         Abstract:
             paragraphs:
