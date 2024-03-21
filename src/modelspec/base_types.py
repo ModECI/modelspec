@@ -169,17 +169,12 @@ class Base:
     @classmethod
     def from_yaml_file(cls, yaml_file: str) -> "Base":
         """Instantiate an modelspec object from a file containing YAML"""
-        return cls.from_dict(yaml.load(yaml_str, Loader=yaml.SafeLoader))
+        return cls.from_dict(yaml.load(yaml_file, Loader=yaml.SafeLoader))
 
     @classmethod
     def from_json(cls, json_str: str) -> "Base":
         """Instantiate an modelspec object from a JSON string"""
         return cls.from_dict(json.loads(json_str))
-
-    @classmethod
-    def from_json_file(cls, json_file: str) -> "Base":
-        """Instantiate an modelspec object from a file containing JSON"""
-        return cls.from_dict(json.load(json_file))
 
     @classmethod
     def from_bson(cls, bson_str: str) -> "Base":
@@ -318,7 +313,6 @@ class Base:
         filename: Optional[str] = None,
         include_metadata: bool = True,
     ) -> str:
-        from modelspec.utils import build_xml_element
 
         if filename is None:
             filename = f"{self.id}.xml"

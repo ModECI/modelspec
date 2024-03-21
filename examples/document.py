@@ -3,6 +3,9 @@ from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
 from typing import List
 import sys
+import json
+import yaml
+import bson
 
 # Example showing how to create a model of a document and use it to create/serialize instances
 
@@ -96,9 +99,6 @@ with open("document.rst", "w") as d:
 print("\n  >> Generating specification in dict form...")
 doc_dict = doc.generate_documentation(format="dict")
 
-import json
-import yaml
-import bson
 
 with open("document.specification.json", "w") as d:
     d.write(json.dumps(doc_dict, indent=4))

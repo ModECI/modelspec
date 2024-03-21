@@ -192,8 +192,9 @@ def test_save_load_json(tmp_path):
     nety3 = NewNetwork.from_yaml_file(filenamey)
     str_nety3 = str(nety3)
 
-    # datax = load_xml(filenamex)
-    # print_v("Loaded network specification from %s" % filenamex)
+    datax = load_xml(filenamex)
+    assert len(datax) > 0
+    print_v("Loaded network specification from %s" % filenamex)
 
     # netx = NewNetwork.from_dict(datax)
     # str_netx = str(netx)
