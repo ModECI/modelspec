@@ -14,7 +14,7 @@ from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
 
 from random import Random
-from typing import Union, Dict
+from typing import Union
 
 verbose = False
 
@@ -272,11 +272,11 @@ def build_xml_element(data, parent=None):
             )
             if attribute_value is not None:
                 if (
-                    type(attribute_value) == int
-                    or type(attribute_value) == float
-                    or type(attribute_value) == str
-                    or type(attribute_value) == bool
-                    or type(attribute_value) == list
+                    type(attribute_value) is int
+                    or type(attribute_value) is float
+                    or type(attribute_value) is str
+                    or type(attribute_value) is bool
+                    or type(attribute_value) is list
                 ):
                     parent.set(attribute_name, str(attribute_value))
                 elif type(attribute_value) == dict:
@@ -411,15 +411,15 @@ def _val_info(param_val):
         pp = "%s" % param_val
         pp = pp.replace("\n", "")
         # pp+=' (TF %s %s)'%(param_val.shape,param_val.dtype)
-    elif type(param_val) == tuple:
+    elif type(param_val) is tuple:
         # If param_val is a tuple, recursively print its elements
         # separated by commas and wrapped in parentheses
         pp = "(" + ", ".join([_val_info(el) for el in param_val]) + ")"
     else:
         pp = "%s" % param_val
         t = type(param_val)
-        if not (t == int or t == float):
-            pp += "(%s)" % (t if type(t) == str else t.__name__)
+        if not (t is int or t is float):
+            pp += "(%s)" % (t if type(t) is str else t.__name__)
     return pp
 
 
@@ -476,13 +476,13 @@ def evaluate(
         verbose,
     )
     try:
-        if type(expr) == str and expr in parameters:
+        if type(expr) is str and expr in parameters:
             expr = parameters[
                 expr
             ]  # replace with the value in parameters & check whether it's float/int...
             print_("   Using for that param: %s" % _val_info(expr), verbose)
 
-        if type(expr) == str:
+        if type(expr) is str:
             try:
                 if array_format == FORMAT_TENSORFLOW:
                     expr = tf.constant(int(expr))
@@ -498,14 +498,14 @@ def evaluate(
                 except:
                     pass
 
-        if type(expr) == list:
+        if type(expr) is list:
             print_("   Returning a list in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.constant(expr, dtype=tf.float64)
             else:
                 return np.array(expr)
 
-        if type(expr) == np.ndarray:
+        if type(expr) is np.ndarray:
             print_("   Returning a numpy array in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.convert_to_tensor(expr, dtype=tf.float64)
@@ -538,9 +538,9 @@ def evaluate(
                     "The expression [%s] contains a random() call, but a random number generator (rng) must be supplied to the evaluate() call when this expression string is to be evaluated"
                 )
 
-            if type(expr) == str and "math." in expr:
+            if type(expr) is str and "math." in expr:
                 parameters["math"] = math
-            if type(expr) == str and "numpy." in expr:
+            if type(expr) is str and "numpy." in expr:
                 parameters["numpy"] = np
 
             print_(
@@ -556,7 +556,7 @@ def evaluate(
                 verbose,
             )
 
-            if (type(v) == float or type(v) == str) and int(v) == v:
+            if (type(v) is float or type(v) is str) and int(v) == v:
 
                 print_("   Returning int: %s" % int(v), verbose)
 
@@ -583,7 +583,7 @@ def parse_list_like(list_str):
         return [list_str]
     elif isinstance(list_str, list):
         return list_str
-    elif type(list_str) == str:
+    elif type(list_str) is str:
         try:
             expr = int(list_str)
             return [expr]
