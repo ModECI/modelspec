@@ -1,9 +1,9 @@
 #!/bin/bash
 set -ex
 
-## Install
+## Install modelspec incl. dev dependencies
 
-pip install .
+pip install .[dev]
 
 
 ## Test main example
