@@ -1,10 +1,9 @@
 import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
-from modelspec.utils import load_json
-from typing import List
 from typing import Any
 import sys
+import yaml
 
 
 # Example testing multiple options...
@@ -104,7 +103,6 @@ with open("test.md", "w") as d:
 print("\nGenerating specification in dict form")
 doc_dict = tc.generate_documentation(format="dict")
 
-import yaml
 
 print("Generating specification in YAML")
 with open("test.specification.yaml", "w") as d:
