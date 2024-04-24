@@ -112,7 +112,7 @@ jobs:
         python contributors.py
         cd sphinx
         make clean
-        make html
+        make html  
 
     - name: Install and test with OMV
       if: ${{ matrix.runs-on != 'windows-latest' }}
