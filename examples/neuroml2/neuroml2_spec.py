@@ -128,7 +128,6 @@ class neuroml(Base):
 
 
 if __name__ == "__main__":
-
     nml_doc = neuroml(id="TestNeuroML")
 
     izh = izhikevich2007Cell(

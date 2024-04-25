@@ -19,7 +19,7 @@ SBML_LEVEL = "3"
 
 
 def valid_kind(instance, attribute, value):
-    if not value in sbml_si_units:
+    if value not in sbml_si_units:
         raise ValueError(
             f"kind {value} must be one of the standard SI units: {sbml_si_units}"
         )
@@ -168,7 +168,6 @@ def validate_sbml(doc, units_consistency: bool = False) -> None:
 
 
 if __name__ == "__main__":
-
     import libsbml
 
     sbml_file = sys.argv[1]

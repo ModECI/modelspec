@@ -192,14 +192,12 @@ def convert_xml_dict_values(value):
 
 
 def save_to_json_file(info_dict, filename, indent=4):
-
     strj = json.dumps(info_dict, indent=indent)
     with open(filename, "w") as fp:
         fp.write(strj)
 
 
 def save_to_yaml_file(info_dict, filename, indent=4):
-
     if sys.version_info[0] == 2:
         stry = yaml.dump(info_dict, indent=indent, default_flow_style=False)
     else:
@@ -251,7 +249,6 @@ def build_xml_element(data, parent=None):
 
     attrs = attr.fields(data.__class__)
     for aattr in attrs:
-
         print_("     == Looking at: {} ({})".format(aattr, type(aattr)), verbose)
         if isinstance(aattr.default, attr.Factory):
             children = data.__getattribute__(aattr.name)
@@ -272,15 +269,14 @@ def build_xml_element(data, parent=None):
             )
             if attribute_value is not None:
                 if (
-                    type(attribute_value) is int
-                    or type(attribute_value) is float
-                    or type(attribute_value) is str
-                    or type(attribute_value) is bool
-                    or type(attribute_value) is list
+                    isinstance(attribute_value, int)
+                    or isinstance(attribute_value, float)
+                    or isinstance(attribute_value, str)
+                    or isinstance(attribute_value, bool)
+                    or isinstance(attribute_value, list)
                 ):
                     parent.set(attribute_name, str(attribute_value))
-                elif type(attribute_value) == dict:
-
+                elif isinstance(attribute_value, dict):
                     """for k, v in attribute_value.items():
                     child_element = build_xml_element(v)"""
                 else:
@@ -309,7 +305,6 @@ def ascii_encode_dict(data):
 
 
 def _parse_element(dict_format, to_build):
-
     print_("Parse for element: [%s]" % dict_format, verbose)
     for k in dict_format.keys():
         print_(
@@ -323,7 +318,6 @@ def _parse_element(dict_format, to_build):
 
 
 def _parse_attributes(dict_format, to_build):
-
     for key in dict_format:
         value = dict_format[key]
         new_format = True
@@ -333,7 +327,7 @@ def _parse_attributes(dict_format, to_build):
         )
 
         if new_format:
-            if type(to_build) == dict:
+            if isinstance(to_build, dict):
                 to_build[key] = value
 
             elif key in to_build.allowed_children:
@@ -345,11 +339,11 @@ def _parse_attributes(dict_format, to_build):
                     exec("to_build.%s.append(ff)" % key)
             else:
                 if (
-                    type(value) == str
-                    or type(value) == int
-                    or type(value) == float
-                    or type(value) == bool
-                    or type(value) == list
+                    isinstance(value, str)
+                    or isinstance(value, int)
+                    or isinstance(value, float)
+                    or isinstance(value, bool)
+                    or isinstance(value, list)
                     or value is None
                 ):
                     to_build.__setattr__(key, value)
@@ -370,11 +364,15 @@ def _parse_attributes(dict_format, to_build):
                         exec("to_build.%s = ff" % key)
 
         else:
-            if type(to_build) == dict:
+            if isinstance(to_build, dict):
                 to_build[key] = value
-            elif type(value) == str or type(value) == int or type(value) == float:
+            elif (
+                isinstance(value, str)
+                or isinstance(value, int)
+                or isinstance(value, float)
+            ):
                 to_build.__setattr__(key, value)
-            elif type(value) == list:
+            elif isinstance(value, list):
                 type_to_use = to_build.allowed_children[key][1]
 
                 for vl in value:
@@ -403,7 +401,7 @@ def locate_file(f, base_dir):
 
 
 def _val_info(param_val):
-    if type(param_val) == np.ndarray:
+    if isinstance(param_val, np.ndarray):
         pp = "%s" % (np.array2string(param_val, threshold=4, edgeitems=1))
         pp = pp.replace("\n", "")
         pp += f" (NP {param_val.shape} {param_val.dtype})"
@@ -489,7 +487,6 @@ def evaluate(
                 else:
                     expr = int(expr)
             except:
-
                 try:
                     if array_format == FORMAT_TENSORFLOW:
                         expr = tf.constant(float(expr))
@@ -557,7 +554,6 @@ def evaluate(
             )
 
             if (type(v) is float or type(v) is str) and int(v) == v:
-
                 print_("   Returning int: %s" % int(v), verbose)
 
                 if array_format == FORMAT_TENSORFLOW:
@@ -576,7 +572,6 @@ def evaluate(
 
 
 def parse_list_like(list_str):
-
     if isinstance(list_str, int):
         return [list_str]
     elif isinstance(list_str, float):
