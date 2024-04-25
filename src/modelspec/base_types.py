@@ -166,11 +166,6 @@ class Base:
         return cls.from_dict(yaml.load(yaml_str, Loader=yaml.SafeLoader))
 
     @classmethod
-    def from_yaml_file(cls, yaml_file: str) -> "Base":
-        """Instantiate an modelspec object from a file containing YAML"""
-        return cls.from_dict(yaml.load(yaml_file, Loader=yaml.SafeLoader))
-
-    @classmethod
     def from_json(cls, json_str: str) -> "Base":
         """Instantiate an modelspec object from a JSON string"""
         return cls.from_dict(json.loads(json_str))

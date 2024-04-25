@@ -7,7 +7,6 @@ a minimalish sbml to xml example
 
 import json
 import yaml
-import os
 
 from sbml32spec import *
 

@@ -1,6 +1,5 @@
 import requests
 import pandas as pd
-import json
 import textwrap
 from datetime import date
 
