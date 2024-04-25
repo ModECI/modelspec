@@ -14,7 +14,7 @@ from modelspec.base_types import print_
 from modelspec.base_types import EvaluableExpression
 
 from random import Random
-from typing import Union, Dict
+from typing import Union
 
 verbose = False
 
@@ -192,14 +192,12 @@ def convert_xml_dict_values(value):
 
 
 def save_to_json_file(info_dict, filename, indent=4):
-
     strj = json.dumps(info_dict, indent=indent)
     with open(filename, "w") as fp:
         fp.write(strj)
 
 
 def save_to_yaml_file(info_dict, filename, indent=4):
-
     if sys.version_info[0] == 2:
         stry = yaml.dump(info_dict, indent=indent, default_flow_style=False)
     else:
@@ -251,7 +249,6 @@ def build_xml_element(data, parent=None):
 
     attrs = attr.fields(data.__class__)
     for aattr in attrs:
-
         print_("     == Looking at: {} ({})".format(aattr, type(aattr)), verbose)
         if isinstance(aattr.default, attr.Factory):
             children = data.__getattribute__(aattr.name)
@@ -272,15 +269,14 @@ def build_xml_element(data, parent=None):
             )
             if attribute_value is not None:
                 if (
-                    type(attribute_value) == int
-                    or type(attribute_value) == float
-                    or type(attribute_value) == str
-                    or type(attribute_value) == bool
-                    or type(attribute_value) == list
+                    isinstance(attribute_value, int)
+                    or isinstance(attribute_value, float)
+                    or isinstance(attribute_value, str)
+                    or isinstance(attribute_value, bool)
+                    or isinstance(attribute_value, list)
                 ):
                     parent.set(attribute_name, str(attribute_value))
-                elif type(attribute_value) == dict:
-
+                elif isinstance(attribute_value, dict):
                     """for k, v in attribute_value.items():
                     child_element = build_xml_element(v)"""
                 else:
@@ -309,7 +305,6 @@ def ascii_encode_dict(data):
 
 
 def _parse_element(dict_format, to_build):
-
     print_("Parse for element: [%s]" % dict_format, verbose)
     for k in dict_format.keys():
         print_(
@@ -323,7 +318,6 @@ def _parse_element(dict_format, to_build):
 
 
 def _parse_attributes(dict_format, to_build):
-
     for key in dict_format:
         value = dict_format[key]
         new_format = True
@@ -333,7 +327,7 @@ def _parse_attributes(dict_format, to_build):
         )
 
         if new_format:
-            if type(to_build) == dict:
+            if isinstance(to_build, dict):
                 to_build[key] = value
 
             elif key in to_build.allowed_children:
@@ -345,11 +339,11 @@ def _parse_attributes(dict_format, to_build):
                     exec("to_build.%s.append(ff)" % key)
             else:
                 if (
-                    type(value) == str
-                    or type(value) == int
-                    or type(value) == float
-                    or type(value) == bool
-                    or type(value) == list
+                    isinstance(value, str)
+                    or isinstance(value, int)
+                    or isinstance(value, float)
+                    or isinstance(value, bool)
+                    or isinstance(value, list)
                     or value is None
                 ):
                     to_build.__setattr__(key, value)
@@ -370,11 +364,15 @@ def _parse_attributes(dict_format, to_build):
                         exec("to_build.%s = ff" % key)
 
         else:
-            if type(to_build) == dict:
+            if isinstance(to_build, dict):
                 to_build[key] = value
-            elif type(value) == str or type(value) == int or type(value) == float:
+            elif (
+                isinstance(value, str)
+                or isinstance(value, int)
+                or isinstance(value, float)
+            ):
                 to_build.__setattr__(key, value)
-            elif type(value) == list:
+            elif isinstance(value, list):
                 type_to_use = to_build.allowed_children[key][1]
 
                 for vl in value:
@@ -403,7 +401,7 @@ def locate_file(f, base_dir):
 
 
 def _val_info(param_val):
-    if type(param_val) == np.ndarray:
+    if isinstance(param_val, np.ndarray):
         pp = "%s" % (np.array2string(param_val, threshold=4, edgeitems=1))
         pp = pp.replace("\n", "")
         pp += f" (NP {param_val.shape} {param_val.dtype})"
@@ -411,15 +409,15 @@ def _val_info(param_val):
         pp = "%s" % param_val
         pp = pp.replace("\n", "")
         # pp+=' (TF %s %s)'%(param_val.shape,param_val.dtype)
-    elif type(param_val) == tuple:
+    elif type(param_val) is tuple:
         # If param_val is a tuple, recursively print its elements
         # separated by commas and wrapped in parentheses
         pp = "(" + ", ".join([_val_info(el) for el in param_val]) + ")"
     else:
         pp = "%s" % param_val
         t = type(param_val)
-        if not (t == int or t == float):
-            pp += "(%s)" % (t if type(t) == str else t.__name__)
+        if not (t is int or t is float):
+            pp += "(%s)" % (t if type(t) is str else t.__name__)
     return pp
 
 
@@ -476,20 +474,19 @@ def evaluate(
         verbose,
     )
     try:
-        if type(expr) == str and expr in parameters:
+        if type(expr) is str and expr in parameters:
             expr = parameters[
                 expr
             ]  # replace with the value in parameters & check whether it's float/int...
             print_("   Using for that param: %s" % _val_info(expr), verbose)
 
-        if type(expr) == str:
+        if type(expr) is str:
             try:
                 if array_format == FORMAT_TENSORFLOW:
                     expr = tf.constant(int(expr))
                 else:
                     expr = int(expr)
             except:
-
                 try:
                     if array_format == FORMAT_TENSORFLOW:
                         expr = tf.constant(float(expr))
@@ -498,14 +495,14 @@ def evaluate(
                 except:
                     pass
 
-        if type(expr) == list:
+        if type(expr) is list:
             print_("   Returning a list in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.constant(expr, dtype=tf.float64)
             else:
                 return np.array(expr)
 
-        if type(expr) == np.ndarray:
+        if type(expr) is np.ndarray:
             print_("   Returning a numpy array in format: %s" % array_format, verbose)
             if array_format == FORMAT_TENSORFLOW:
                 return tf.convert_to_tensor(expr, dtype=tf.float64)
@@ -538,9 +535,9 @@ def evaluate(
                     "The expression [%s] contains a random() call, but a random number generator (rng) must be supplied to the evaluate() call when this expression string is to be evaluated"
                 )
 
-            if type(expr) == str and "math." in expr:
+            if type(expr) is str and "math." in expr:
                 parameters["math"] = math
-            if type(expr) == str and "numpy." in expr:
+            if type(expr) is str and "numpy." in expr:
                 parameters["numpy"] = np
 
             print_(
@@ -556,8 +553,7 @@ def evaluate(
                 verbose,
             )
 
-            if (type(v) == float or type(v) == str) and int(v) == v:
-
+            if (type(v) is float or type(v) is str) and int(v) == v:
                 print_("   Returning int: %s" % int(v), verbose)
 
                 if array_format == FORMAT_TENSORFLOW:
@@ -576,14 +572,13 @@ def evaluate(
 
 
 def parse_list_like(list_str):
-
     if isinstance(list_str, int):
         return [list_str]
     elif isinstance(list_str, float):
         return [list_str]
     elif isinstance(list_str, list):
         return list_str
-    elif type(list_str) == str:
+    elif type(list_str) is str:
         try:
             expr = int(list_str)
             return [expr]

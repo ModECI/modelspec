@@ -147,7 +147,6 @@ class Base:
         # If this object has an id attribute, it may have been serialized within a dict with the id as the key, even if
         # it is a single object.
         if "id" in [f.name for f in attr.fields(cls)] and "id" not in d.keys():
-
             keys = list(d.keys())
             if len(keys) == 0:
                 raise ValueError(
@@ -167,19 +166,9 @@ class Base:
         return cls.from_dict(yaml.load(yaml_str, Loader=yaml.SafeLoader))
 
     @classmethod
-    def from_yaml_file(cls, yaml_file: str) -> "Base":
-        """Instantiate an modelspec object from a file containing YAML"""
-        return cls.from_dict(yaml.load(yaml_str, Loader=yaml.SafeLoader))
-
-    @classmethod
     def from_json(cls, json_str: str) -> "Base":
         """Instantiate an modelspec object from a JSON string"""
         return cls.from_dict(json.loads(json_str))
-
-    @classmethod
-    def from_json_file(cls, json_file: str) -> "Base":
-        """Instantiate an modelspec object from a file containing JSON"""
-        return cls.from_dict(json.load(json_file))
 
     @classmethod
     def from_bson(cls, bson_str: str) -> "Base":
@@ -302,7 +291,6 @@ class Base:
             filename = f"{self.id}.yaml"
 
         with open(filename, "w") as outfile:
-
             # We need to setup another
             yaml.dump(
                 yaml_converter.unstructure(self.to_dict()),
@@ -318,8 +306,6 @@ class Base:
         filename: Optional[str] = None,
         include_metadata: bool = True,
     ) -> str:
-        from modelspec.utils import build_xml_element
-
         if filename is None:
             filename = f"{self.id}.xml"
 
@@ -642,7 +628,6 @@ class Base:
         can_be_none=False,
         can_be_eval_expr=False,
     ):
-
         import numpy
 
         if verbose:
@@ -736,7 +721,6 @@ class Base:
         rst_url_format = "`%s <%s>`__"
 
         def insert_links(text, format=MARKDOWN_FORMAT):
-
             code_ref = ":code:`"
             # print("    > Converting: %s" % text)
             text2 = text
