@@ -82,7 +82,6 @@ class SBase(Base):
 
 @modelspec.define
 class SBaseWithId(SBase):
-
     id: str = field(default=None, validator=optional([instance_of(str), valid_sid]))
 
 

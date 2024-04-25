@@ -168,7 +168,6 @@ def validate_sbml(doc, units_consistency: bool = False) -> None:
 
 
 if __name__ == "__main__":
-
     import libsbml
 
     sbml_file = sys.argv[1]

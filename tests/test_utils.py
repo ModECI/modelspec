@@ -12,7 +12,6 @@ except ImportError:
 
 class TestUtils(unittest.TestCase):
     def test_evaluate(self):
-
         assert evaluate("33") == 33.0
         assert evaluate("33") == 33
         assert evaluate(33) == 33
