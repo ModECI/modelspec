@@ -1,4 +1,4 @@
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 
 from .base_types import Base, define, has, field, fields, optional, instance_of, in_
 
