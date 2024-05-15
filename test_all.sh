@@ -3,7 +3,7 @@ set -ex
 
 ## Install modelspec incl. dev dependencies
 
-pip install .[dev]
+pip install .[all]
 
 
 ## Test main example
