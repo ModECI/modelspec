@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 
+    - name: Set up Python
       uses: actions/setup-python@v5
 
     - name: Install HDF5 for pytables on macos-14
@@ -31,7 +31,7 @@ jobs:
         python -m pip install --upgrade pip
         # pip install 'numpy<2.0.0' # due to lingering issues with other modules & numpy...
         ./test_all.sh
-        
+
 
 
 
