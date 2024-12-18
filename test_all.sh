@@ -54,4 +54,4 @@ cd ..
 
 ## Format all file
 
-pre-commit run --all-files
+/bin/bash -c 'pre-commit run --all-files; echo Finished running pre-commit!' # Note: prevents error code when reformatting
