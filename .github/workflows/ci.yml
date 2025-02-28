@@ -61,6 +61,7 @@ jobs:
         pip list
 
     - name: Run simple examples
+      shell: bash
       run: |
         cd examples
         python document.py
@@ -70,6 +71,7 @@ jobs:
         python test.py
 
     - name: Test NeuroML examples
+      shell: bash
       run: |
 
         cd examples/neuroml2
@@ -78,6 +80,7 @@ jobs:
         # Note: NeuroML files will be validated with OMV below
 
     - name: Test SBML examples
+      shell: bash
       run: |
 
         cd examples/sbml
