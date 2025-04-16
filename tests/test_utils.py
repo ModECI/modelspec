@@ -19,15 +19,15 @@ class TestUtils(unittest.TestCase):
         assert evaluate("p+p", params, verbose=True) == 66
 
         print("======")
-        assert type(evaluate("33")) == int
-        assert type(evaluate("33", cast_to_int=True)) == int
-        assert type(evaluate("33.0")) == float
-        assert type(evaluate("33.0", cast_to_int=True)) == int
+        assert type(evaluate("33")) is int
+        assert type(evaluate("33", cast_to_int=True)) is int
+        assert type(evaluate("33.0")) is float
+        assert type(evaluate("33.0", cast_to_int=True)) is int
 
-        assert type(evaluate("33.1")) == float
-        assert type(evaluate("33.1a", verbose=True)) == str
+        assert type(evaluate("33.1")) is float
+        assert type(evaluate("33.1a", verbose=True)) is str
 
-        assert type(evaluate("a")) == str
+        assert type(evaluate("a")) is str
 
         import random
 
