@@ -486,13 +486,13 @@ def evaluate(
                     expr = tf.constant(int(expr))
                 else:
                     expr = int(expr)
-            except:
+            except Exception:
                 try:
                     if array_format == FORMAT_TENSORFLOW:
                         expr = tf.constant(float(expr))
                     else:
                         expr = float(expr)
-                except:
+                except Exception:
                     pass
 
         if type(expr) is list:
@@ -525,7 +525,7 @@ def evaluate(
         else:  # will have failed if not number
             print_("   Returning {}: {}".format(type(expr), expr), verbose)
             return expr
-    except:
+    except Exception:
         try:
             if rng:
                 expr = expr.replace("random()", "rng.random()")
@@ -582,12 +582,12 @@ def parse_list_like(list_str):
         try:
             expr = int(list_str)
             return [expr]
-        except:
+        except Exception:
             pass
         try:
             expr = float(list_str)
             return [expr]
-        except:
+        except Exception:
             pass
         if "[" in list_str:
             return eval(list_str)
