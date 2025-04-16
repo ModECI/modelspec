@@ -566,9 +566,9 @@ class Base:
 
         # Check if the type of the field is a list or dict
         collection_arg = None
-        if get_origin(f.type) == list and len(get_args(f.type)) > 0:
+        if get_origin(f.type) is list and len(get_args(f.type)) > 0:
             collection_arg = get_args(f.type)[0]
-        elif get_origin(f.type) == dict and len(get_args(f.type)) > 0:
+        elif get_origin(f.type) is dict and len(get_args(f.type)) > 0:
             collection_arg = get_args(f.type)[1]
 
         try:
@@ -641,16 +641,16 @@ class Base:
             value = get_origin(value)
 
         return (
-            value == int
-            or value == str
-            or value == bool
-            or value == float
-            or (can_be_list and value == list)
-            or (can_be_dict and value == dict)
-            or (can_be_ndarray and value == numpy.ndarray)
+            value is int
+            or value is str
+            or value is bool
+            or value is float
+            or (can_be_list and value is list)
+            or (can_be_dict and value is dict)
+            or (can_be_ndarray and value is numpy.ndarray)
             or (can_be_none and value is None)
             or (can_be_eval_expr and cls._is_evaluable_expression(value))
-            or value == Union
+            or value is Union
         )
 
     @staticmethod
@@ -671,11 +671,11 @@ class Base:
 
         # If its a Generic type
         elif get_origin(type_) is not None:
-            if get_origin(type_) == list and len(get_args(type_)) > 0:
+            if get_origin(type_) is list and len(get_args(type_)) > 0:
                 return Base._type_to_str(get_args(type_)[0])
-            elif get_origin(type_) == dict and len(get_args(type_)) > 0:
+            elif get_origin(type_) is dict and len(get_args(type_)) > 0:
                 return Base._type_to_str(get_args(type_)[1])
-            elif get_origin(type_) == Union and len(get_args(type_)) > 0:
+            elif get_origin(type_) is Union and len(get_args(type_)) > 0:
                 return (
                     "Union["
                     + ", ".join([Base._type_to_str(arg) for arg in get_args(type_)])
@@ -916,9 +916,9 @@ class Base:
                 table_info.append([n, t, d])
 
             # Get the contained type
-            if get_origin(type_) == list and len(get_args(type_)) > 0:
+            if get_origin(type_) is list and len(get_args(type_)) > 0:
                 referenced.append(get_args(type_)[0])
-            elif get_origin(type_) == dict and len(get_args(type_)) > 1:
+            elif get_origin(type_) is dict and len(get_args(type_)) > 1:
                 referenced.append(get_args(type_)[1])
             else:
                 referenced.append(type_)
@@ -1080,7 +1080,7 @@ def _is_list_base(cl):
     Check if a class is a list of Base objects. These will be serialized as dicts if the underlying class has an id
     attribute.
     """
-    return get_origin(cl) == list and issubclass(get_args(cl)[0], Base)
+    return get_origin(cl) is list and issubclass(get_args(cl)[0], Base)
 
 
 converter.register_unstructure_hook_factory(_is_list_base, _unstructure_list_base)
