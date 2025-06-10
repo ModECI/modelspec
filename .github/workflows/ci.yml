@@ -128,7 +128,6 @@ jobs:
         # Run OMV tests on all engines
         cd examples
         omv all -V
-
         omv list -V # list installed engines
 
     - name: Final version info
