@@ -7,3 +7,4 @@ Functionality for specifying the allowed structure of models, facilitating the c
 This package is being used by [NeuroMLlite](https://github.com/NeuroML/NeuroMLlite) & [MDF](https://github.com/ModECI/MDF).
 
 For an example of the use of this package see [here](examples/README.md).
+
