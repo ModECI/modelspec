@@ -35,8 +35,6 @@ jobs:
 
         ./test_all.sh
 
-
-
     - name: Final version info
       run: |
           pip list
