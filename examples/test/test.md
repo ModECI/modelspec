@@ -13,21 +13,21 @@ A model....
   <tr>
     <td><b>float_like_req</b></td>
     <td>float</td>
-    <td><i>name says it all...</i></td>
+    <td><i>Anything (float, str, int) which can be converted to a float with float(x)</i></td>
  </tr>
 
 
   <tr>
     <td><b>float_like_optional</b></td>
     <td>float</td>
-    <td><i>name also says it all...</i></td>
+    <td><i>Same as float<a href="#like">like</a>req, but optional</i></td>
  </tr>
 
 
   <tr>
     <td><b>int_like_optional</b></td>
     <td>int</td>
-    <td><i>name also says it all...</i></td>
+    <td><i>Same as float<a href="#like">like</a>req, but optional int</i></td>
  </tr>
 
 

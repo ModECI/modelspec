@@ -6,13 +6,14 @@ TopClass:
             description: The unique id of the thing
         float_like_req:
             type: float
-            description: name says it all...
+            description: Anything (float, str, int) which can be converted to a float
+                with float(x)
         float_like_optional:
             type: float
-            description: name also says it all...
+            description: Same as float_like_req, but optional
         int_like_optional:
             type: int
-            description: name also says it all...
+            description: Same as float_like_req, but optional int
         mid:
             type: MidClassNoId
             description: ''
