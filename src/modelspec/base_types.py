@@ -665,12 +665,10 @@ class Base:
             A string with a prettier format of the type annotation.
         """
 
-        # If the type as a __name__ attribute, use that
-        if hasattr(type_, "__name__"):
-            return type_.__name__
-
-        # If its a Generic type
-        elif get_origin(type_) is not None:
+        # If it's a Generic type, unwrap it first.
+        # Note: on Python 3.10+, typing aliases like List[X] have a __name__ attribute
+        # ("List"), so this must be checked before the __name__ shortcut below.
+        if get_origin(type_) is not None:
             if get_origin(type_) is list and len(get_args(type_)) > 0:
                 return Base._type_to_str(get_args(type_)[0])
             elif get_origin(type_) is dict and len(get_args(type_)) > 0:
@@ -681,6 +679,10 @@ class Base:
                     + ", ".join([Base._type_to_str(arg) for arg in get_args(type_)])
                     + "]"
                 )
+
+        # If the type has a __name__ attribute, use that
+        if hasattr(type_, "__name__"):
+            return type_.__name__
 
         # Fallback to returning just the string representation. Drop any occurrence of typing
         return str(type_).replace("typing.", "")
