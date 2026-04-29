@@ -837,9 +837,11 @@ class Base:
                 doc_string += (
                     "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
                         f,
-                        f'<a href="#{type_str.lower()}">{type_str}</a>'
-                        if referencable
-                        else type_str,
+                        (
+                            f'<a href="#{type_str.lower()}">{type_str}</a>'
+                            if referencable
+                            else type_str
+                        ),
                     )
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n </tr>\n\n" % (
@@ -849,9 +851,11 @@ class Base:
             elif format == RST_FORMAT:
                 n = "**%s**" % f
                 t = "{}".format(
-                    rst_url_format % (type_, "#" + type_str.lower())
-                    if referencable
-                    else type_str,
+                    (
+                        rst_url_format % (type_, "#" + type_str.lower())
+                        if referencable
+                        else type_str
+                    ),
                 )
                 d = "%s" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
@@ -898,9 +902,11 @@ class Base:
                 doc_string += (
                     "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
                         c,
-                        f'<a href="#{type_str.lower()}">{type_str}</a>'
-                        if referencable
-                        else type_str,
+                        (
+                            f'<a href="#{type_str.lower()}">{type_str}</a>'
+                            if referencable
+                            else type_str
+                        ),
                     )
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
@@ -910,9 +916,11 @@ class Base:
             elif format == RST_FORMAT:
                 n = "**%s**" % c
                 t = "{}".format(
-                    rst_url_format % (type_str, "#" + type_str.lower())
-                    if referencable
-                    else type_str,
+                    (
+                        rst_url_format % (type_str, "#" + type_str.lower())
+                        if referencable
+                        else type_str
+                    ),
                 )
                 d = "%s" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])

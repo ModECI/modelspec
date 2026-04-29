@@ -6,7 +6,7 @@ repos:
 #  - id: black
 
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v3.4.0
+  rev: v6.0.0
   hooks:
   - id: check-added-large-files
     args: ['--maxkb=800']
@@ -46,6 +46,6 @@ repos:
 #    files: src
 
 - repo: https://github.com/psf/black
-  rev: 22.3.0
+  rev: 24.10.0
   hooks:
   - id: black

@@ -296,8 +296,8 @@ def build_xml_element(data, parent=None):
 
 
 def ascii_encode_dict(data):
-    ascii_encode = (
-        lambda x: x.encode("ascii")
+    ascii_encode = lambda x: (
+        x.encode("ascii")
         if (sys.version_info[0] == 2 and isinstance(x, unicode))
         else x
     )
