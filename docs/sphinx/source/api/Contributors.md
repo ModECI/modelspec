@@ -3,7 +3,7 @@
 # Modelspec contributors
 
 This page list names and Github profiles of contributors to Modelspec, listed in no particular order.
-This page is generated periodically, most recently on 2026-04-29.
+This page is generated periodically, most recently on 2026-05-19.
 
 - Padraig Gleeson ([@pgleeson](https://github.com/pgleeson))
 - Manifest Chakalov  ([@mqnifestkelvin](https://github.com/mqnifestkelvin))
@@ -11,5 +11,6 @@ This page is generated periodically, most recently on 2026-04-29.
 - Peace Ododo ([@Onoyiza](https://github.com/Onoyiza))
 - Parikshit Singh Rathore ([@parikshit14](https://github.com/parikshit14))
 - Ankur Sinha ([@sanjayankur31](https://github.com/sanjayankur31))
+- dependabot[bot] ([@dependabot[bot]](https://github.com/apps/dependabot))
 - kmantel ([@kmantel](https://github.com/kmantel))
 - Robert Vickerstaff ([@robertvi](https://github.com/robertvi))
