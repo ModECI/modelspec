@@ -4,6 +4,8 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import modelspec
+
 # -- Path setup --------------------------------------------------------------
 import sys
 
@@ -18,9 +20,9 @@ sys.path.append(str(BASEDIR / "src"))
 # -- Project information -----------------------------------------------------
 
 project = "Modelspec"
-copyright = "2023, ModECI Project"
+copyright = "2026, ModECI Project"
 author = "ModECI Project"
-release = "0.3.1"
+release = modelspec.__version__
 
 # -- General configuration ---------------------------------------------------
 
