@@ -48,9 +48,9 @@ class TopClass(Base):
 
     Args:
         id: The unique id of the thing
-        float_like_req: name says it all...
-        float_like_optional: name also says it all...
-        int_like_optional: name also says it all...
+        float_like_req: Anything (float, str, int) which can be converted to a float with float(x)
+        float_like_optional: Same as float_like_req, but optional
+        int_like_optional: Same as float_like_req, but optional int
     """
 
     id: str = field(validator=instance_of(str))
@@ -74,7 +74,7 @@ tc = TopClass(
 )  # a string which can be converted to a float...
 
 # tc.float_like_req = 2.01
-tc.float_like_optional = 44
+tc.float_like_optional = "42"
 # tc.float_like_optional2 = 66
 tc.mid = MidClassNoId(int_val=4, str_val="three")
 
