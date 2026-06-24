@@ -336,7 +336,7 @@ def _parse_attributes(dict_format, to_build):
                     ff = type_to_use()
                     print_(f"    Type for {key}: {type_to_use} ({ff})", verbose)
                     ff = _parse_element({v: value[v]}, ff)
-                    exec("to_build.%s.append(ff)" % key)
+                    getattr(to_build, key).append(ff)
             else:
                 if (
                     isinstance(value, str)
@@ -361,7 +361,7 @@ def _parse_attributes(dict_format, to_build):
                     else:
                         ff = type_to_use()
                         ff = _parse_attributes(value, ff)
-                        exec("to_build.%s = ff" % key)
+                        setattr(to_build, key, ff)
 
         else:
             if isinstance(to_build, dict):
@@ -378,12 +378,12 @@ def _parse_attributes(dict_format, to_build):
                 for vl in value:
                     ff = type_to_use()
                     ff = _parse_element(vl, ff)
-                    exec("to_build.%s.append(ff)" % key)
+                    getattr(to_build, key).append(ff)
             else:
                 type_to_use = to_build.allowed_fields[key][1]
                 ff = type_to_use()
                 ff = _parse_attributes(value, ff)
-                exec("to_build.%s = ff" % key)
+                setattr(to_build, key, ff)
 
     return to_build
 
@@ -445,7 +445,7 @@ FORMAT_TENSORFLOW = "tensorflow"
 
 def evaluate(
     expr: Union[int, float, str, list, dict],
-    parameters: dict = {},
+    parameters: dict = None,
     rng: Random = None,
     array_format: str = FORMAT_NUMPY,
     verbose: bool = False,
@@ -464,6 +464,10 @@ def evaluate(
         verbose: Print the calculations
         cast_to_int: return an int for float/string values if castable
     """
+
+    # Work on a private copy so we never mutate the caller's dict (or a shared
+    # default) when injecting rng/math/numpy below or when eval() adds __builtins__.
+    parameters = dict(parameters) if parameters is not None else {}
 
     if array_format == FORMAT_TENSORFLOW:
         import tensorflow as tf
@@ -591,3 +595,5 @@ def parse_list_like(list_str):
             pass
         if "[" in list_str:
             return eval(list_str)
+
+    raise ValueError(f"Cannot parse {list_str!r} ({type(list_str)}) as a list")

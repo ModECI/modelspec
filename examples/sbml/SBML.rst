@@ -650,39 +650,6 @@ Allowed field    Data Type    Description
 **content**      str          str valid XHTML
 ===============  ===========  ========================================
 
-================
-SpeciesReference
-================
-**Allowed parameters**
-
-=================  =======================================  ====================
-Allowed field      Data Type                                Description
-=================  =======================================  ====================
-**sid**            str                                      SId optional
-**name**           str                                      string optional
-**metaid**         str                                      XML ID optional
-**sboTerm**        str                                      SBOTerm optional
-**notes**          `<class 'sbml32spec.Notes'> <#notes>`__  XHTML 1.0 optional
-**annotation**     str                                      XML content optional
-**species**        str                                      SIdRef
-**stoichiometry**  float                                    double optional
-**constant**       bool                                     boolean
-=================  =======================================  ====================
-
-=====
-Notes
-=====
-XHTML field of SBase
-
-**Allowed parameters**
-
-===============  ===========  ========================================
-Allowed field    Data Type    Description
-===============  ===========  ========================================
-**xmlns**        str          str fixed "http://www.w3.org/1999/xhtml"
-**content**      str          str valid XHTML
-===============  ===========  ========================================
-
 ========================
 ModifierSpeciesReference
 ========================
