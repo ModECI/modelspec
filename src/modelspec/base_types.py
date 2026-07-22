@@ -44,8 +44,10 @@ class EvaluableExpression(str):
     str, so it can be used as a string.
     """
 
-    def __init__(self, expr):
-        self.expr = expr
+    @property
+    def expr(self):
+        """The expression string. Always reflects the underlying str value."""
+        return str(self)
 
 
 # Union of types that are allowed as value expressions for parameters.
@@ -62,7 +64,7 @@ def print_(text: str, print_it: bool = False):
 
     prefix = "modelspec >>> "
     if not isinstance(text, str):
-        text = ("%s" % text).decode("ascii")
+        text = "%s" % text
     print("{}{}".format(prefix, text.replace("\n", "\n" + prefix)))
 
 
@@ -111,9 +113,9 @@ class Base:
         """
         return json.dumps(self.to_dict(), indent=4)
 
-    def to_bson(self) -> str:
+    def to_bson(self) -> bytes:
         """
-        Convert the Base object to a BSON string representation.
+        Convert the Base object to a BSON (bytes) representation.
         """
         return bson.encode(self.to_dict())
 
@@ -238,7 +240,9 @@ class Base:
 
         return filename
 
-    def to_bson_file(self, filename: str, include_metadata: bool = True) -> str:
+    def to_bson_file(
+        self, filename: Optional[str] = None, include_metadata: bool = True
+    ) -> str:
         """Convert modelspec format to bson format
 
         Args:
@@ -321,7 +325,8 @@ class Base:
     def from_file(cls, filename: str) -> "Base":
         """
         Create a :class:`.Base` from its representation stored in a file. Auto-detect the correct deserialization code
-        based on file extension. Currently supported formats are; JSON(.json) and YAML (.yaml or .yml)
+        based on file extension. Currently supported formats are: JSON (.json), YAML (.yaml or .yml),
+        BSON (.bson) and XML (.xml).
 
         Args:
             filename: The name of the file to load.
@@ -340,7 +345,7 @@ class Base:
         else:
             raise ValueError(
                 f"Cannot auto-detect modelspec serialization format from filename ({filename}). The filename "
-                f"must have one of the following extensions: .json, .yml, or .yaml."
+                f"must have one of the following extensions: .json, .yaml, .yml, .bson, or .xml."
             )
 
     @classmethod
@@ -837,9 +842,11 @@ class Base:
                 doc_string += (
                     "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
                         f,
-                        f'<a href="#{type_str.lower()}">{type_str}</a>'
-                        if referencable
-                        else type_str,
+                        (
+                            f'<a href="#{type_str.lower()}">{type_str}</a>'
+                            if referencable
+                            else type_str
+                        ),
                     )
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n </tr>\n\n" % (
@@ -849,9 +856,11 @@ class Base:
             elif format == RST_FORMAT:
                 n = "**%s**" % f
                 t = "{}".format(
-                    rst_url_format % (type_, "#" + type_str.lower())
-                    if referencable
-                    else type_str,
+                    (
+                        rst_url_format % (type_, "#" + type_str.lower())
+                        if referencable
+                        else type_str
+                    ),
                 )
                 d = "%s" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
@@ -898,9 +907,11 @@ class Base:
                 doc_string += (
                     "\n  <tr>\n    <td><b>{}</b></td>\n    <td>{}</td>".format(
                         c,
-                        f'<a href="#{type_str.lower()}">{type_str}</a>'
-                        if referencable
-                        else type_str,
+                        (
+                            f'<a href="#{type_str.lower()}">{type_str}</a>'
+                            if referencable
+                            else type_str
+                        ),
                     )
                 )
                 doc_string += "\n    <td><i>%s</i></td>\n  </tr>\n\n" % (
@@ -910,9 +921,11 @@ class Base:
             elif format == RST_FORMAT:
                 n = "**%s**" % c
                 t = "{}".format(
-                    rst_url_format % (type_str, "#" + type_str.lower())
-                    if referencable
-                    else type_str,
+                    (
+                        rst_url_format % (type_str, "#" + type_str.lower())
+                        if referencable
+                        else type_str
+                    ),
                 )
                 d = "%s" % (insert_links(description, format=RST_FORMAT))
                 table_info.append([n, t, d])
@@ -937,10 +950,19 @@ class Base:
                     )
                 )
 
+        # De-duplicate while preserving order, so a type referenced by more than
+        # one field/child doesn't get its documentation section emitted twice.
+        seen = set()
+        unique_referenced = []
         for r in referenced:
+            if r not in seen:
+                seen.add(r)
+                unique_referenced.append(r)
+
+        for r in unique_referenced:
             if format in (MARKDOWN_FORMAT, RST_FORMAT):
                 doc_string += r._cls_generate_documentation(format=format)
-            if format in (DICT_FORMAT):
+            if format == DICT_FORMAT:
                 doc_dict.update(r._cls_generate_documentation(format=format))
 
         if format in (MARKDOWN_FORMAT, RST_FORMAT):
@@ -1082,7 +1104,14 @@ def _is_list_base(cl):
     Check if a class is a list of Base objects. These will be serialized as dicts if the underlying class has an id
     attribute.
     """
-    return get_origin(cl) is list and issubclass(get_args(cl)[0], Base)
+    if get_origin(cl) is not list:
+        return False
+
+    args = get_args(cl)
+    # Guard against a bare ``list`` annotation (no args) and against element
+    # types that aren't classes (e.g. List[Union[A, B]]), which would make
+    # issubclass() raise TypeError.
+    return len(args) > 0 and isinstance(args[0], type) and issubclass(args[0], Base)
 
 
 converter.register_unstructure_hook_factory(_is_list_base, _unstructure_list_base)
