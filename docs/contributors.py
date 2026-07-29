@@ -1,8 +1,8 @@
-import requests
-import pandas as pd
 import textwrap
 from datetime import date
 
+import pandas as pd
+import requests
 
 url = "https://api.github.com/repos/modeci/modelspec/contributors"
 
@@ -28,7 +28,7 @@ for i in range(len_per_info):
     ):
         if data.status_code == 200:
             requests_status = "successful"
-            print("   Received: %s" % data.json())
+            print(f"   Received: {data.json()}")
             empty_list.append(data.json())
         else:
             # handle failure on requests to the url for mac os
@@ -53,20 +53,18 @@ if len(empty_list) > 0:
     with open(file, "w") as f:
         print(
             textwrap.dedent(
-                """\
+                f"""\
             (Modelspec:contributors)=
 
             # Modelspec contributors
 
             This page list names and Github profiles of contributors to Modelspec, listed in no particular order.
-            This page is generated periodically, most recently on {}.""".format(
-                    date.today()
-                )
+            This page is generated periodically, most recently on {date.today()}."""
             ),
             file=f,
         )
 
-        print("", file=f)
+        print(file=f)
 
-        for key, val in zip_dict.items():
-            print("- {} ([@{}]({}))".format(val[0], val[1], val[2]), file=f)
+        for val in zip_dict.values():
+            print(f"- {val[0]} ([@{val[1]}]({val[2]}))", file=f)

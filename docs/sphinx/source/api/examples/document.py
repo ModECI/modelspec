@@ -1,11 +1,11 @@
+import json
+
+import bson
+import yaml
+
 import modelspec
 from modelspec import field, instance_of, optional
 from modelspec.base_types import Base
-from typing import List
-import sys
-import json
-import yaml
-import bson
 
 # Example showing how to create a model of a document and use it to create/serialize instances
 
@@ -34,7 +34,7 @@ class Section(Base):
     """
 
     id: str = field(validator=instance_of(str))
-    paragraphs: List[Paragraph] = field(factory=list)
+    paragraphs: list[Paragraph] = field(factory=list)
 
 
 @modelspec.define
@@ -52,7 +52,7 @@ class Document(Base):
     id: str = field(validator=instance_of(str))
     title: str = field(default=None, validator=optional(instance_of(str)))
     ISBN: int = field(default=None, validator=optional(instance_of(int)))
-    sections: List[Section] = field(factory=list)
+    sections: list[Section] = field(factory=list)
 
 
 doc = Document(id="MyBook", ISBN=123)
@@ -78,10 +78,9 @@ print(doc.to_yaml())
 
 doc.to_bson_file("document.bson")
 
-if sys.version_info >= (3, 8):
-    doc.to_xml_file("document.xml")
-    print(" >> Full document details in XML format:\n")
-    print(doc.to_xml())
+doc.to_xml_file("document.xml")
+print(" >> Full document details in XML format:\n")
+print(doc.to_xml())
 
 
 doc_md = doc.generate_documentation(format="markdown")
