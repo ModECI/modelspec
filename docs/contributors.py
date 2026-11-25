@@ -1,3 +1,4 @@
+import sys
 import textwrap
 from datetime import date
 
@@ -9,6 +10,12 @@ url = "https://api.github.com/repos/modeci/modelspec/contributors"
 response = requests.get(url=url, auth=("<github_username>", "<github_token>"))
 
 json_data = response.json()
+
+if response.status_code != 200 or not isinstance(json_data, list):
+    # e.g. bad credentials: don't fail the build, just skip regenerating the page
+    print(f"Could not get contributors (status {response.status_code}): {json_data}")
+    print("Skipping generation of contributors page")
+    sys.exit(0)
 
 df = pd.DataFrame(json_data)
 
@@ -67,4 +74,7 @@ if len(empty_list) > 0:
         print(file=f)
 
         for val in zip_dict.values():
+            print(f"Adding contributor: {val[0]} ([@{val[1]}]({val[2]}))")
             print(f"- {val[0]} ([@{val[1]}]({val[2]}))", file=f)
+else:
+    print("No contributors found, skipping generation of contributors page")
